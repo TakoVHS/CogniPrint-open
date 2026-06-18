@@ -1,0 +1,16 @@
+# CogniPrint sanitized public release
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example
+workspace/
+release_artifacts/
+dist/
+build/
+*.egg-info/
+.DS_Store

@@ -1,0 +1,35 @@
+ablation_type,metric,removed_unit,full_family_mean_delta,ablated_family_mean_delta,delta_change,note
+axis_family_leave_one_axis_out,cosine_similarity,compressed_version,0.018655,0.022043,0.003388,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,cosine_similarity,formalized_style,0.018655,0.022426,0.003771,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,cosine_similarity,informalized_style,0.018655,0.021573,0.002918,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,cosine_similarity,punctuation_cleanup,0.018655,0.020454,0.001799,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,cosine_similarity,sentence_split_merge,0.018655,0.006106,-0.012549,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,cosine_similarity,word_order_shift,0.018655,0.019326,0.000672,Axis-family ablation only; feature-group ablation remains deferred.
+local_campaign_leave_one_campaign_out,cosine_similarity,empirical-campaign-001,0.018655,0.018655,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,cosine_similarity,empirical-campaign-002,0.018655,0.02007,0.001416,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,cosine_similarity,empirical-campaign-003,0.018655,0.017249,-0.001406,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,cosine_similarity,empirical-campaign-004,0.018655,0.018645,-1e-05,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,cosine_similarity,final-v5-campaign,0.018655,0.018655,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+axis_family_leave_one_axis_out,euclidean_distance,compressed_version,-5.803661,-6.052084,-0.248422,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,euclidean_distance,formalized_style,-5.803661,-6.840103,-1.036442,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,euclidean_distance,informalized_style,-5.803661,-6.051172,-0.247511,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,euclidean_distance,punctuation_cleanup,-5.803661,-6.882557,-1.078896,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,euclidean_distance,sentence_split_merge,-5.803661,-3.780518,2.023143,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,euclidean_distance,word_order_shift,-5.803661,-5.215534,0.588127,Axis-family ablation only; feature-group ablation remains deferred.
+local_campaign_leave_one_campaign_out,euclidean_distance,empirical-campaign-001,-5.803661,-5.803661,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,euclidean_distance,empirical-campaign-002,-5.803661,-5.225942,0.577719,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,euclidean_distance,empirical-campaign-003,-5.803661,-5.613327,0.190335,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,euclidean_distance,empirical-campaign-004,-5.803661,-6.571715,-0.768054,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,euclidean_distance,final-v5-campaign,-5.803661,-5.803661,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+axis_family_leave_one_axis_out,manhattan_distance,compressed_version,-5.766355,-5.91314,-0.146785,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,manhattan_distance,formalized_style,-5.766355,-6.849367,-1.083012,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,manhattan_distance,informalized_style,-5.766355,-6.048737,-0.282382,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,manhattan_distance,punctuation_cleanup,-5.766355,-6.833968,-1.067613,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,manhattan_distance,sentence_split_merge,-5.766355,-3.763749,2.002606,Axis-family ablation only; feature-group ablation remains deferred.
+axis_family_leave_one_axis_out,manhattan_distance,word_order_shift,-5.766355,-5.189168,0.577187,Axis-family ablation only; feature-group ablation remains deferred.
+local_campaign_leave_one_campaign_out,manhattan_distance,empirical-campaign-001,-5.766355,-5.766355,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,manhattan_distance,empirical-campaign-002,-5.766355,-5.200551,0.565803,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,manhattan_distance,empirical-campaign-003,-5.766355,-5.482362,0.283993,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,manhattan_distance,empirical-campaign-004,-5.766355,-6.616151,-0.849796,Campaign inclusion sensitivity; not a feature-group ablation.
+local_campaign_leave_one_campaign_out,manhattan_distance,final-v5-campaign,-5.766355,-5.766355,0.0,Campaign inclusion sensitivity; not a feature-group ablation.
+feature_group_ablation,not_run,major_feature_groups,,,,Deferred until profile-vector-level row schema exposes major feature-group recomputation.

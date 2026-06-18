@@ -1,0 +1,13 @@
+feature,mean_abs_delta,median_abs_delta,max_abs_delta
+mean_sentence_length_words,0.36700372,0.222222,1.555556
+flesch_reading_ease,0.19668161,0.13658,0.907503
+char_bigram_uniqueness,0.03678963,0.0137665,0.289669
+type_token_ratio,0.02746093,0.006039,0.245031
+punctuation_ratio,0.02213296,0.0104885,0.170497
+mean_syllables_per_word,0.02565385,0.014124,0.16875
+mean_word_length,0.0157211,0.01063,0.109733
+word_entropy,0.01302087,0.0081715,0.099898
+digit_token_ratio,0.00084772,0.0,0.05291
+char_entropy,0.01193036,0.0099985,0.052171
+uppercase_ratio,0.00460981,0.001563,0.04922
+simpson_diversity,0.00217077,0.0009505,0.014133

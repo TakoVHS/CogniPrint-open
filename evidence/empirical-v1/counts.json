@@ -1,0 +1,18 @@
+{
+  "snapshot_id": "empirical-v1",
+  "campaign_count": 5,
+  "comparison_row_count": 41,
+  "campaigns": {
+    "total": 5,
+    "description": "controlled perturbation campaigns summarized in the current evidence package"
+  },
+  "comparisons": {
+    "total_rows": 41,
+    "description": "baseline-versus-variant comparison rows in the current evidence package"
+  },
+  "campaign_004": {
+    "series_count": 1,
+    "comparison_row_count": 11,
+    "description": "latest controlled perturbation campaign included in this public snapshot"
+  }
+}

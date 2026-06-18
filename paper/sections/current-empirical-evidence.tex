@@ -1,0 +1,26 @@
+\section{Current Empirical Evidence Package}
+\label{sec:current-empirical-evidence}
+
+The current CogniPrint repository contains a bounded empirical evidence package intended for methodological review and manuscript development. This section summarizes the available artifacts in a descriptive manner. It should not be read as a completed inferential validation programme.
+
+At the current snapshot, project metadata records five controlled perturbation campaigns and forty-one comparison rows, with Campaign~004 contributing eleven comparison rows. These counts must remain synchronized with machine-readable manifests before publication-facing use.
+
+The evidence package is organized around controlled transformations of input text samples and the comparison of the resulting cognitive fingerprints in profile space. The central empirical objects are feature vectors derived from documented preprocessing and feature-map rules. The current comparison outputs are descriptive similarity, distance, and profile-change summaries.
+
+The purpose of the empirical layer is to support three narrow claims. First, the current implementation can compute reproducible profile vectors for documented text samples under fixed configuration. Second, controlled perturbations produce measurable changes in profile-space summaries. Third, the existing artifacts provide a reviewable basis for designing stronger validation procedures.
+
+The current empirical layer does not establish a definitive classification rule. It does not justify conclusions about who wrote a text, text provenance, or legal status. The evidence remains descriptive, corpus-bound, and dependent on the selected feature map, preprocessing rules, and perturbation protocol.
+
+\subsection{Perturbation campaigns}
+
+Each campaign should be documented by campaign identifier, input set, perturbation protocol, feature-map version, comparison metrics, and output manifest. Where available, perturbation types should be reported from repository manifests rather than rewritten manually in the manuscript.
+
+\subsection{Metrics}
+
+Current metrics should be reported as descriptive profile summaries. In particular, similarity and distance values should be interpreted as observed measures within the current experimental design. They should not be interpreted as universal performance estimates.
+
+\subsection{Planned inferential extension}
+
+The next empirical stage should introduce pre-declared statistical procedures. At minimum, this should include bootstrap confidence intervals for similarity and distance summaries, permutation-style contrasts between perturbation groups, effect-size reporting, sensitivity analysis across feature and normalization choices, and ablation studies for major feature groups.
+
+These procedures should be added only after the evidence schema is stable enough to avoid post-hoc metric selection. Stronger claims should remain deferred until these outputs are generated, reviewed, and reproduced.

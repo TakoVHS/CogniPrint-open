@@ -1,0 +1,12 @@
+axis,row_count,language_count,source_class_count
+compressed_version,20,5,3
+formalized_style,20,5,3
+informalized_style,20,5,3
+punctuation_cleanup,20,5,3
+punctuation_strip,20,5,3
+sentence_order_rotate,20,5,3
+sentence_split_merge,20,5,3
+token_pair_swap,20,5,3
+token_stride_drop,20,5,3
+token_stride_duplicate,20,5,3
+word_order_shift,20,5,3

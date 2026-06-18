@@ -1,0 +1,8 @@
+{
+  "generated_variant_texts_published": false,
+  "guardrail": "This layer supplies an independent holdout source family but remains descriptive until external review is present.",
+  "raw_private_inputs_included": false,
+  "snapshot_id": "independent-holdout-v1",
+  "source_metadata": "datasets/independent-holdout-v1/metadata/sources.csv",
+  "status": "descriptive independent holdout validation layer"
+}

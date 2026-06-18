@@ -1,0 +1,9 @@
+{
+  "comparison_row_count": 220,
+  "guardrail": "This layer addresses controlled-row scale for descriptive manuscript support. It does not turn CogniPrint into a completed empirical study or inference system.",
+  "raw_generated_texts_published": false,
+  "raw_private_inputs_included": false,
+  "snapshot_id": "empirical-growth-v1",
+  "source_registry": "datasets/public-benchmark-v1.1/metadata/sample-plan-template.csv",
+  "status": "public controlled empirical growth layer"
+}

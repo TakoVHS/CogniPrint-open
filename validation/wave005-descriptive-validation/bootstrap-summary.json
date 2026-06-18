@@ -1,0 +1,26 @@
+{
+  "cosine_similarity": {
+    "confidence": 0.95,
+    "count": 41,
+    "lower": 0.986616,
+    "mean": 0.990429,
+    "resamples": 2000,
+    "upper": 0.993815
+  },
+  "euclidean_distance": {
+    "confidence": 0.95,
+    "count": 41,
+    "lower": 2.001161,
+    "mean": 2.610789,
+    "resamples": 2000,
+    "upper": 3.239071
+  },
+  "manhattan_distance": {
+    "confidence": 0.95,
+    "count": 41,
+    "lower": 2.706983,
+    "mean": 3.444352,
+    "resamples": 2000,
+    "upper": 4.197938
+  }
+}

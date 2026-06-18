@@ -1,0 +1,387 @@
+[
+  {
+    "axis": "compressed_version",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 0.992468,
+      "median": 0.996459,
+      "min": 0.94479
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 5.588342,
+      "mean": 8.084026,
+      "resamples": 2000,
+      "upper": 10.808428
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 22.026277,
+      "mean": 8.084026,
+      "median": 6.528845,
+      "min": 0.0
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 24.276387,
+      "mean": 9.261325,
+      "median": 7.5551,
+      "min": 0.0
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "formalized_style",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 0.999999,
+      "mean": 0.999575,
+      "median": 0.999858,
+      "min": 0.995596
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 1.171067,
+      "mean": 1.659729,
+      "resamples": 2000,
+      "upper": 2.297088
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 6.006751,
+      "mean": 1.659729,
+      "median": 2.002371,
+      "min": 0.081922
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 6.640713,
+      "mean": 2.128132,
+      "median": 2.197478,
+      "min": 0.116846
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "informalized_style",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 0.999994,
+      "mean": 0.993788,
+      "median": 0.999786,
+      "min": 0.92405
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 2.420409,
+      "mean": 6.093491,
+      "resamples": 2000,
+      "upper": 10.766134
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 40.506157,
+      "mean": 6.093491,
+      "median": 2.011259,
+      "min": 0.530261
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 42.06285,
+      "mean": 6.810159,
+      "median": 2.415815,
+      "min": 0.862198
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "punctuation_cleanup",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 0.986985,
+      "median": 0.999999,
+      "min": 0.837681
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.72975,
+      "mean": 4.116498,
+      "resamples": 2000,
+      "upper": 8.633777
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 32.8001,
+      "mean": 4.116498,
+      "median": 0.037047,
+      "min": 0.014756
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 32.914041,
+      "mean": 4.141262,
+      "median": 0.052838,
+      "min": 0.020802
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "punctuation_strip",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 0.968972,
+      "median": 0.994152,
+      "min": 0.837335
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 6.741566,
+      "mean": 12.409194,
+      "resamples": 2000,
+      "upper": 18.28251
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 42.66669,
+      "mean": 12.409194,
+      "median": 7.051475,
+      "min": 0.034158
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 42.728867,
+      "mean": 12.496352,
+      "median": 7.115354,
+      "min": 0.048306
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "sentence_order_rotate",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 1.0,
+      "median": 1.0,
+      "min": 1.0
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.001198,
+      "mean": 0.002191,
+      "resamples": 2000,
+      "upper": 0.003186
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 0.006116,
+      "mean": 0.002191,
+      "median": 0.001477,
+      "min": 0.0
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 0.006116,
+      "mean": 0.002191,
+      "median": 0.001477,
+      "min": 0.0
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "sentence_split_merge",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 0.997338,
+      "mean": 0.902858,
+      "median": 0.938313,
+      "min": 0.652922
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 13.236508,
+      "mean": 19.367179,
+      "resamples": 2000,
+      "upper": 25.558583
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 48.857143,
+      "mean": 19.367179,
+      "median": 14.266666,
+      "min": 1.351558
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 48.857143,
+      "mean": 19.518532,
+      "median": 14.266666,
+      "min": 1.865401
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "token_pair_swap",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 0.998771,
+      "median": 1.0,
+      "min": 0.986569
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.004539,
+      "mean": 1.687674,
+      "resamples": 2000,
+      "upper": 4.670558
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 26.0,
+      "mean": 1.687674,
+      "median": 0.004695,
+      "min": 0.002946
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 26.003044,
+      "mean": 1.688033,
+      "median": 0.004695,
+      "min": 0.002946
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "token_stride_drop",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 0.999935,
+      "mean": 0.998851,
+      "median": 0.999644,
+      "min": 0.987449
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 2.309778,
+      "mean": 3.028786,
+      "resamples": 2000,
+      "upper": 3.701865
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 6.004436,
+      "mean": 3.028786,
+      "median": 2.758539,
+      "min": 0.771241
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 6.473023,
+      "mean": 3.441371,
+      "median": 3.170818,
+      "min": 1.123466
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "token_stride_duplicate",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 0.999967,
+      "mean": 0.998338,
+      "median": 0.999836,
+      "min": 0.989012
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 1.765679,
+      "mean": 4.250989,
+      "resamples": 2000,
+      "upper": 7.608728
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 28.000726,
+      "mean": 4.250989,
+      "median": 2.008821,
+      "min": 0.37915
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 28.432716,
+      "mean": 4.736964,
+      "median": 2.437377,
+      "min": 0.700035
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  },
+  {
+    "axis": "word_order_shift",
+    "cosine_similarity": {
+      "count": 20,
+      "max": 1.0,
+      "mean": 0.984057,
+      "median": 0.999622,
+      "min": 0.847367
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 5.231071,
+      "mean": 9.852644,
+      "resamples": 2000,
+      "upper": 14.758488
+    },
+    "euclidean_distance": {
+      "count": 20,
+      "max": 29.801674,
+      "mean": 9.852644,
+      "median": 6.762625,
+      "min": 0.0
+    },
+    "language_count": 5,
+    "manhattan_distance": {
+      "count": 20,
+      "max": 30.367929,
+      "mean": 10.088817,
+      "median": 7.600801,
+      "min": 0.0
+    },
+    "row_count": 20,
+    "source_class_count": 3
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "snapshot_id": "inferential-v1-permutation-spec-template",
+  "status": "template_only",
+  "readiness_boundary": "descriptive_only",
+  "metric_family": [],
+  "random_seed": null,
+  "resamples": null,
+  "alpha": 0.05,
+  "multiple_comparison_correction": [
+    "Holm-Bonferroni",
+    "Benjamini-Hochberg"
+  ],
+  "predeclared_contrasts": [
+    {
+      "contrast_id": "template_contrast_001",
+      "left_group": null,
+      "right_group": null,
+      "metric": null,
+      "test_statistic": "absolute_mean_difference",
+      "effect_sizes": [
+        "median_difference",
+        "cliffs_delta",
+        "hedges_g_when_defensible"
+      ],
+      "rationale": null
+    }
+  ],
+  "reporting_rules": [
+    "Report all predeclared contrasts.",
+    "Report p-values alongside effect sizes.",
+    "Use finite-resample p-value floors when no permutation draw exceeds the observed statistic.",
+    "Do not promote unstable or small-sample results as robust."
+  ]
+}

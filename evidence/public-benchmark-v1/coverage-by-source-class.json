@@ -1,0 +1,17 @@
+{
+  "row_count": 3,
+  "rows": [
+    {
+      "count": 1,
+      "source_class": "public-domain government text"
+    },
+    {
+      "count": 4,
+      "source_class": "public-domain literary text"
+    },
+    {
+      "count": 1,
+      "source_class": "public-domain political prose"
+    }
+  ]
+}

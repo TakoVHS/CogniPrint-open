@@ -1,0 +1,9 @@
+{
+  "baseline_comparison": "validation/conventional-stylometry-baseline-v1",
+  "decision": "descriptive_only",
+  "depends_on": "validation/wave005-descriptive-validation",
+  "guardrail": "v1.2 adds correction and one baseline comparison, but it does not resolve small empirical row counts.",
+  "multiple_comparison_correction": "validation/statistical-validation-v1.2/multiple-comparison-correction.json",
+  "snapshot_id": "statistical-validation-v1.2",
+  "status": "descriptive correction and baseline-comparison layer"
+}

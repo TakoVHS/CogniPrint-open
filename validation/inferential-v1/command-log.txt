@@ -1,0 +1,14 @@
+# inferential-v1 command log
+
+generated_at_utc: 2026-05-12T01:15:03.832998+00:00
+command: PYTHONPATH=. .venv/bin/python scripts/generate_inferential_v1.py
+python: 3.11.15
+platform: Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.35
+input_manifest: inferential-v1-input-freeze-20260512
+permutation_spec: inferential-v1-permutation-spec-20260512
+readiness_boundary: descriptive_only
+
+row_counts:
+- independent_holdout_rows: 50
+- local_campaign_rows: 41
+- public_growth_rows: 220

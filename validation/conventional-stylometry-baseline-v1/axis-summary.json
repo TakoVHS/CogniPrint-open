@@ -1,0 +1,86 @@
+[
+  {
+    "axis": "compressed_version",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.148534,
+      "mean": 0.201825,
+      "resamples": 2000,
+      "upper": 0.263372
+    },
+    "mean_char_ngram_cosine_distance": 0.201825,
+    "mean_char_ngram_cosine_similarity": 0.798175,
+    "row_count": 20
+  },
+  {
+    "axis": "formalized_style",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.057462,
+      "mean": 0.118872,
+      "resamples": 2000,
+      "upper": 0.193768
+    },
+    "mean_char_ngram_cosine_distance": 0.118872,
+    "mean_char_ngram_cosine_similarity": 0.881128,
+    "row_count": 20
+  },
+  {
+    "axis": "informalized_style",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.129407,
+      "mean": 0.218097,
+      "resamples": 2000,
+      "upper": 0.310402
+    },
+    "mean_char_ngram_cosine_distance": 0.218097,
+    "mean_char_ngram_cosine_similarity": 0.781903,
+    "row_count": 20
+  },
+  {
+    "axis": "punctuation_cleanup",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.053533,
+      "mean": 0.067524,
+      "resamples": 2000,
+      "upper": 0.084424
+    },
+    "mean_char_ngram_cosine_distance": 0.067524,
+    "mean_char_ngram_cosine_similarity": 0.932476,
+    "row_count": 20
+  },
+  {
+    "axis": "sentence_split_merge",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.079296,
+      "mean": 0.110027,
+      "resamples": 2000,
+      "upper": 0.154186
+    },
+    "mean_char_ngram_cosine_distance": 0.110027,
+    "mean_char_ngram_cosine_similarity": 0.889973,
+    "row_count": 20
+  },
+  {
+    "axis": "word_order_shift",
+    "distance_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.062515,
+      "mean": 0.103308,
+      "resamples": 2000,
+      "upper": 0.153315
+    },
+    "mean_char_ngram_cosine_distance": 0.103308,
+    "mean_char_ngram_cosine_similarity": 0.896692,
+    "row_count": 20
+  }
+]

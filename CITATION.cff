@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use CogniPrint in your research, please cite it as follows."
+title: "CogniPrint: A mathematical framework for cognitive fingerprint analysis of text"
+authors:
+  - family-names: "Adriashkin"
+    given-names: "Roman"
+    orcid: "https://orcid.org/0009-0009-6337-1806"
+    affiliation: "CogniPrint Research Initiative"
+version: "0.1.2"
+date-released: 2026-06-12
+url: "https://cogniprint.org"
+repository-code: "https://github.com/TakoVHS/CogniPrint"
+license: MIT
+abstract: "CogniPrint is a research framework for constructing compact statistical profiles of text and studying profile similarity and stability under controlled perturbations. Its current scientific status is descriptive_only."
+keywords:
+  - "statistical text analysis"
+  - "cognitive fingerprint"
+  - "reproducible research"
+  - "controlled perturbations"
+  - "research software"

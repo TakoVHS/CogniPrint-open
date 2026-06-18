@@ -1,0 +1,154 @@
+{
+  "metrics": {
+    "cosine_similarity": {
+      "direction": "similarity",
+      "grids": [
+        {
+          "benchmark_counts": {
+            "larger": 41,
+            "low": 73,
+            "moderate": 6
+          },
+          "campaign_counts": {
+            "larger": 15,
+            "low": 20,
+            "moderate": 6
+          },
+          "low_min": 0.997,
+          "moderate_min": 0.992,
+          "name": "strict"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 31,
+            "low": 77,
+            "moderate": 12
+          },
+          "campaign_counts": {
+            "larger": 12,
+            "low": 24,
+            "moderate": 5
+          },
+          "low_min": 0.995,
+          "moderate_min": 0.985,
+          "name": "current"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 24,
+            "low": 82,
+            "moderate": 14
+          },
+          "campaign_counts": {
+            "larger": 6,
+            "low": 26,
+            "moderate": 9
+          },
+          "low_min": 0.99,
+          "moderate_min": 0.975,
+          "name": "relaxed"
+        }
+      ]
+    },
+    "euclidean_distance": {
+      "direction": "distance",
+      "grids": [
+        {
+          "benchmark_counts": {
+            "larger": 76,
+            "low": 25,
+            "moderate": 19
+          },
+          "campaign_counts": {
+            "larger": 23,
+            "low": 9,
+            "moderate": 9
+          },
+          "low_max": 0.5,
+          "moderate_max": 2.0,
+          "name": "strict"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 54,
+            "low": 34,
+            "moderate": 32
+          },
+          "campaign_counts": {
+            "larger": 16,
+            "low": 12,
+            "moderate": 13
+          },
+          "low_max": 1.0,
+          "moderate_max": 4.0,
+          "name": "current"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 52,
+            "low": 42,
+            "moderate": 26
+          },
+          "campaign_counts": {
+            "larger": 5,
+            "low": 17,
+            "moderate": 19
+          },
+          "low_max": 1.5,
+          "moderate_max": 5.0,
+          "name": "relaxed"
+        }
+      ]
+    },
+    "manhattan_distance": {
+      "direction": "distance",
+      "grids": [
+        {
+          "benchmark_counts": {
+            "larger": 58,
+            "low": 31,
+            "moderate": 31
+          },
+          "campaign_counts": {
+            "larger": 21,
+            "low": 10,
+            "moderate": 10
+          },
+          "low_max": 1.0,
+          "moderate_max": 3.5,
+          "name": "strict"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 51,
+            "low": 42,
+            "moderate": 27
+          },
+          "campaign_counts": {
+            "larger": 9,
+            "low": 15,
+            "moderate": 17
+          },
+          "low_max": 2.0,
+          "moderate_max": 5.5,
+          "name": "current"
+        },
+        {
+          "benchmark_counts": {
+            "larger": 44,
+            "low": 57,
+            "moderate": 19
+          },
+          "campaign_counts": {
+            "larger": 1,
+            "low": 18,
+            "moderate": 22
+          },
+          "low_max": 3.0,
+          "moderate_max": 7.5,
+          "name": "relaxed"
+        }
+      ]
+    }
+  }
+}

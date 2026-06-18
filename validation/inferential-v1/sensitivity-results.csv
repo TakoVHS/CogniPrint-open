@@ -1,0 +1,13 @@
+sensitivity_dimension,metric,axis,left_count,right_count,left_mean,right_mean,mean_difference_left_minus_right,observed_abs_mean_difference,raw_p_value,reported_p_value,exceedance_count,permutation_resamples,permutation_seed,reporting_note,holm_adjusted_p_value,bh_fdr_q_value,holm_flag_at_0_05,bh_fdr_flag_at_0_05
+metric_choice,cosine_similarity,compressed_version,3,20,0.99418,0.992468,0.001712,0.001712,0.8074,0.8074,4037,5000,2729,reported p-value uses finite-resample floor of 1/resamples,1.0,0.8074,False,False
+metric_choice,cosine_similarity,formalized_style,3,20,0.999374,0.999575,-0.000202,0.000202,0.7814,0.7814,3907,5000,2730,reported p-value uses finite-resample floor of 1/resamples,1.0,0.8074,False,False
+metric_choice,cosine_similarity,informalized_style,3,20,0.99785,0.993788,0.004063,0.004063,0.6884,0.6884,3442,5000,2731,reported p-value uses finite-resample floor of 1/resamples,1.0,0.8074,False,False
+metric_choice,cosine_similarity,punctuation_cleanup,3,20,0.996644,0.986985,0.009659,0.009659,0.6934,0.6934,3467,5000,2732,reported p-value uses finite-resample floor of 1/resamples,1.0,0.8074,False,False
+metric_choice,cosine_similarity,sentence_split_merge,3,20,0.984256,0.902858,0.081398,0.081398,0.1186,0.1186,593,5000,2733,reported p-value uses finite-resample floor of 1/resamples,0.7116,0.7116,False,False
+metric_choice,cosine_similarity,word_order_shift,3,20,0.999354,0.984057,0.015297,0.015297,0.3054,0.3054,1527,5000,2734,reported p-value uses finite-resample floor of 1/resamples,1.0,0.8074,False,False
+metric_choice,manhattan_distance,compressed_version,3,20,4.228894,9.261325,-5.032431,5.032431,0.2046,0.2046,1023,5000,2829,reported p-value uses finite-resample floor of 1/resamples,1.0,0.4124,False,False
+metric_choice,manhattan_distance,formalized_style,3,20,1.776839,2.128132,-0.351293,0.351293,0.6706,0.6706,3353,5000,2830,reported p-value uses finite-resample floor of 1/resamples,1.0,0.80472,False,False
+metric_choice,manhattan_distance,informalized_style,3,20,2.455715,6.810159,-4.354444,4.354444,0.5438,0.5438,2719,5000,2831,reported p-value uses finite-resample floor of 1/resamples,1.0,0.80472,False,False
+metric_choice,manhattan_distance,punctuation_cleanup,3,20,3.712973,4.141262,-0.428289,0.428289,0.9816,0.9816,4908,5000,2832,reported p-value uses finite-resample floor of 1/resamples,1.0,0.9816,False,False
+metric_choice,manhattan_distance,sentence_split_merge,3,20,3.739148,19.518532,-15.779384,15.779384,0.067,0.067,335,5000,2833,reported p-value uses finite-resample floor of 1/resamples,0.402,0.402,False,False
+metric_choice,manhattan_distance,word_order_shift,3,20,1.436529,10.088817,-8.652288,8.652288,0.2062,0.2062,1031,5000,2834,reported p-value uses finite-resample floor of 1/resamples,1.0,0.4124,False,False

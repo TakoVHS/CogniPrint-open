@@ -1,0 +1,30 @@
+{
+  "project": "CogniPrint",
+  "snapshot_id": "empirical-v1",
+  "status": "working empirical evidence package supporting a follow-up manuscript",
+  "public_snapshot": true,
+  "raw_inputs_included": false,
+  "created_from_local_workspace": true,
+  "campaign_count": 5,
+  "comparison_row_count": 41,
+  "campaign_004": {
+    "series_count": 1,
+    "comparison_row_count": 11
+  },
+  "included_public_files": [
+    "README.md",
+    "manifest.json",
+    "counts.json",
+    "methods-summary.md",
+    "results-summary.md",
+    "limitations-summary.md",
+    "evidence-table.md",
+    "provenance-summary.md"
+  ],
+  "interpretation_limits": [
+    "not a publication-ready empirical paper",
+    "not a source-attribution system",
+    "not a forensic instrument",
+    "not a general-purpose decision system"
+  ]
+}

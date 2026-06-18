@@ -1,0 +1,7 @@
+axis,row_count,group_count,mean_cosine_similarity,mean_euclidean_distance,mean_manhattan_distance,cosine_bootstrap_lower,cosine_bootstrap_upper,euclidean_bootstrap_lower,euclidean_bootstrap_upper
+compressed_version,9,1,0.990591,7.459324,8.363535,0.978366,0.999094,4.914874,9.909366
+formalized_style,9,1,0.999214,1.910191,2.534902,0.998219,0.999837,0.885351,3.114169
+informalized_style,9,1,0.986353,11.762124,12.923603,0.96954,0.997442,4.708025,20.253941
+punctuation_cleanup,9,1,0.976852,8.223324,8.254065,0.940781,0.999999,0.037001,16.95253
+sentence_split_merge,9,1,0.966768,18.392628,18.72797,0.94963,0.981631,9.637832,27.626389
+word_order_shift,9,1,0.980594,9.728097,10.252926,0.946538,0.999745,3.062847,17.524969

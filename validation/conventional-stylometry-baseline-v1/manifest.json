@@ -1,0 +1,12 @@
+{
+  "benchmark_baseline_count": 20,
+  "benchmark_variant_count": 120,
+  "guardrail": "This is a comparison baseline, not a replacement for external validation.",
+  "method": "character n-gram TF cosine similarity",
+  "ngram_range": [
+    3,
+    5
+  ],
+  "snapshot_id": "conventional-stylometry-baseline-v1",
+  "status": "deterministic character-ngram stylometry baseline comparison"
+}

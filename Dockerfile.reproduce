@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY pyproject.toml README.md LICENSE CITATION.cff ./
+COPY src ./src
+COPY scripts ./scripts
+COPY datasets ./datasets
+COPY evidence ./evidence
+COPY validation ./validation
+COPY tests ./tests
+
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -e .
+
+CMD ["python", "-m", "unittest", "tests/test_public_release_export.py", "-v"]

@@ -1,0 +1,50 @@
+{
+  "author_count": 90,
+  "corpus_source_counts": {
+    "pan15_author_verification": 173
+  },
+  "data_mode": "real_public_pan15",
+  "external_review_gate_satisfied": false,
+  "fingerprint_version": "cognitive-fingerprint-v2.0",
+  "genre_count": 2,
+  "guardrail": "PAN15 rows are author-verification problem documents. Dutch and Spanish problem prefixes are used as cross-genre verification stress tests. The output is a descriptive contrast, not a source or author conclusion.",
+  "inter_author_control_count": 59,
+  "inter_author_control_euclidean_summary": {
+    "count": 59,
+    "max": 0.833806,
+    "mean": 0.467665,
+    "median": 0.459393,
+    "min": 0.154969
+  },
+  "inter_author_cross_genre_control_count": 59,
+  "inter_author_same_genre_count": 0,
+  "inter_author_same_genre_euclidean_summary": {
+    "count": 0,
+    "max": null,
+    "mean": null,
+    "median": null,
+    "min": null
+  },
+  "permutation_mean_gap": {
+    "control_count": 59,
+    "observed_gap_control_minus_within": 0.070395,
+    "p_value_greater_plus_one": 0.003996,
+    "permutations": 1000,
+    "within_count": 41
+  },
+  "readiness_boundary": "descriptive_only",
+  "snapshot_id": "cross-genre-v1",
+  "source_license_notes": [
+    "Zenodo open dataset record; verify reuse terms before redistribution"
+  ],
+  "status": "PAN15-derived public corpus diagnostic",
+  "text_count": 173,
+  "within_author_cross_genre_count": 41,
+  "within_author_cross_genre_euclidean_summary": {
+    "count": 41,
+    "max": 0.641697,
+    "mean": 0.39727,
+    "median": 0.392394,
+    "min": 0.141777
+  }
+}

@@ -1,0 +1,85 @@
+source,axis,metric,count,mean,median,bootstrap_confidence,bootstrap_resamples,bootstrap_seed,bootstrap_lower,bootstrap_upper,small_sample_note
+independent_holdout,holdout_punctuation_strip,cosine_similarity,10,0.680818,0.826051,0.95,2000,1729,0.512892,0.833138,
+independent_holdout,holdout_punctuation_strip,euclidean_distance,10,348.092654,352.138895,0.95,2000,1730,324.861462,365.48759,
+independent_holdout,holdout_punctuation_strip,manhattan_distance,10,348.675521,352.280945,0.95,2000,1731,325.983969,365.661811,
+independent_holdout,holdout_sentence_rotate,cosine_similarity,10,0.99985,0.999824,0.95,2000,1732,0.999778,0.999926,
+independent_holdout,holdout_sentence_rotate,euclidean_distance,10,1.165923,0.662043,0.95,2000,1733,0.309035,2.583543,
+independent_holdout,holdout_sentence_rotate,manhattan_distance,10,1.172481,0.664766,0.95,2000,1734,0.325767,2.567435,
+independent_holdout,holdout_token_pair_swap,cosine_similarity,10,1.0,1.0,0.95,2000,1735,0.999999,1.0,
+independent_holdout,holdout_token_pair_swap,euclidean_distance,10,0.014416,0.010273,0.95,2000,1736,0.008718,0.021182,
+independent_holdout,holdout_token_pair_swap,manhattan_distance,10,0.014416,0.010273,0.95,2000,1737,0.008859,0.021429,
+independent_holdout,holdout_token_stride_drop,cosine_similarity,10,0.999713,0.99975,0.95,2000,1738,0.999568,0.999854,
+independent_holdout,holdout_token_stride_drop,euclidean_distance,10,0.758839,0.502234,0.95,2000,1739,0.426298,1.102994,
+independent_holdout,holdout_token_stride_drop,manhattan_distance,10,1.067878,0.877854,0.95,2000,1740,0.706956,1.447011,
+independent_holdout,holdout_token_stride_duplicate,cosine_similarity,10,0.999395,0.99986,0.95,2000,1741,0.998847,0.999868,
+independent_holdout,holdout_token_stride_duplicate,euclidean_distance,10,1.104154,0.635402,0.95,2000,1742,0.433406,2.038027,
+independent_holdout,holdout_token_stride_duplicate,manhattan_distance,10,1.416969,0.973181,0.95,2000,1743,0.77528,2.376288,
+local_campaign,compressed_version,cosine_similarity,3,0.99418,0.995482,0.95,2000,1744,0.989334,0.997725,small local campaign n
+local_campaign,compressed_version,euclidean_distance,3,3.522476,3.517453,0.95,2000,1745,1.026511,6.023463,small local campaign n
+local_campaign,compressed_version,manhattan_distance,3,4.228894,4.164131,0.95,2000,1746,1.436947,7.085603,small local campaign n
+local_campaign,expanded_version,cosine_similarity,3,0.990458,0.995587,0.95,2000,1747,0.977413,0.998375,small local campaign n
+local_campaign,expanded_version,euclidean_distance,3,4.681358,4.062706,0.95,2000,1748,2.759222,7.222145,small local campaign n
+local_campaign,expanded_version,manhattan_distance,3,5.619359,5.308497,0.95,2000,1749,3.21673,8.33285,small local campaign n
+local_campaign,formalized_style,cosine_similarity,3,0.999374,0.999925,0.95,2000,1750,0.998232,0.999964,small local campaign n
+local_campaign,formalized_style,euclidean_distance,3,1.038277,1.08721,0.95,2000,1751,0.569884,1.457738,small local campaign n
+local_campaign,formalized_style,manhattan_distance,3,1.776839,1.726146,0.95,2000,1752,0.882586,2.721785,small local campaign n
+local_campaign,informalized_style,cosine_similarity,3,0.99785,0.999537,0.95,2000,1753,0.994133,0.999881,small local campaign n
+local_campaign,informalized_style,euclidean_distance,3,1.527384,1.378711,0.95,2000,1754,0.904153,2.299288,small local campaign n
+local_campaign,informalized_style,manhattan_distance,3,2.455715,2.416034,0.95,2000,1755,1.489864,3.461247,small local campaign n
+local_campaign,light_edit,cosine_similarity,7,0.983409,0.976804,0.95,2000,1756,0.976804,0.993308,small local campaign n
+local_campaign,light_edit,euclidean_distance,7,2.990434,4.063923,0.95,2000,1757,1.895569,4.063923,small local campaign n
+local_campaign,light_edit,manhattan_distance,7,3.962185,5.352024,0.95,2000,1758,2.567216,5.352024,small local campaign n
+local_campaign,minor_lexical_substitution,cosine_similarity,3,0.999968,0.999969,0.95,2000,1759,0.999936,0.999999,small local campaign n
+local_campaign,minor_lexical_substitution,euclidean_distance,3,0.144192,0.12629,0.95,2000,1760,0.033315,0.272972,small local campaign n
+local_campaign,minor_lexical_substitution,manhattan_distance,3,0.192468,0.150988,0.95,2000,1761,0.049694,0.376722,small local campaign n
+local_campaign,punctuation_cleanup,cosine_similarity,3,0.996644,0.996435,0.95,2000,1762,0.993499,0.999998,small local campaign n
+local_campaign,punctuation_cleanup,euclidean_distance,3,3.707315,5.1,0.95,2000,1763,0.021945,6.000001,small local campaign n
+local_campaign,punctuation_cleanup,manhattan_distance,3,3.712973,5.101716,0.95,2000,1764,0.030983,6.006219,small local campaign n
+local_campaign,sentence_split_merge,cosine_similarity,3,0.984256,0.988477,0.95,2000,1765,0.964585,0.995963,small local campaign n
+local_campaign,sentence_split_merge,euclidean_distance,3,3.447801,3.506154,0.95,2000,1766,1.007401,5.829847,small local campaign n
+local_campaign,sentence_split_merge,manhattan_distance,3,3.739148,3.906483,0.95,2000,1767,1.259582,6.051378,small local campaign n
+local_campaign,strong_rewrite,cosine_similarity,4,0.9708,0.9708,0.95,2000,1768,0.9708,0.9708,small local campaign n
+local_campaign,strong_rewrite,euclidean_distance,4,4.191884,4.191884,0.95,2000,1769,4.191884,4.191884,small local campaign n
+local_campaign,strong_rewrite,manhattan_distance,4,6.25405,6.25405,0.95,2000,1770,6.25405,6.25405,small local campaign n
+local_campaign,strong_rewrite_same_claim,cosine_similarity,3,0.989811,0.999872,0.95,2000,1771,0.969587,0.999974,small local campaign n
+local_campaign,strong_rewrite_same_claim,euclidean_distance,3,1.738515,0.776791,0.95,2000,1772,0.225101,4.213654,small local campaign n
+local_campaign,strong_rewrite_same_claim,manhattan_distance,3,2.612161,1.216146,0.95,2000,1773,0.373686,6.24665,small local campaign n
+local_campaign,translated_or_crosslingual,cosine_similarity,3,0.994949,0.995964,0.95,2000,1774,0.989858,0.999026,small local campaign n
+local_campaign,translated_or_crosslingual,euclidean_distance,3,2.198266,2.397254,0.95,2000,1775,1.685354,2.512189,small local campaign n
+local_campaign,translated_or_crosslingual,manhattan_distance,3,3.71489,4.184792,0.95,2000,1776,2.699968,4.25991,small local campaign n
+local_campaign,word_order_shift,cosine_similarity,3,0.999354,0.999995,0.95,2000,1777,0.998069,0.999997,small local campaign n
+local_campaign,word_order_shift,euclidean_distance,3,1.108345,0.068691,0.95,2000,1778,0.027907,3.228437,small local campaign n
+local_campaign,word_order_shift,manhattan_distance,3,1.436529,0.139801,0.95,2000,1779,0.048224,4.121561,small local campaign n
+public_growth,compressed_version,cosine_similarity,20,0.992468,0.996459,0.95,2000,1780,0.986074,0.99678,
+public_growth,compressed_version,euclidean_distance,20,8.084026,6.528845,0.95,2000,1781,5.505536,10.780644,
+public_growth,compressed_version,manhattan_distance,20,9.261325,7.5551,0.95,2000,1782,6.59038,12.041543,
+public_growth,formalized_style,cosine_similarity,20,0.999575,0.999858,0.95,2000,1783,0.999118,0.999866,
+public_growth,formalized_style,euclidean_distance,20,1.659729,2.002371,0.95,2000,1784,1.188514,2.257146,
+public_growth,formalized_style,manhattan_distance,20,2.128132,2.197478,0.95,2000,1785,1.562444,2.819835,
+public_growth,informalized_style,cosine_similarity,20,0.993788,0.999786,0.95,2000,1786,0.985318,0.999147,
+public_growth,informalized_style,euclidean_distance,20,6.093491,2.011259,0.95,2000,1787,2.498448,10.897887,
+public_growth,informalized_style,manhattan_distance,20,6.810159,2.415815,0.95,2000,1788,3.033764,12.158408,
+public_growth,punctuation_cleanup,cosine_similarity,20,0.986985,0.999999,0.95,2000,1789,0.970169,0.999415,
+public_growth,punctuation_cleanup,euclidean_distance,20,4.116498,0.037047,0.95,2000,1790,0.432624,8.741419,
+public_growth,punctuation_cleanup,manhattan_distance,20,4.141262,0.052838,0.95,2000,1791,0.743299,8.776745,
+public_growth,punctuation_strip,cosine_similarity,20,0.968972,0.994152,0.95,2000,1792,0.944072,0.988449,
+public_growth,punctuation_strip,euclidean_distance,20,12.409194,7.051475,0.95,2000,1793,6.811759,18.242126,
+public_growth,punctuation_strip,manhattan_distance,20,12.496352,7.115354,0.95,2000,1794,6.752803,18.31829,
+public_growth,sentence_order_rotate,cosine_similarity,20,1.0,1.0,0.95,2000,1795,1.0,1.0,
+public_growth,sentence_order_rotate,euclidean_distance,20,0.002191,0.001477,0.95,2000,1796,0.001201,0.003206,
+public_growth,sentence_order_rotate,manhattan_distance,20,0.002191,0.001477,0.95,2000,1797,0.001193,0.003218,
+public_growth,sentence_split_merge,cosine_similarity,20,0.902858,0.938313,0.95,2000,1798,0.856995,0.942739,
+public_growth,sentence_split_merge,euclidean_distance,20,19.367179,14.266666,0.95,2000,1799,13.353291,26.621765,
+public_growth,sentence_split_merge,manhattan_distance,20,19.518532,14.266666,0.95,2000,1800,13.658411,25.858811,
+public_growth,token_pair_swap,cosine_similarity,20,0.998771,1.0,0.95,2000,1801,0.996871,1.0,
+public_growth,token_pair_swap,euclidean_distance,20,1.687674,0.004695,0.95,2000,1802,0.004472,4.67041,
+public_growth,token_pair_swap,manhattan_distance,20,1.688033,0.004695,0.95,2000,1803,0.004487,4.671087,
+public_growth,token_stride_drop,cosine_similarity,20,0.998851,0.999644,0.95,2000,1804,0.997601,0.99962,
+public_growth,token_stride_drop,euclidean_distance,20,3.028786,2.758539,0.95,2000,1805,2.306418,3.765356,
+public_growth,token_stride_drop,manhattan_distance,20,3.441371,3.170818,0.95,2000,1806,2.702815,4.157394,
+public_growth,token_stride_duplicate,cosine_similarity,20,0.998338,0.999836,0.95,2000,1807,0.996623,0.999643,
+public_growth,token_stride_duplicate,euclidean_distance,20,4.250989,2.008821,0.95,2000,1808,1.753699,7.89258,
+public_growth,token_stride_duplicate,manhattan_distance,20,4.736964,2.437377,0.95,2000,1809,2.243037,8.174337,
+public_growth,word_order_shift,cosine_similarity,20,0.984057,0.999622,0.95,2000,1810,0.965346,0.995097,
+public_growth,word_order_shift,euclidean_distance,20,9.852644,6.762625,0.95,2000,1811,5.35816,14.905336,
+public_growth,word_order_shift,manhattan_distance,20,10.088817,7.600801,0.95,2000,1812,5.890889,14.875347,

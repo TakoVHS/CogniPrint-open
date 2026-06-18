@@ -1,0 +1,239 @@
+{
+  "benchmark_campaign_bridge_shift": {
+    "interpretation": "Bridge movement is mixed: some axes align more closely after expansion, while some remain corpus-sensitive. This supports more benchmark work, not stronger claims.",
+    "mean_euclidean_abs_delta_shift": -1.383687,
+    "prior_closest_axis": "formalized_style",
+    "prior_mean_euclidean_abs_delta": 7.187348,
+    "prior_widest_axis": "sentence_split_merge",
+    "rows": [
+      {
+        "axis": "compressed_version",
+        "euclidean_abs_delta_shift": 0.624702,
+        "prior_alignment_band": "wider",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 3.936848,
+        "wave005_alignment_band": "wider",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 4.56155
+      },
+      {
+        "axis": "formalized_style",
+        "euclidean_abs_delta_shift": -0.250462,
+        "prior_alignment_band": "close",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 0.871914,
+        "wave005_alignment_band": "close",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 0.621452
+      },
+      {
+        "axis": "informalized_style",
+        "euclidean_abs_delta_shift": -5.668633,
+        "prior_alignment_band": "wider",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 10.23474,
+        "wave005_alignment_band": "wider",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 4.566107
+      },
+      {
+        "axis": "punctuation_cleanup",
+        "euclidean_abs_delta_shift": -4.106826,
+        "prior_alignment_band": "wider",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 4.516009,
+        "wave005_alignment_band": "close",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 0.409183
+      },
+      {
+        "axis": "sentence_split_merge",
+        "euclidean_abs_delta_shift": 0.974551,
+        "prior_alignment_band": "wider",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 14.944827,
+        "wave005_alignment_band": "wider",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 15.919378
+      },
+      {
+        "axis": "word_order_shift",
+        "euclidean_abs_delta_shift": 0.124547,
+        "prior_alignment_band": "wider",
+        "prior_benchmark_row_count": 9,
+        "prior_euclidean_abs_delta": 8.619752,
+        "wave005_alignment_band": "wider",
+        "wave005_benchmark_row_count": 20,
+        "wave005_euclidean_abs_delta": 8.744299
+      }
+    ],
+    "shared_axis_count": 6,
+    "wave005_closest_axis": "punctuation_cleanup",
+    "wave005_mean_euclidean_abs_delta": 5.803662,
+    "wave005_widest_axis": "sentence_split_merge"
+  },
+  "blocked_by": [
+    "empirical_rows_at_least_200",
+    "external_reviewer_input_still_needed",
+    "independent_external_benchmark_still_needed",
+    "multiple_comparison_correction_not_part_of_current_descriptive_layer"
+  ],
+  "cliffs_delta": 0.942308,
+  "counts": {
+    "benchmark_axis_count": 6,
+    "benchmark_baseline_count": 20,
+    "benchmark_language_count": 5,
+    "benchmark_source_class_count": 3,
+    "benchmark_variant_count": 120,
+    "campaign_axis_count": 12,
+    "empirical_campaign_count": 5,
+    "empirical_comparison_row_count": 41,
+    "shared_bridge_axis_count": 6,
+    "snapshot_id": "wave005-descriptive-validation"
+  },
+  "decision": "descriptive_only",
+  "generated_date": "2026-05-05",
+  "guardrail": "Wave-005 satisfies the minimum public benchmark size gate, but the validation decision remains descriptive_only because empirical rows, independence, and external-review gates are still insufficient.",
+  "hedges_g": 1.711265,
+  "inputs": {
+    "benchmark_samples": "datasets/public-benchmark-v1.1/metadata/sample-plan-template.csv",
+    "campaign_root": "workspace/campaigns",
+    "prior_validation_reference": "evidence/statistical-validation-v1",
+    "wave005_validation_dir": "validation/wave005-descriptive-validation"
+  },
+  "mean_difference": {
+    "group1_minus_group2": 0.018564,
+    "lower": 0.014595,
+    "upper": 0.022486
+  },
+  "overall_campaign_metrics": {
+    "cosine_similarity": {
+      "count": 41,
+      "max": 0.999999,
+      "mean": 0.990429,
+      "median": 0.996435,
+      "min": 0.964585
+    },
+    "euclidean_distance": {
+      "count": 41,
+      "max": 7.222145,
+      "mean": 2.610789,
+      "median": 2.512189,
+      "min": 0.021945
+    },
+    "manhattan_distance": {
+      "count": 41,
+      "max": 8.33285,
+      "mean": 3.444352,
+      "median": 3.906483,
+      "min": 0.030983
+    }
+  },
+  "permutation_p_value": 0.0005,
+  "preregistration": {
+    "file": "docs/pre-registration-wave005.md",
+    "locked_sha256": "e5dae7ffb97485f16b83ade1eed4e24ead1f4c5f24c78c8a573b8cd4af508d93",
+    "status": "hash_matches"
+  },
+  "primary_metric": {
+    "cliffs_delta": 0.942308,
+    "group1": {
+      "bootstrap_mean": {
+        "confidence": 0.95,
+        "count": 16,
+        "lower": 0.999433,
+        "mean": 0.999753,
+        "resamples": 2000,
+        "upper": 0.999974
+      },
+      "count": 16,
+      "mean": 0.999753,
+      "median": 0.999977,
+      "name": "light"
+    },
+    "group2": {
+      "bootstrap_mean": {
+        "confidence": 0.95,
+        "count": 39,
+        "lower": 0.977284,
+        "mean": 0.981189,
+        "resamples": 2000,
+        "upper": 0.985041
+      },
+      "count": 39,
+      "mean": 0.981189,
+      "median": 0.976804,
+      "name": "strong"
+    },
+    "guardrail": "Exploratory descriptive validation on the current aggregate study export. Treat wide intervals or near-zero effect sizes as signals to expand the benchmark rather than to strengthen claims.",
+    "hedges_g": 1.711265,
+    "interpretation": "The light-vs-strong tier difference is descriptive and depends on the current aggregate export. It is not a standalone proof of broad-domain behavior.",
+    "mean_difference": {
+      "group1_minus_group2": 0.018564,
+      "lower": 0.014595,
+      "upper": 0.022486
+    },
+    "metric": "cosine_similarity",
+    "permutation_p_value": 0.0005,
+    "permutation_p_value_note": "No permutation draw matched or exceeded the observed statistic. The numeric field uses the finite-resample reporting floor 1/resamples rather than reporting an exact zero.",
+    "permutation_p_value_raw": 0.0,
+    "source_csv": "workspace/exports/v1_validation.csv",
+    "tier_rule": "Derived by scripts/bootstrap_validation.py from variant labels and interpretation fields."
+  },
+  "random_baseline_shift": {
+    "interpretation": "The random reference distribution moved after benchmark expansion; this is expected and remains a descriptive composition-sensitivity signal.",
+    "metrics": {
+      "cosine_similarity": {
+        "delta": -0.007203,
+        "prior_draw_mean": 0.983761,
+        "prior_interval": {
+          "lower": 0.982711,
+          "upper": 0.98474
+        },
+        "wave005_draw_mean": 0.976558,
+        "wave005_interval": {
+          "lower": 0.975345,
+          "upper": 0.977703
+        }
+      },
+      "euclidean_distance": {
+        "delta": -1.033859,
+        "prior_draw_mean": 9.375026,
+        "prior_interval": {
+          "lower": 8.991032,
+          "upper": 9.75524
+        },
+        "wave005_draw_mean": 8.341167,
+        "wave005_interval": {
+          "lower": 8.120563,
+          "upper": 8.556909
+        }
+      },
+      "manhattan_distance": {
+        "delta": -1.200916,
+        "prior_draw_mean": 10.001168,
+        "prior_interval": {
+          "lower": 9.616019,
+          "upper": 10.379256
+        },
+        "wave005_draw_mean": 8.800252,
+        "wave005_interval": {
+          "lower": 8.577762,
+          "upper": 9.019777
+        }
+      }
+    },
+    "prior_pair_count_per_draw": 54,
+    "prior_total_pairs": 3456,
+    "wave005_pair_count_per_draw": 120,
+    "wave005_total_pairs": 7680
+  },
+  "release_gates": {
+    "benchmark_baselines_at_least_20": true,
+    "benchmark_variants_at_least_100": true,
+    "empirical_rows_at_least_200": false,
+    "shared_bridge_axes_present": true,
+    "statistical_readiness_remains_descriptive": true
+  },
+  "snapshot_id": "wave005-descriptive-validation"
+}

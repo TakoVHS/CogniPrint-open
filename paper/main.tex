@@ -1,0 +1,453 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\geometry{margin=1in}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+
+\title{Cognitive Fingerprints: A Mathematical Framework for Statistical Profiling of Text}
+\author{Adriashkin Roman\\\small ORCID: \href{https://orcid.org/0009-0009-6337-1806}{0009-0009-6337-1806}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We introduce a mathematical framework for representing text samples by compact finite-dimensional profiles, termed \emph{cognitive fingerprints}. The framework is based on a feature map from token sequences into a Euclidean space of empirical statistics. This representation supports quantitative comparison of text samples through profile distances and similarity measures, as well as perturbation-based questions about stability under bounded edits. The goal of the framework is not to provide definitive judgments about a text, but to establish a reproducible mathematical basis for profile construction, profile comparison, and empirical study of structure in collections of text samples. We formulate the basic setting, define the profile representation, record conservative stability statements under explicit modelling assumptions, and report initial descriptive diagnostics on public paraphrase and cross-genre corpora.
+\end{abstract}
+
+\section{Introduction}
+
+Quantitative study of text often requires a representation that is compact enough for analysis, yet expressive enough to preserve regularities of interest. A common mathematical strategy is to map structured objects into finite-dimensional feature spaces and then reason about geometry, distances, and perturbations in that space. In the case of text, such a representation provides a principled way to study regularity, variation, and similarity across samples without reducing the problem to a single scalar summary. The historical background for this viewpoint touches both information-theoretic thinking and quantitative style analysis \cite{Shannon1948,Holmes1998}.
+
+The CogniPrint programme adopts this viewpoint. Its central object is the \emph{cognitive fingerprint} of a text sample: a finite-dimensional vector of empirical statistics extracted from the text. The purpose of this object is not to act as a final judgment mechanism. Rather, it serves as a mathematical profile that enables reproducible comparison of text samples and collections of text samples. Early work on quantitative composition curves and later computational approaches to style analysis provide useful historical context for this direction \cite{Mendenhall1887,Burrows1987,EderEtAl2016}.
+
+This framing leads naturally to four questions. First, what class of feature maps yields a useful profile representation? Second, how should one compare profiles in a way that respects both magnitude and geometric orientation in feature space? Third, under what assumptions does the profile remain stable when a text sample is perturbed by a bounded number of edits? Fourth, how do aggregated profiles behave for collections of samples?
+
+The present manuscript takes a deliberately conservative position. It does not claim universal invariance properties for arbitrary feature maps, nor does it claim that any profile representation can support definitive conclusions about authorship or source. Instead, it introduces a formal setting, states explicit assumptions, and derives basic bounds that clarify what can be proved once a suitable feature map has been fixed. The choice to work with explicit feature maps and quantitative comparison is also compatible with general retrieval and vector-space perspectives on text representation \cite{ManningEtAl2008}.
+
+\subsection{Contributions of the manuscript}
+
+This manuscript makes the following limited but precise contributions:
+\begin{enumerate}[label=\arabic*.]
+    \item It defines a general feature-map framework for constructing finite-dimensional text profiles.
+    \item It formalises the notion of a cognitive fingerprint and its normalised counterpart.
+    \item It introduces profile comparison through Euclidean distance and cosine similarity.
+    \item It states conservative stability results under explicit coordinate-wise Lipschitz assumptions.
+    \item It defines aggregated profiles for corpora and records the corresponding mean-profile perturbation bound.
+    \item It records a reproducible empirical protocol and an initial descriptive public-data diagnostic layer without claiming general inferential status.
+\end{enumerate}
+
+\subsection{Scope and limitations}
+
+The analysis in this manuscript is intentionally narrow in scope. The results are conditional on explicit assumptions about the chosen feature coordinates. They are not intended to be read as universal theorems about all conceivable text statistics. The empirical layer reported below is descriptive and corpus-specific. It should be read as a reproducibility and geometry diagnostic, not as evidence for a final decision system. The primary purpose is to establish a clean mathematical foundation, a disciplined vocabulary, and a reproducible path for future formal and empirical work.
+
+\section{Notation and standing assumptions}
+
+We use the following notation throughout the manuscript.
+\begin{itemize}
+    \item $\mathcal{V}$ denotes a finite vocabulary.
+    \item $\mathcal{T} = \bigcup_{n \geq 1} \mathcal{V}^n$ denotes the set of all finite token sequences over $\mathcal{V}$.
+    \item A point $T \in \mathcal{T}$ is called a \emph{text sample}.
+    \item The token length of $T$ is denoted by $|T|$.
+    \item The Euclidean norm on $\mathbb{R}^d$ is denoted by $\|\cdot\|_2$.
+    \item The angle-based similarity between non-zero vectors is measured by cosine similarity.
+    \item $d_{\mathrm{edit}}(T_1,T_2)$ denotes an edit distance on token sequences.
+\end{itemize}
+
+Two assumptions recur in the analysis.
+\begin{enumerate}[label=(A\arabic*)]
+    \item \textbf{Coordinate stability:} each chosen feature coordinate is Lipschitz with respect to the edit metric in the regime of interest.
+    \item \textbf{Non-degeneracy:} the profile norm stays bounded away from zero when normalised comparisons are considered.
+\end{enumerate}
+
+These are not universal claims about arbitrary text statistics. They are modelling assumptions about the selected feature family and the specific analysis regime.
+
+\section{Formal setting}
+
+Let $\mathcal{V}$ be a finite vocabulary, and let
+\[
+\mathcal{T} = \bigcup_{n \geq 1} \mathcal{V}^n
+\]
+be the set of all finite token sequences over $\mathcal{V}$.
+
+\subsection{Feature map}
+
+Let
+\[
+\phi : \mathcal{T} \to \mathbb{R}^d
+\]
+be a feature map. The coordinates of $\phi$ are measurable empirical statistics extracted from a text sample. Depending on the application, such coordinates may include bounded counts, length-normalised summaries, variation measures, or dispersion measures.
+
+The theory developed here does not require a specific feature family, but it does require that the chosen coordinates admit explicit control under perturbation in the regime of interest.
+
+\subsection{Cognitive fingerprint}
+
+\begin{definition}[Cognitive fingerprint]
+The vector
+\[
+\phi(T) = (\phi_1(T), \ldots, \phi_d(T))
+\]
+is called the \emph{cognitive fingerprint} of the text sample $T$.
+\end{definition}
+
+When profile comparison should be invariant under global rescaling, one may also work with the normalised profile
+\[
+\widehat{\phi}(T) = \frac{\phi(T)}{\|\phi(T)\|_2},
+\]
+whenever $\phi(T) \neq 0$.
+
+\subsection{Profile comparison}
+
+For two text samples $T_1, T_2 \in \mathcal{T}$, define the Euclidean profile distance
+\[
+D_2(T_1, T_2) = \|\phi(T_1) - \phi(T_2)\|_2.
+\]
+If both profiles are non-zero, define the cosine profile similarity
+\[
+S_{\cos}(T_1, T_2) = \frac{\langle \phi(T_1), \phi(T_2) \rangle}{\|\phi(T_1)\|_2\,\|\phi(T_2)\|_2}.
+\]
+The first quantity measures absolute separation in feature space, while the second measures angular alignment.
+
+\subsection{Perturbation model}
+
+Let $d_{\mathrm{edit}}(T_1, T_2)$ denote an edit distance on token sequences. The central perturbation question is how much the profile can change when the text sample is modified by a bounded number of edits.
+
+\begin{assumption}[Coordinate stability]
+For each coordinate $\phi_i$ there exists a constant $L_i \geq 0$ such that
+\[
+|\phi_i(T_1) - \phi_i(T_2)| \leq L_i\, d_{\mathrm{edit}}(T_1, T_2)
+\]
+for all text pairs in the analysis regime.
+\end{assumption}
+
+This is a modelling assumption about the selected feature family. It is not asserted as a universal fact for arbitrary text statistics.
+
+\begin{proposition}[Basic stability statement]
+Under the coordinate stability assumption one obtains the bound
+\[
+\|\phi(T_1) - \phi(T_2)\|_2 \leq \Big(\sum_{i=1}^{d} L_i^2\Big)^{1/2} d_{\mathrm{edit}}(T_1, T_2).
+\]
+\end{proposition}
+
+\begin{proof}
+By coordinate stability,
+\[
+(\phi_i(T_1) - \phi_i(T_2))^2 \leq L_i^2 d_{\mathrm{edit}}(T_1, T_2)^2.
+\]
+Summing over $i = 1, \dots, d$ gives
+\[
+\|\phi(T_1) - \phi(T_2)\|_2^2 \leq \sum_{i=1}^{d} L_i^2\, d_{\mathrm{edit}}(T_1, T_2)^2.
+\]
+Taking square roots yields the result.
+\end{proof}
+
+\subsection{Aggregated profiles}
+
+For a finite collection of text samples
+\[
+\mathcal{C} = \{T^{(1)}, \ldots, T^{(N)}\},
+\]
+one may define the empirical mean profile
+\[
+\overline{\phi}(\mathcal{C}) = \frac{1}{N} \sum_{j=1}^{N} \phi\big(T^{(j)}\big).
+\]
+This aggregated object is useful when the object of study is a corpus rather than a single sample.
+
+\section{Stability of normalised and aggregated profiles}
+
+The previous section gives a perturbation bound for raw profile vectors. In many applications, however, comparisons are made after normalisation, and the unit of analysis may be a collection of samples rather than a single text. We therefore record the corresponding conservative extensions.
+
+\subsection{Non-degeneracy condition}
+
+To reason about normalised profiles, one must exclude the degenerate case where the profile norm becomes arbitrarily small.
+
+\begin{assumption}[Non-degeneracy]
+There exists a constant $m > 0$ such that
+\[
+\|\phi(T)\|_2 \geq m
+\]
+for all text samples considered in the analysis regime.
+\end{assumption}
+
+This assumption is not automatic. It must be checked or enforced by the particular feature design and data regime.
+
+\begin{proposition}[Normalised profile stability]
+Under the coordinate stability and non-degeneracy assumptions, there exists a constant $C > 0$ such that
+\[
+\|\widehat{\phi}(T_1) - \widehat{\phi}(T_2)\|_2 \leq C\, d_{\mathrm{edit}}(T_1, T_2)
+\]
+for all text samples in the analysis regime.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The unnormalised profile map is Lipschitz by the previous proposition. The normalisation map $x \mapsto x / \|x\|_2$ is Lipschitz on the set $\{x \in \mathbb{R}^d : \|x\|_2 \geq m\}$. Composition of these two Lipschitz maps gives the result.
+\end{proof}
+
+\begin{proposition}[Mean-profile perturbation bound]
+Let
+\[
+\mathcal{C}_1 = \{T_1^{(1)}, \ldots, T_1^{(N)}\}, \qquad
+\mathcal{C}_2 = \{T_2^{(1)}, \ldots, T_2^{(N)}\}
+\]
+be two aligned collections of equal size. Under the coordinate stability assumption,
+\[
+\|\overline{\phi}(\mathcal{C}_1) - \overline{\phi}(\mathcal{C}_2)\|_2
+\leq
+\frac{1}{N} \sum_{j=1}^{N} K\, d_{\mathrm{edit}}\big(T_1^{(j)}, T_2^{(j)}\big),
+\]
+where
+\[
+K = \Big(\sum_{i=1}^{d} L_i^2\Big)^{1/2}.
+\]
+\end{proposition}
+
+\begin{proof}
+By definition of the empirical mean profile,
+\[
+\overline{\phi}(\mathcal{C}_1) - \overline{\phi}(\mathcal{C}_2)
+=
+\frac{1}{N} \sum_{j=1}^{N} \big(\phi(T_1^{(j)}) - \phi(T_2^{(j)})\big).
+\]
+Applying the triangle inequality and then the basic stability proposition termwise gives the result.
+\end{proof}
+
+\subsection{Discussion of assumptions}
+
+The previous propositions should be interpreted carefully.
+\begin{itemize}
+    \item The inequalities themselves are theorem-level statements once the assumptions are fixed.
+    \item The assumptions are modelling statements about the chosen feature map and the analysis regime.
+    \item Therefore the framework is rigorous, but only conditionally so: its strength depends on how well the selected coordinates satisfy the stated stability requirements.
+\end{itemize}
+
+This separation between formal implications and feature-design assumptions is essential for keeping the theory honest.
+
+\section{Limits of the framework}
+
+The CogniPrint framework is intended as a mathematical basis for profile construction and comparison. It is not intended as a universal inference engine.
+
+\subsection{Dependence on feature choice}
+
+Every substantive conclusion depends on the choice of feature coordinates. Different feature families can induce different geometries, different notions of closeness, and different perturbation behaviour. No claim in this manuscript should be read as feature-independent unless this is explicitly proved.
+
+\subsection{Dependence on regime}
+
+The perturbation bounds are meaningful only in the regime in which the coordinate stability assumptions hold. If a chosen statistic reacts non-smoothly to small text edits, the corresponding Lipschitz constant may be large or the assumption may fail altogether.
+
+\subsection{No definitive inference claim}
+
+The framework does not justify definitive judgments about authorship, source, or any other categorical conclusion. Its role is to define a mathematically controlled profile space and to enable reproducible comparison inside that space.
+
+\subsection{Empirical work still required}
+
+A full research programme must still answer empirical questions, including the identification of feature coordinates with meaningful stability properties, the behaviour of profile geometry under heterogeneity of length and style, the effect of normalisation procedures, and the behaviour of aggregated profiles under sampling variation.
+
+\section{Empirical protocol}
+
+This section records a conservative empirical protocol for the current diagnostics and future experiments. It is written to separate reproducible measurement from stronger inferential claims.
+
+\subsection{Corpus construction principles}
+
+The empirical study should begin with explicitly defined corpora rather than ad hoc samples. At minimum, each corpus description should specify:
+\begin{itemize}
+    \item the source and collection procedure;
+    \item language and tokenisation assumptions;
+    \item admissible length range for samples;
+    \item inclusion and exclusion rules;
+    \item whether the corpus is analysed at the single-sample or aggregated level.
+\end{itemize}
+
+The protocol should avoid mixing heterogeneous sources without documentation. If corpora of different genres or length distributions are compared, that heterogeneity must be stated explicitly.
+
+\subsection{Preprocessing rules}
+
+All preprocessing steps must be deterministic and documented. At minimum, the study should record:
+\begin{itemize}
+    \item tokenisation procedure;
+    \item case normalisation policy;
+    \item punctuation handling;
+    \item treatment of numerals, URLs, or markup;
+    \item truncation or minimum-length rules.
+\end{itemize}
+
+No empirical comparison should be reported without freezing these preprocessing choices in advance.
+
+\subsection{Feature extraction protocol}
+
+Given a fixed preprocessing pipeline, the study should define the feature family used to build the map $\phi$. The protocol should state:
+\begin{itemize}
+    \item the full coordinate list;
+    \item any normalisation applied to raw statistics;
+    \item the admissible range of each coordinate when relevant;
+    \item whether the resulting profile is used in raw or normalised form.
+\end{itemize}
+
+If feature ablations are performed, each ablation should be treated as a separate experimental setting.
+
+\subsection{Profile comparison metrics}
+
+The empirical protocol should specify the comparison quantities before any result is reported. The minimum set may include:
+\begin{itemize}
+    \item Euclidean profile distance;
+    \item cosine profile similarity;
+    \item within-corpus and between-corpus dispersion summaries;
+    \item distance between empirical mean profiles when aggregated analysis is used.
+\end{itemize}
+
+If additional comparison metrics are introduced, they should be justified mathematically or empirically rather than chosen post hoc.
+
+\subsection{Perturbation experiments}
+
+The perturbation analysis should be designed to test how profile geometry changes under controlled edits. Representative perturbation families may include bounded token insertions, bounded token deletions, bounded substitutions, and sentence-level reorderings when relevant.
+
+For each perturbation family, the protocol should record:
+\begin{itemize}
+    \item the perturbation budget;
+    \item whether edits are random or structured;
+    \item the number of repeated trials;
+    \item the summary statistic used to report profile change.
+\end{itemize}
+
+The purpose of this section is not to demonstrate universal robustness, but to identify the regime in which the chosen feature family behaves in a stable and interpretable way.
+
+\subsection{Robustness analysis}
+
+The robustness layer should include at least the following checks:
+\begin{itemize}
+    \item sensitivity to text length;
+    \item sensitivity to preprocessing choices;
+    \item sensitivity to feature ablation;
+    \item sensitivity to corpus heterogeneity.
+\end{itemize}
+
+Whenever possible, robustness results should be reported with uncertainty summaries rather than isolated point values.
+
+\subsection{Reproducibility rule}
+
+Every empirical run should be reproducible from a documented configuration consisting of:
+\begin{itemize}
+    \item corpus definition;
+    \item preprocessing version;
+    \item feature definition;
+    \item comparison metric set;
+    \item perturbation protocol;
+    \item random seed, if randomness is present.
+\end{itemize}
+
+\section{Descriptive public-data diagnostics}
+
+The current repository implements two public-data diagnostic runs. These runs are not treated as an inferential claim. They are included to test whether the profile geometry behaves in a reproducible and interpretable way on corpora that were not created solely as local seed fixtures.
+
+\subsection{Paraphrase diagnostic}
+
+The human-paraphrase diagnostic uses 120 bounded sentence-pair samples from three public sources: \texttt{cointegrated/ru-paraphrase-NMT-Leipzig}, a Russian round-trip paraphrase dataset under CC-BY-4.0 \cite{CointegratedRuParaphraseNMTLeipzig}; \texttt{inkoziev/paraphrases}, a Russian paraphrase-group dataset currently listed on Hugging Face as CC-BY-NC-4.0 \cite{InkozievParaphrases}; and \texttt{google-research-datasets/paws}, the public PAWS benchmark associated with Zhang, Baldridge, and He \cite{GoogleResearchPAWSDataset,ZhangEtAl2019PAWS}. Machine-generated or machine-assisted sources are marked as such in the artifact metadata.
+
+For each pair, the implementation computes the normalised v2 profile, Euclidean distance $D_2$, cosine similarity, TF-IDF baseline distance, deterministic random-vector baseline distance, and a one-sided random-pair calibration value. The current run compares 120 paraphrase or paraphrase-like pairs against 300 random corpus pairs. The mean pair distance is $0.2245$ and the median is $0.1743$, compared with a random-pair mean of $0.7989$ and median of $0.7645$. Under the current plus-one permutation calibration, 76 of 120 Euclidean pair comparisons have $p < 0.05$. This is evidence of a descriptive separation in the selected sample, not a universal threshold or a general paraphrase-classification system.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.82\linewidth]{figures/human-paraphrase-distance-summary.pdf}
+    \caption{Euclidean profile-distance distribution for the public paraphrase diagnostic. The figure contrasts sampled paraphrase or paraphrase-like pairs with random corpus pairs.}
+    \label{fig:human-paraphrase-diagnostic}
+\end{figure}
+
+\subsection{Cross-genre diagnostic}
+
+The cross-genre diagnostic uses the PAN15 authorship-verification dataset record from Zenodo \cite{PAN15AuthorshipVerificationDataset} and follows the PAN15 task description for cross-genre and cross-topic verification problems \cite{StamatatosEtAl2015PAN}. The current run extracts Dutch and Spanish cross-genre problem prefixes into a PAN15-shaped local CSV with 173 document rows, 90 problem-local author identifiers, and two document-role sides. The local role labels should not be read as full genre labels; they are used only to reconstruct the cross-genre problem contrast exposed by PAN15.
+
+The diagnostic compares 41 within-author cross-genre distances with 59 inter-author control distances. The within-author cross-genre mean Euclidean distance is $0.3973$ with median $0.3924$. The inter-author control mean is $0.4677$ with median $0.4594$. The observed mean gap, defined as control mean minus within-author mean, is $0.0704$. A plus-one permutation test over the mean gap with 1000 permutations gives $p = 0.003996$ for the one-sided contrast that the control distances are larger. This result describes the selected PAN15 subset only and must not be interpreted as an identity decision procedure.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.82\linewidth]{figures/cross-genre-distance-summary.pdf}
+    \caption{Euclidean profile-distance distribution for the PAN15-derived cross-genre stress test. The contrast is descriptive and corpus-specific.}
+    \label{fig:cross-genre-diagnostic}
+\end{figure}
+
+\begin{table}[t]
+    \centering
+    \small
+    \caption{Summary of current public-data diagnostics. All values are corpus-specific descriptive measurements.}
+    \label{tab:public-data-summary}
+    \begin{tabular}{lrrrr}
+        \toprule
+        Diagnostic group & Count & Mean $D_2$ & Median $D_2$ & Max $D_2$ \\
+        \midrule
+        Paraphrase pairs & 120 & 0.2245 & 0.1743 & 0.8095 \\
+        Human diagnostic random pairs & 300 & 0.7989 & 0.7645 & 2.3897 \\
+        PAN15 within-author cross-genre & 41 & 0.3973 & 0.3924 & 0.6417 \\
+        PAN15 inter-author control & 59 & 0.4677 & 0.4594 & 0.8338 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Reproducibility of diagnostics}
+
+The diagnostic artifacts are generated by repository scripts and Makefile targets. The public-data runs are:
+\begin{verbatim}
+make human-paraphrase-real
+make cross-genre-real
+make math-phase2-real
+\end{verbatim}
+Fast smoke-test runs remain available through seed fixtures:
+\begin{verbatim}
+make math-phase2-test
+\end{verbatim}
+The generated artifacts are stored under \texttt{validation/human-paraphrase-v1/} and \texttt{validation/cross-genre-v1/}. They include CSV files, SVG figures for repository browsing, JSON summaries, and README files with source and license notes.
+
+\subsection{Boundary of interpretation}
+
+The public-data diagnostics support three limited statements. First, the implemented feature map can be run reproducibly on public paraphrase and PAN15-derived corpora. Second, the current profile geometry shows measurable distributional differences between selected paired and random/control contrasts. Third, these differences are corpus-specific and depend on feature design, preprocessing, sample selection, and calibration procedure.
+
+They do not establish a universal similarity threshold, an author identity model, a provenance model, an AI-origin model, or any legal or forensic status. Such claims would require separate preregistered tasks, independent external review, and broader corpus coverage.
+
+\section{Conclusion and open problems}
+
+This manuscript establishes a conservative mathematical basis for the CogniPrint framework. Its main contribution is structural: it defines a finite-dimensional profile representation for text samples, formalises profile comparison, and records conditional stability statements under explicit assumptions.
+
+The framework should be understood as a basis for analysis, not as a final inference mechanism. Its value lies in the fact that profile construction, profile comparison, and perturbation questions can be studied within a controlled mathematical language.
+
+Several open problems remain central for future work:
+\begin{enumerate}[label=\arabic*.]
+    \item identifying feature families with strong empirical stability properties;
+    \item deriving concentration results for empirical mean profiles under realistic sampling assumptions;
+    \item understanding how feature-space geometry changes across heterogeneous corpora;
+    \item formalising admissible normalisation procedures for robust profile comparison;
+    \item linking empirical protocol design more tightly to theorem-level guarantees.
+\end{enumerate}
+
+A mature version of the preprint should therefore combine two elements: a mathematically explicit representation framework and a carefully controlled empirical programme. Only the combination of these two parts can justify stronger conclusions in future iterations.
+
+\appendix
+
+\section{Appendix scaffold}
+
+This appendix is intentionally minimal at the current stage. In the next manuscript pass it may be used for:
+\begin{itemize}
+    \item extended proof details;
+    \item notation tables;
+    \item admissible feature-family examples;
+    \item reproducibility checklists;
+    \item supplementary protocol details.
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

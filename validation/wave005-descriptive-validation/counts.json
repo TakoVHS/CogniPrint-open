@@ -1,0 +1,12 @@
+{
+  "benchmark_axis_count": 6,
+  "benchmark_baseline_count": 20,
+  "benchmark_language_count": 5,
+  "benchmark_source_class_count": 3,
+  "benchmark_variant_count": 120,
+  "campaign_axis_count": 12,
+  "empirical_campaign_count": 5,
+  "empirical_comparison_row_count": 41,
+  "shared_bridge_axis_count": 6,
+  "snapshot_id": "wave005-descriptive-validation"
+}

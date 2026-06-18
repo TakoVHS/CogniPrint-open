@@ -1,0 +1,217 @@
+{
+  "snapshot_id": "inferential-v1-input-freeze-20260512",
+  "status": "frozen_pre_review_input_manifest",
+  "readiness_boundary": "descriptive_only",
+  "external_review_required_before_stronger_readiness": true,
+  "run_identifier": "inferential-v1-freeze-20260512",
+  "frozen_on": "2026-05-12",
+  "git_commit": "ce7b0674075cf886f7a036749993fcde9411ac0d",
+  "input_artifacts": [
+    {
+      "path": "evidence/empirical-v1/counts.json",
+      "role": "local controlled campaign counts",
+      "sha256": "792bb92be58b32a5f9013b8ecc0f46389e6ed6cc4e6c173d13e1fe5183c8698a"
+    },
+    {
+      "path": "evidence/empirical-v1/manifest.json",
+      "role": "local controlled campaign public snapshot manifest",
+      "sha256": "d06d74bd82ab036729ce125e45efab16720b42b1fb82fdc19fc188dc8e55d17f"
+    },
+    {
+      "path": "evidence/empirical-v1/evidence-table.md",
+      "role": "local controlled campaign evidence table",
+      "sha256": "f776ceabb304b51ea6b5df0bb53c3bd4e075ed48ec87299cc5646db7e5703010"
+    },
+    {
+      "path": "evidence/public-benchmark-v1.1/counts.json",
+      "role": "public benchmark counts",
+      "sha256": "4b39d7ef0f97570c2e0b24fc9c83d693b660e43ce8402908d5368aa27aac841b"
+    },
+    {
+      "path": "evidence/public-benchmark-v1.1/manifest.json",
+      "role": "public benchmark manifest",
+      "sha256": "57c7fedc21b868a510412491b6d39ecb8692b49b8e5101968fd7b0748f2a27d8"
+    },
+    {
+      "path": "evidence/empirical-growth-v1/counts.json",
+      "role": "public empirical growth counts",
+      "sha256": "2804bb0cbed0e35420e81f08baaf598def145951352bdf84495d62bd77ea49a1"
+    },
+    {
+      "path": "evidence/empirical-growth-v1/manifest.json",
+      "role": "public empirical growth manifest",
+      "sha256": "8686993ed2ea5cfbba3306f7969cf925120b5831b53a073d3eff5f1331a18a44"
+    },
+    {
+      "path": "evidence/empirical-growth-v1/comparison-rows.csv",
+      "role": "public empirical growth comparison table",
+      "sha256": "4d42d26a2e192114204e1792d7bb2fc89fba1136bee3b0bcdd02e8f49d9fceed"
+    },
+    {
+      "path": "evidence/independent-holdout-v1/counts.json",
+      "role": "independent holdout counts",
+      "sha256": "3c6efa5c9c57d0552c7aa7be8e25629a04684d195116a666bf0f51b9bd526886"
+    },
+    {
+      "path": "evidence/independent-holdout-v1/manifest.json",
+      "role": "independent holdout manifest",
+      "sha256": "76f49f2cebb78b7d9f69861fb02033647844f0fd6493574b5825a3698f8b3a60"
+    },
+    {
+      "path": "evidence/independent-holdout-v1/comparison-rows.csv",
+      "role": "independent holdout comparison table",
+      "sha256": "e96d192726c880e842ec19bdbf9b4a1a3c0a2f57c28cc9ad944fa80e085770f5"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/manifest.json",
+      "role": "current descriptive validation manifest",
+      "sha256": "f5d0929d05c649afca173b13963088d736c334b9450fa46dd157ede694bb56f6"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/counts.json",
+      "role": "current descriptive validation counts",
+      "sha256": "789ac288f5c34b6c5e2057b20e43d51cf2a8b3c2d60213b0a2093c7b8cd846fe"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/bootstrap-summary.json",
+      "role": "current descriptive bootstrap summary",
+      "sha256": "ba0fa7a9e302ce7ff2786846e8f22242e45599e7003ba0d580a754ab32eda789"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/effect-size-summary.json",
+      "role": "current descriptive effect-size summary",
+      "sha256": "bf00fde891bd4559023ebfb8edbf63b6359f4049c2ef1a399fe8ee88f958b5e4"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/variance-summary.json",
+      "role": "current descriptive variance summary",
+      "sha256": "8ce74b79fb31a4d024ec043f8b9a434a03e8a65cf912abe942daa06adbafebcf"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/random-baseline-summary.json",
+      "role": "current descriptive random-reference summary",
+      "sha256": "ce861a139f9740175c5f49ad88031304d63875bcbc36e8c8354f44312c50b2dd"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/axis-ablation-summary.csv",
+      "role": "current descriptive axis ablation table",
+      "sha256": "efa82f577cab71d58551614c15a873d782da74c5920bb32d58233c25688b437c"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/threshold-sensitivity.csv",
+      "role": "current descriptive threshold sensitivity table",
+      "sha256": "317adfdfde4e2da9cebf7ff0f825c1bf5342047242e517cb2d9f4b85034b860b"
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/benchmark-campaign-bridge.csv",
+      "role": "current benchmark-to-campaign bridge table",
+      "sha256": "d30700783a72811d9228b13f4f251b93eeee62a3bce9ac52296ed6f6b39b070b"
+    },
+    {
+      "path": "validation/statistical-validation-v1.2/manifest.json",
+      "role": "multiple-comparison correction manifest",
+      "sha256": "82c8c0871d56a7325f929ec01a1abc561e2d03fdff1be02f3435f1d61b42f877"
+    },
+    {
+      "path": "validation/statistical-validation-v1.2/multiple-comparison-correction.json",
+      "role": "multiple-comparison correction results",
+      "sha256": "4d73b0d68575e174d5063489f1f68e0b653cf318080ea4fcb16120ea9b9a363c"
+    },
+    {
+      "path": "validation/statistical-validation-v1.2/multiple-comparison-correction.csv",
+      "role": "multiple-comparison correction table",
+      "sha256": "eba42da9dd7331ac974ec3cfbd7888c2675a324ef85b165da3fc5312517aaa72"
+    },
+    {
+      "path": "validation/conventional-stylometry-baseline-v1/manifest.json",
+      "role": "conventional stylometry baseline manifest",
+      "sha256": "f74930cca57dad047502414b6a4dabaeb8fb07ad6eb6d756060386442f4b16e9"
+    },
+    {
+      "path": "validation/conventional-stylometry-baseline-v1/comparison-rows.csv",
+      "role": "conventional stylometry baseline comparison table",
+      "sha256": "5702d2b953d17ac68018aa7aa0bf001eb01fde8fdd44361a019666f67d4afbf1"
+    },
+    {
+      "path": "validation/conventional-stylometry-baseline-v1/cogniprint-bridge.csv",
+      "role": "conventional stylometry to CogniPrint bridge table",
+      "sha256": "d25b2fd57983747a907b6b7f5328594f097ab5e3db45030ac04205f3c0817de0"
+    },
+    {
+      "path": "docs/statistical-readiness-status.json",
+      "role": "current readiness gate snapshot",
+      "sha256": "a59a47a671bc8a204c57efe526076ac8ab5ba1b16119923d62c2628ae32bb0c1"
+    },
+    {
+      "path": "docs/external-review/status.json",
+      "role": "current external review gate snapshot",
+      "sha256": "5888a31a41750883200fc6e35f05393adcebd74ffbff0583c75cbaf1cbbc8bf6"
+    }
+  ],
+  "code_artifacts": [
+    {
+      "path": "src/cogniprint/analysis.py",
+      "role": "current deterministic feature extraction and profile comparison implementation",
+      "sha256": "47043270ca36bbd64a99cae0c48c20b9d6d7d4ea03516aaa7ac3e54af4f13750"
+    },
+    {
+      "path": "src/cogniprint/stats/validation.py",
+      "role": "current descriptive validation artifact generator",
+      "sha256": "a7f94a786c598b4ee4f014ca4eb1b55b098a5a4e144e2b4b8824cf59cf57f0da"
+    },
+    {
+      "path": "scripts/check_statistical_readiness.py",
+      "role": "current statistical readiness gate implementation",
+      "sha256": "e8a2fc70bd408ceeebffb4865ea2f112374768424c1613bd5cf7a0c147de2e8a"
+    },
+    {
+      "path": "scripts/bootstrap_validation.py",
+      "role": "current exploratory bootstrap helper retained as prior reference",
+      "sha256": "478a12175f16a9af3903346042b5f66b356cb214d2a41611b6f497847f07529f"
+    }
+  ],
+  "configuration": {
+    "feature_map_version": "cogniprint-core-profile-v1 from src/cogniprint/analysis.py at git commit ce7b0674075cf886f7a036749993fcde9411ac0d",
+    "fingerprint_keys": [
+      "log_char_count",
+      "log_word_count",
+      "type_token_ratio",
+      "hapax_ratio",
+      "avg_word_length",
+      "word_length_stddev",
+      "avg_sentence_length_words",
+      "punctuation_ratio",
+      "digit_ratio",
+      "uppercase_ratio"
+    ],
+    "preprocessing_version": "current deterministic analyzer: CRLF normalized to LF; regex WORD_RE/SENTENCE_RE from src/cogniprint/analysis.py; no private raw input text added to this manifest",
+    "normalization": "profile vector uses log1p for character and word counts plus raw ratio/length features; no post-vector standardization before cosine, Euclidean, or Manhattan comparison",
+    "primary_metrics": [
+      "cosine_similarity",
+      "euclidean_distance",
+      "manhattan_distance"
+    ],
+    "primary_inferential_metric": "euclidean_distance",
+    "random_seed": 1729,
+    "bootstrap_resamples": 2000,
+    "permutation_resamples": 5000,
+    "alpha": 0.05,
+    "multiple_comparison_correction": [
+      "Holm-Bonferroni",
+      "Benjamini-Hochberg"
+    ]
+  },
+  "execution_boundary": {
+    "inferential_v1_outputs_generated": false,
+    "external_review_valid_reviews": 0,
+    "external_review_required_valid_reviews": 1,
+    "stronger_readiness_allowed": false
+  },
+  "command_line": "pre-run manifest freeze only; inferential-v1 execution command is intentionally not claimed in this file",
+  "notes": [
+    "This file freezes the tracked public evidence and validation inputs for the next inferential-v1 design pass.",
+    "It does not create inferential-v1 outputs and does not upgrade readiness.",
+    "Do not add private raw text data to this manifest.",
+    "Do not describe this manifest as external review or as completed validation."
+  ]
+}

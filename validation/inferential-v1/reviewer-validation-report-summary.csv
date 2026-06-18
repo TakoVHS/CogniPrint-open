@@ -1,0 +1,17 @@
+metric,value
+readiness_boundary,descriptive_only
+external_review_gate_satisfied,False
+metric,cosine
+n_perturbation_pairs,10
+n_random_pairs,1000
+perturbation_mean,0.009147
+perturbation_std,0.012095
+random_mean,0.096687
+random_std,0.085861
+effect_size_cohens_d_random_vs_perturbation,1.425552
+required_sample_size_for_power_0_8,7
+recommended_threshold,0.009143
+recommended_threshold_fpr,0.048
+recommended_threshold_power,0.8
+fixed_threshold_0_15_fpr,0.796
+fixed_threshold_0_15_power,1.0

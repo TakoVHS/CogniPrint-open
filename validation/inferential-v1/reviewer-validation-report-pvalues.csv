@@ -1,0 +1,11 @@
+variant_label,fingerprint_distance,permutation_p_less_plus_one,significant_at_alpha_0_05,tfidf_cosine_similarity,random_vector_similarity
+01_punctuation_cleanup.txt,2e-06,0.000999,True,1.0,-0.005507
+02_minor_lexical_substitution.txt,0.002183,0.008991,True,0.864377,0.077321
+03_sentence_split_merge.txt,0.006777,0.017982,True,0.928101,0.104158
+04_word_order_shift.txt,0.003703,0.012987,True,0.460344,-0.080633
+05_compressed_version.txt,0.009143,0.048951,True,0.789785,0.202526
+06_expanded_version.txt,0.014351,0.075924,False,0.763197,0.079945
+07_formalized_style.txt,0.003657,0.012987,True,0.732198,0.023136
+08_informalized_style.txt,0.008387,0.038961,True,0.70107,-0.034763
+09_strong_rewrite_same_claim.txt,0.000114,0.000999,True,0.957193,-0.0606
+10_translated_or_crosslingual.txt,0.043149,0.291708,False,0.01257,-0.021211

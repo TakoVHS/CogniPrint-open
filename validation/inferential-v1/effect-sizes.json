@@ -1,0 +1,70 @@
+{
+  "rows": [
+    {
+      "axis": "compressed_version",
+      "cliffs_delta_left_vs_right": -0.466667,
+      "contrast_id": "axis_compressed_version_local_vs_public_growth",
+      "hedges_g_right_vs_left": 0.745327,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": -3.011392,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    },
+    {
+      "axis": "formalized_style",
+      "cliffs_delta_left_vs_right": -0.266667,
+      "contrast_id": "axis_formalized_style_local_vs_public_growth",
+      "hedges_g_right_vs_left": 0.483691,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": -0.915161,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    },
+    {
+      "axis": "informalized_style",
+      "cliffs_delta_left_vs_right": -0.266667,
+      "contrast_id": "axis_informalized_style_local_vs_public_growth",
+      "hedges_g_right_vs_left": 0.465298,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": -0.632548,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    },
+    {
+      "axis": "punctuation_cleanup",
+      "cliffs_delta_left_vs_right": 0.166667,
+      "contrast_id": "axis_punctuation_cleanup_local_vs_public_growth",
+      "hedges_g_right_vs_left": 0.043244,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": 5.062953,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    },
+    {
+      "axis": "sentence_split_merge",
+      "cliffs_delta_left_vs_right": -0.833333,
+      "contrast_id": "axis_sentence_split_merge_local_vs_public_growth",
+      "hedges_g_right_vs_left": 1.08378,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": -10.760512,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    },
+    {
+      "axis": "word_order_shift",
+      "cliffs_delta_left_vs_right": -0.366667,
+      "contrast_id": "axis_word_order_shift_local_vs_public_growth",
+      "hedges_g_right_vs_left": 0.814049,
+      "interpretation_note": "Observed dataset only; small local campaign n limits stability claims.",
+      "left_count": 3,
+      "median_difference_left_minus_right": -6.693934,
+      "metric": "euclidean_distance",
+      "right_count": 20
+    }
+  ]
+}

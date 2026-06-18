@@ -1,0 +1,149 @@
+{
+  "comparisons": [
+    {
+      "axis": "compressed_version",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.972198
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.237866
+      }
+    },
+    {
+      "axis": "expanded_version",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.563183
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.779644
+      }
+    },
+    {
+      "axis": "formalized_style",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.474236
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -1.09975
+      }
+    },
+    {
+      "axis": "informalized_style",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.317458
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -0.812279
+      }
+    },
+    {
+      "axis": "minor_lexical_substitution",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.531074
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -1.617997
+      }
+    },
+    {
+      "axis": "punctuation_cleanup",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.207102
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.286212
+      }
+    },
+    {
+      "axis": "sentence_split_merge",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.057699
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.207201
+      }
+    },
+    {
+      "axis": "strong_rewrite",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 4,
+        "reference_count": 7,
+        "value": -1.251689
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 4,
+        "reference_count": 7,
+        "value": 0.733817
+      }
+    },
+    {
+      "axis": "strong_rewrite_same_claim",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 0.440767
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -0.588765
+      }
+    },
+    {
+      "axis": "translated_or_crosslingual",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.037839
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -0.446231
+      }
+    },
+    {
+      "axis": "word_order_shift",
+      "cosine_similarity_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": 1.471889
+      },
+      "euclidean_distance_hedges_g": {
+        "comparison_count": 3,
+        "reference_count": 7,
+        "value": -0.926881
+      }
+    }
+  ],
+  "reference_axis": "light_edit",
+  "reference_count": 7
+}

@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360">
+  <rect width="100%" height="100%" fill="white"/>
+  <text x="170" y="28" font-size="16" font-family="Arial, sans-serif">cross-genre-v1 Euclidean distance diagnostic</text>
+  <text x="158" y="133" text-anchor="end" font-size="12" font-family="Arial, sans-serif">same author / cross genre</text>
+  <text x="158" y="233" text-anchor="end" font-size="12" font-family="Arial, sans-serif">cross-author control</text>
+  <line x1="262.84" y1="128" x2="590.20" y2="128" stroke="#111" opacity="0.55"/>
+<line x1="430.14" y1="104" x2="430.14" y2="152" stroke="#111" stroke-width="3"/>
+<circle cx="262.84" cy="119.60" r="3" fill="#111" opacity="0.5"/>
+<circle cx="311.22" cy="121.70" r="3" fill="#111" opacity="0.5"/>
+<circle cx="337.57" cy="123.80" r="3" fill="#111" opacity="0.5"/>
+<circle cx="344.93" cy="125.90" r="3" fill="#111" opacity="0.5"/>
+<circle cx="349.96" cy="128.00" r="3" fill="#111" opacity="0.5"/>
+<circle cx="350.19" cy="130.10" r="3" fill="#111" opacity="0.5"/>
+<circle cx="357.15" cy="132.20" r="3" fill="#111" opacity="0.5"/>
+<circle cx="365.97" cy="134.30" r="3" fill="#111" opacity="0.5"/>
+<circle cx="385.77" cy="136.40" r="3" fill="#111" opacity="0.5"/>
+<circle cx="388.86" cy="119.60" r="3" fill="#111" opacity="0.5"/>
+<circle cx="391.61" cy="121.70" r="3" fill="#111" opacity="0.5"/>
+<circle cx="394.67" cy="123.80" r="3" fill="#111" opacity="0.5"/>
+<circle cx="394.84" cy="125.90" r="3" fill="#111" opacity="0.5"/>
+<circle cx="401.41" cy="128.00" r="3" fill="#111" opacity="0.5"/>
+<circle cx="404.23" cy="130.10" r="3" fill="#111" opacity="0.5"/>
+<circle cx="406.37" cy="132.20" r="3" fill="#111" opacity="0.5"/>
+<circle cx="413.59" cy="134.30" r="3" fill="#111" opacity="0.5"/>
+<circle cx="418.64" cy="136.40" r="3" fill="#111" opacity="0.5"/>
+<circle cx="420.82" cy="119.60" r="3" fill="#111" opacity="0.5"/>
+<circle cx="425.24" cy="121.70" r="3" fill="#111" opacity="0.5"/>
+<circle cx="426.95" cy="123.80" r="3" fill="#111" opacity="0.5"/>
+<circle cx="434.83" cy="125.90" r="3" fill="#111" opacity="0.5"/>
+<circle cx="436.30" cy="128.00" r="3" fill="#111" opacity="0.5"/>
+<circle cx="436.68" cy="130.10" r="3" fill="#111" opacity="0.5"/>
+<circle cx="444.50" cy="132.20" r="3" fill="#111" opacity="0.5"/>
+<circle cx="446.51" cy="134.30" r="3" fill="#111" opacity="0.5"/>
+<circle cx="446.90" cy="136.40" r="3" fill="#111" opacity="0.5"/>
+<circle cx="453.21" cy="119.60" r="3" fill="#111" opacity="0.5"/>
+<circle cx="455.82" cy="121.70" r="3" fill="#111" opacity="0.5"/>
+<circle cx="458.73" cy="123.80" r="3" fill="#111" opacity="0.5"/>
+<circle cx="467.66" cy="125.90" r="3" fill="#111" opacity="0.5"/>
+<circle cx="469.21" cy="128.00" r="3" fill="#111" opacity="0.5"/>
+<circle cx="471.47" cy="130.10" r="3" fill="#111" opacity="0.5"/>
+<circle cx="484.02" cy="132.20" r="3" fill="#111" opacity="0.5"/>
+<circle cx="501.09" cy="134.30" r="3" fill="#111" opacity="0.5"/>
+<circle cx="514.05" cy="136.40" r="3" fill="#111" opacity="0.5"/>
+<circle cx="526.71" cy="119.60" r="3" fill="#111" opacity="0.5"/>
+<circle cx="535.10" cy="121.70" r="3" fill="#111" opacity="0.5"/>
+<circle cx="549.25" cy="123.80" r="3" fill="#111" opacity="0.5"/>
+<circle cx="560.81" cy="125.90" r="3" fill="#111" opacity="0.5"/>
+<circle cx="590.20" cy="128.00" r="3" fill="#111" opacity="0.5"/>
+  <line x1="271.48" y1="228" x2="716.00" y2="228" stroke="#777" opacity="0.55"/>
+<line x1="476.24" y1="204" x2="476.24" y2="252" stroke="#777" stroke-width="3"/>
+<circle cx="271.48" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="290.66" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="300.84" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="334.93" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="352.60" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="364.99" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="374.76" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="378.85" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="381.26" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="390.64" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="396.94" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="400.65" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="400.95" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="406.64" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="409.04" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="410.84" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="411.94" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="426.95" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="434.16" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="440.20" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="448.30" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="451.43" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="455.02" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="457.29" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="462.31" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="462.41" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="462.92" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="465.46" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="466.96" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="470.82" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="479.31" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="485.01" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="486.20" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="492.06" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="496.05" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="499.44" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="499.69" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="500.26" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="501.07" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="501.09" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="502.08" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="503.69" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="518.25" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="521.53" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="525.06" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="531.18" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="535.29" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="556.93" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="556.99" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="567.82" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+<circle cx="568.89" cy="230.10" r="3" fill="#777" opacity="0.5"/>
+<circle cx="584.30" cy="232.20" r="3" fill="#777" opacity="0.5"/>
+<circle cx="588.43" cy="234.30" r="3" fill="#777" opacity="0.5"/>
+<circle cx="589.40" cy="236.40" r="3" fill="#777" opacity="0.5"/>
+<circle cx="615.66" cy="219.60" r="3" fill="#777" opacity="0.5"/>
+<circle cx="647.68" cy="221.70" r="3" fill="#777" opacity="0.5"/>
+<circle cx="668.03" cy="223.80" r="3" fill="#777" opacity="0.5"/>
+<circle cx="678.56" cy="225.90" r="3" fill="#777" opacity="0.5"/>
+<circle cx="716.00" cy="228.00" r="3" fill="#777" opacity="0.5"/>
+  <line x1="170" y1="306" x2="716" y2="306" stroke="#bbb"/>
+  <line x1="170.00" y1="306" x2="170.00" y2="312" stroke="#999"/><text x="170.00" y="330" text-anchor="middle" font-size="11" fill="#555">0.00</text><line x1="279.20" y1="306" x2="279.20" y2="312" stroke="#999"/><text x="279.20" y="330" text-anchor="middle" font-size="11" fill="#555">0.17</text><line x1="388.40" y1="306" x2="388.40" y2="312" stroke="#999"/><text x="388.40" y="330" text-anchor="middle" font-size="11" fill="#555">0.33</text><line x1="497.60" y1="306" x2="497.60" y2="312" stroke="#999"/><text x="497.60" y="330" text-anchor="middle" font-size="11" fill="#555">0.50</text><line x1="606.80" y1="306" x2="606.80" y2="312" stroke="#999"/><text x="606.80" y="330" text-anchor="middle" font-size="11" fill="#555">0.67</text><line x1="716.00" y1="306" x2="716.00" y2="312" stroke="#999"/><text x="716.00" y="330" text-anchor="middle" font-size="11" fill="#555">0.83</text>
+  <text x="443.00" y="348" text-anchor="middle" font-size="12" fill="#555" font-family="Arial, sans-serif">Euclidean profile distance</text>
+</svg>

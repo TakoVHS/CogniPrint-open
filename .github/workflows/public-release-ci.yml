@@ -1,0 +1,92 @@
+name: Public Release CI
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/public-release-ci.yml"
+      - "config/public-release.json"
+      - "scripts/secret_scan.py"
+      - "scripts/export_public_release.py"
+      - "tests/**"
+      - "src/**"
+      - "README.md"
+      - "DATA_LICENSE.md"
+      - "CITATION.cff"
+      - "pyproject.toml"
+  pull_request:
+    paths:
+      - ".github/workflows/public-release-ci.yml"
+      - "config/public-release.json"
+      - "scripts/secret_scan.py"
+      - "scripts/export_public_release.py"
+      - "tests/**"
+      - "src/**"
+      - "README.md"
+      - "DATA_LICENSE.md"
+      - "CITATION.cff"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-public-release:
+    name: Validate public release / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Compile release tooling
+        run: python -m py_compile scripts/secret_scan.py scripts/export_public_release.py
+
+      - name: Run release gate unit tests
+        run: |
+          python -m unittest discover -s tests -p "test_public_release_export.py" -v
+          python -m unittest discover -s tests -p "test_secret_scan.py" -v
+
+      - name: Scan tracked source tree
+        run: python scripts/secret_scan.py
+
+      - name: Validate sanitized release selection
+        run: python scripts/export_public_release.py --check-only
+
+      - name: Export sanitized candidate
+        run: python scripts/export_public_release.py --destination "$RUNNER_TEMP/cogniprint-public" --clean
+
+      - name: Validate candidate as one-commit temporary repository
+        run: |
+          cd "$RUNNER_TEMP/cogniprint-public"
+          git init
+          git config user.email "release-ci@example.invalid"
+          git config user.name "CogniPrint Public Release CI"
+          git add .
+          git commit -m "public release candidate"
+          python scripts/secret_scan.py --history
+          rm -rf .git
+
+      - name: Upload validated sanitized candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: cogniprint-public-candidate-py${{ matrix.python-version }}
+          path: ${{ runner.temp }}/cogniprint-public
+          retention-days: 3
+          include-hidden-files: true
+          if-no-files-found: error

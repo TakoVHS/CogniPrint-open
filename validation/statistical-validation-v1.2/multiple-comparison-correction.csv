@@ -1,0 +1,7 @@
+axis,metric,campaign_count,benchmark_count,campaign_mean,benchmark_mean,mean_difference_campaign_minus_benchmark,observed_abs_mean_difference,raw_p_value,reported_p_value,holm_adjusted_p_value,bh_fdr_q_value,holm_flag_at_0_05,bh_fdr_flag_at_0_05
+compressed_version,euclidean_distance,3,20,3.522476,8.084026,-4.56155,4.56155,0.2176,0.2176,1.0,0.4352,False,False
+formalized_style,euclidean_distance,3,20,1.038277,1.659729,-0.621452,0.621452,0.3512,0.3512,1.0,0.4428,False,False
+informalized_style,euclidean_distance,3,20,1.527384,6.093491,-4.566107,4.566107,0.369,0.369,1.0,0.4428,False,False
+punctuation_cleanup,euclidean_distance,3,20,3.707315,4.116498,-0.409183,0.409183,0.9824,0.9824,1.0,0.9824,False,False
+sentence_split_merge,euclidean_distance,3,20,3.447801,19.367179,-15.919378,15.919378,0.0632,0.0632,0.3792,0.3792,False,False
+word_order_shift,euclidean_distance,3,20,1.108345,9.852644,-8.744299,8.744299,0.2008,0.2008,1.0,0.4352,False,False

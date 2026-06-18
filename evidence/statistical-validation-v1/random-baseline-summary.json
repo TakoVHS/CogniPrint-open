@@ -1,0 +1,80 @@
+{
+  "cosine_similarity": {
+    "draw_mean_bootstrap": {
+      "confidence": 0.95,
+      "count": 64,
+      "lower": 0.982711,
+      "mean": 0.983761,
+      "resamples": 2000,
+      "upper": 0.98474
+    },
+    "draw_mean_summary": {
+      "count": 64,
+      "max": 0.991823,
+      "mean": 0.983761,
+      "median": 0.984249,
+      "min": 0.972498
+    },
+    "pooled_summary": {
+      "count": 3456,
+      "max": 1.0,
+      "mean": 0.983761,
+      "median": 0.999106,
+      "min": 0.837681
+    }
+  },
+  "draw_count": 64,
+  "euclidean_distance": {
+    "draw_mean_bootstrap": {
+      "confidence": 0.95,
+      "count": 64,
+      "lower": 8.991032,
+      "mean": 9.375026,
+      "resamples": 2000,
+      "upper": 9.75524
+    },
+    "draw_mean_summary": {
+      "count": 64,
+      "max": 12.750323,
+      "mean": 9.375026,
+      "median": 9.372298,
+      "min": 5.934722
+    },
+    "pooled_summary": {
+      "count": 3456,
+      "max": 42.000004,
+      "mean": 9.375026,
+      "median": 5.029025,
+      "min": 0.027772
+    }
+  },
+  "manhattan_distance": {
+    "draw_mean_bootstrap": {
+      "confidence": 0.95,
+      "count": 64,
+      "lower": 9.616019,
+      "mean": 10.001168,
+      "resamples": 2000,
+      "upper": 10.379256
+    },
+    "draw_mean_summary": {
+      "count": 64,
+      "max": 13.325114,
+      "mean": 10.001168,
+      "median": 10.03046,
+      "min": 6.352443
+    },
+    "pooled_summary": {
+      "count": 3456,
+      "max": 42.06285,
+      "mean": 10.001168,
+      "median": 6.268128,
+      "min": 0.039127
+    }
+  },
+  "mode": "repeatable multi-draw cross-baseline reference distribution",
+  "pair_count_per_draw": 54,
+  "seed": 1729,
+  "source_note": "Random baseline uses repeatable seeded cross-baseline benchmark variant draws rather than matched same-baseline perturbations.",
+  "total_pairs": 3456
+}

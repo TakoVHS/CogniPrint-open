@@ -1,0 +1,157 @@
+{
+  "campaign_dir": "validation/inferential-v1/reviewer-campaign-004",
+  "corpus_dir": "datasets/public-benchmark-v1.1/raw",
+  "corpus_file_count": 20,
+  "effect_size_cohens_d_random_vs_perturbation": 1.425552,
+  "external_review_gate_satisfied": false,
+  "fingerprint_version": "cognitive-fingerprint-v2.0",
+  "fixed_threshold_0_15_evaluation": {
+    "fpr_at_threshold": 0.796,
+    "perturbation_pair_count": 10,
+    "power_at_threshold": 1.0,
+    "random_pair_count": 1000,
+    "threshold": 0.15
+  },
+  "interpretive_note": "These outputs are pre-review candidate validation aids. They do not establish authorship, provenance, AI detection, legal status, or final scientific readiness.",
+  "metric": "cosine",
+  "n_perturbation_pairs": 10,
+  "n_random_pairs": 1000,
+  "perturbation_bootstrap_ci_95": {
+    "count": 10,
+    "lower": 0.003408,
+    "mean": 0.009147,
+    "resamples": 1000,
+    "upper": 0.01747
+  },
+  "perturbation_distance_summary": {
+    "count": 10,
+    "max": 0.043149,
+    "mean": 0.009147,
+    "min": 2e-06,
+    "std": 0.012095
+  },
+  "random_distance_summary": {
+    "count": 1000,
+    "max": 0.433787,
+    "mean": 0.096687,
+    "min": 0.002005,
+    "std": 0.085861
+  },
+  "random_distances_sample": [
+    0.043208,
+    0.049039,
+    0.007186,
+    0.066258,
+    0.046488,
+    0.082535,
+    0.213821,
+    0.116012,
+    0.009929,
+    0.186242
+  ],
+  "readiness_boundary": "descriptive_only",
+  "report_type": "reviewer_validation_dry_run",
+  "required_sample_size_for_power_0_8": 7,
+  "seed": 42,
+  "threshold_recommendation": {
+    "alpha": 0.05,
+    "fpr_at_threshold": 0.048,
+    "min_required_power": 0.8,
+    "power_at_threshold": 0.8,
+    "recommended_threshold": 0.009143
+  },
+  "variant_files": [
+    "validation/inferential-v1/reviewer-campaign-004/variants/01_punctuation_cleanup.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/02_minor_lexical_substitution.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/03_sentence_split_merge.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/04_word_order_shift.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/05_compressed_version.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/06_expanded_version.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/07_formalized_style.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/08_informalized_style.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/09_strong_rewrite_same_claim.txt",
+    "validation/inferential-v1/reviewer-campaign-004/variants/10_translated_or_crosslingual.txt"
+  ],
+  "variant_results": [
+    {
+      "fingerprint_distance": 2e-06,
+      "permutation_p_less_plus_one": 0.000999,
+      "random_vector_similarity": -0.005507,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 1.0,
+      "variant_label": "01_punctuation_cleanup.txt"
+    },
+    {
+      "fingerprint_distance": 0.002183,
+      "permutation_p_less_plus_one": 0.008991,
+      "random_vector_similarity": 0.077321,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.864377,
+      "variant_label": "02_minor_lexical_substitution.txt"
+    },
+    {
+      "fingerprint_distance": 0.006777,
+      "permutation_p_less_plus_one": 0.017982,
+      "random_vector_similarity": 0.104158,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.928101,
+      "variant_label": "03_sentence_split_merge.txt"
+    },
+    {
+      "fingerprint_distance": 0.003703,
+      "permutation_p_less_plus_one": 0.012987,
+      "random_vector_similarity": -0.080633,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.460344,
+      "variant_label": "04_word_order_shift.txt"
+    },
+    {
+      "fingerprint_distance": 0.009143,
+      "permutation_p_less_plus_one": 0.048951,
+      "random_vector_similarity": 0.202526,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.789785,
+      "variant_label": "05_compressed_version.txt"
+    },
+    {
+      "fingerprint_distance": 0.014351,
+      "permutation_p_less_plus_one": 0.075924,
+      "random_vector_similarity": 0.079945,
+      "significant_at_alpha_0_05": false,
+      "tfidf_cosine_similarity": 0.763197,
+      "variant_label": "06_expanded_version.txt"
+    },
+    {
+      "fingerprint_distance": 0.003657,
+      "permutation_p_less_plus_one": 0.012987,
+      "random_vector_similarity": 0.023136,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.732198,
+      "variant_label": "07_formalized_style.txt"
+    },
+    {
+      "fingerprint_distance": 0.008387,
+      "permutation_p_less_plus_one": 0.038961,
+      "random_vector_similarity": -0.034763,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.70107,
+      "variant_label": "08_informalized_style.txt"
+    },
+    {
+      "fingerprint_distance": 0.000114,
+      "permutation_p_less_plus_one": 0.000999,
+      "random_vector_similarity": -0.0606,
+      "significant_at_alpha_0_05": true,
+      "tfidf_cosine_similarity": 0.957193,
+      "variant_label": "09_strong_rewrite_same_claim.txt"
+    },
+    {
+      "fingerprint_distance": 0.043149,
+      "permutation_p_less_plus_one": 0.291708,
+      "random_vector_similarity": -0.021211,
+      "significant_at_alpha_0_05": false,
+      "tfidf_cosine_similarity": 0.01257,
+      "variant_label": "10_translated_or_crosslingual.txt"
+    }
+  ]
+}

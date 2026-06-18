@@ -1,0 +1,118 @@
+{
+  "snapshot_id": "inferential-v1-permutation-spec-20260512",
+  "status": "frozen_pre_review_permutation_spec",
+  "readiness_boundary": "descriptive_only",
+  "input_manifest": "validation/inferential-v1/input-manifest.json",
+  "external_review_required_before_stronger_readiness": true,
+  "primary_metric": "euclidean_distance",
+  "metric_family": [
+    "euclidean_distance"
+  ],
+  "sensitivity_metrics": [
+    "cosine_similarity",
+    "manhattan_distance"
+  ],
+  "random_seed": 1729,
+  "resamples": 5000,
+  "alpha": 0.05,
+  "multiple_comparison_correction": [
+    "Holm-Bonferroni",
+    "Benjamini-Hochberg"
+  ],
+  "test_definition": {
+    "test_family": "axis-level local-campaign versus public-growth mean-distance contrasts",
+    "null_model": "group labels are exchangeable within each predeclared perturbation axis for the selected metric",
+    "test_statistic": "absolute_mean_difference",
+    "p_value_floor": "1/resamples when no permutation draw matches or exceeds the observed statistic",
+    "effect_sizes": [
+      "median_difference",
+      "cliffs_delta",
+      "hedges_g_when_defensible"
+    ]
+  },
+  "predeclared_contrasts": [
+    {
+      "contrast_id": "axis_compressed_version_local_vs_public_growth",
+      "left_group": "local_campaign_axis:compressed_version",
+      "right_group": "public_growth_axis:compressed_version",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    },
+    {
+      "contrast_id": "axis_formalized_style_local_vs_public_growth",
+      "left_group": "local_campaign_axis:formalized_style",
+      "right_group": "public_growth_axis:formalized_style",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    },
+    {
+      "contrast_id": "axis_informalized_style_local_vs_public_growth",
+      "left_group": "local_campaign_axis:informalized_style",
+      "right_group": "public_growth_axis:informalized_style",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    },
+    {
+      "contrast_id": "axis_punctuation_cleanup_local_vs_public_growth",
+      "left_group": "local_campaign_axis:punctuation_cleanup",
+      "right_group": "public_growth_axis:punctuation_cleanup",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    },
+    {
+      "contrast_id": "axis_sentence_split_merge_local_vs_public_growth",
+      "left_group": "local_campaign_axis:sentence_split_merge",
+      "right_group": "public_growth_axis:sentence_split_merge",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    },
+    {
+      "contrast_id": "axis_word_order_shift_local_vs_public_growth",
+      "left_group": "local_campaign_axis:word_order_shift",
+      "right_group": "public_growth_axis:word_order_shift",
+      "metric": "euclidean_distance",
+      "test_statistic": "absolute_mean_difference",
+      "left_minimum_n": 3,
+      "right_minimum_n": 20,
+      "rationale": "Shared perturbation axis already present in the fixed v1.2 correction family."
+    }
+  ],
+  "deferred_contrasts": [
+    {
+      "scope": "independent_holdout_v1",
+      "reason": "Holdout transform labels do not map one-to-one onto the six public-growth axes. Treat holdout evidence as source-separation and robustness context until an axis mapping is predeclared."
+    },
+    {
+      "scope": "conventional_stylometry_baseline_v1",
+      "reason": "The baseline uses character n-gram cosine distance rather than the CogniPrint profile vector. Use it for bridge interpretation, not as a direct permutation contrast unless a separate baseline-specific test family is frozen."
+    }
+  ],
+  "reporting_rules": [
+    "Report all predeclared contrasts, including null or weak results.",
+    "Report p-values alongside effect sizes and group sizes.",
+    "Apply both Holm-Bonferroni and Benjamini-Hochberg corrections across the six-axis family.",
+    "Use finite-resample p-value floors when no permutation draw exceeds the observed statistic.",
+    "Do not promote unstable, underpowered, or small-sample results as robust.",
+    "Do not use this spec to claim author identification, text provenance determination, legal conclusion, deterministic classification, or universal performance."
+  ],
+  "execution_boundary": {
+    "results_generated": false,
+    "stronger_readiness_allowed": false,
+    "external_review_gate_required": true
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "rows": [
+    {
+      "ablated_family_mean_delta": 0.022043,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.003388,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "compressed_version"
+    },
+    {
+      "ablated_family_mean_delta": 0.022426,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.003771,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "formalized_style"
+    },
+    {
+      "ablated_family_mean_delta": 0.021573,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.002918,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "informalized_style"
+    },
+    {
+      "ablated_family_mean_delta": 0.020454,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.001799,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "punctuation_cleanup"
+    },
+    {
+      "ablated_family_mean_delta": 0.006106,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -0.012549,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "sentence_split_merge"
+    },
+    {
+      "ablated_family_mean_delta": 0.019326,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.000672,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "word_order_shift"
+    },
+    {
+      "ablated_family_mean_delta": 0.018655,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-001"
+    },
+    {
+      "ablated_family_mean_delta": 0.02007,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.001416,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-002"
+    },
+    {
+      "ablated_family_mean_delta": 0.017249,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": -0.001406,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-003"
+    },
+    {
+      "ablated_family_mean_delta": 0.018645,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": -1e-05,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-004"
+    },
+    {
+      "ablated_family_mean_delta": 0.018655,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": 0.018655,
+      "metric": "cosine_similarity",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "final-v5-campaign"
+    },
+    {
+      "ablated_family_mean_delta": -6.052084,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -0.248422,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "compressed_version"
+    },
+    {
+      "ablated_family_mean_delta": -6.840103,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -1.036442,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "formalized_style"
+    },
+    {
+      "ablated_family_mean_delta": -6.051172,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -0.247511,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "informalized_style"
+    },
+    {
+      "ablated_family_mean_delta": -6.882557,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -1.078896,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "punctuation_cleanup"
+    },
+    {
+      "ablated_family_mean_delta": -3.780518,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 2.023143,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "sentence_split_merge"
+    },
+    {
+      "ablated_family_mean_delta": -5.215534,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.588127,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "word_order_shift"
+    },
+    {
+      "ablated_family_mean_delta": -5.803661,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-001"
+    },
+    {
+      "ablated_family_mean_delta": -5.225942,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.577719,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-002"
+    },
+    {
+      "ablated_family_mean_delta": -5.613327,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.190335,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-003"
+    },
+    {
+      "ablated_family_mean_delta": -6.571715,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": -0.768054,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-004"
+    },
+    {
+      "ablated_family_mean_delta": -5.803661,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": -5.803661,
+      "metric": "euclidean_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "final-v5-campaign"
+    },
+    {
+      "ablated_family_mean_delta": -5.91314,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -0.146785,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "compressed_version"
+    },
+    {
+      "ablated_family_mean_delta": -6.849367,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -1.083012,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "formalized_style"
+    },
+    {
+      "ablated_family_mean_delta": -6.048737,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -0.282382,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "informalized_style"
+    },
+    {
+      "ablated_family_mean_delta": -6.833968,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": -1.067613,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "punctuation_cleanup"
+    },
+    {
+      "ablated_family_mean_delta": -3.763749,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 2.002606,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "sentence_split_merge"
+    },
+    {
+      "ablated_family_mean_delta": -5.189168,
+      "ablation_type": "axis_family_leave_one_axis_out",
+      "delta_change": 0.577187,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Axis-family ablation only; feature-group ablation remains deferred.",
+      "removed_unit": "word_order_shift"
+    },
+    {
+      "ablated_family_mean_delta": -5.766355,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-001"
+    },
+    {
+      "ablated_family_mean_delta": -5.200551,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.565803,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-002"
+    },
+    {
+      "ablated_family_mean_delta": -5.482362,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.283993,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-003"
+    },
+    {
+      "ablated_family_mean_delta": -6.616151,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": -0.849796,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "empirical-campaign-004"
+    },
+    {
+      "ablated_family_mean_delta": -5.766355,
+      "ablation_type": "local_campaign_leave_one_campaign_out",
+      "delta_change": 0.0,
+      "full_family_mean_delta": -5.766355,
+      "metric": "manhattan_distance",
+      "note": "Campaign inclusion sensitivity; not a feature-group ablation.",
+      "removed_unit": "final-v5-campaign"
+    },
+    {
+      "ablated_family_mean_delta": null,
+      "ablation_type": "feature_group_ablation",
+      "delta_change": null,
+      "full_family_mean_delta": null,
+      "metric": "not_run",
+      "note": "Deferred until profile-vector-level row schema exposes major feature-group recomputation.",
+      "removed_unit": "major_feature_groups"
+    }
+  ]
+}

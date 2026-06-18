@@ -1,0 +1,7 @@
+metric,summary_type,count,mean,median,min,max,lower,upper
+cosine_similarity,pooled,3456,0.983761,0.999106,0.837681,1.0,,
+cosine_similarity,draw_means,64,0.983761,0.984249,0.972498,0.991823,,
+euclidean_distance,pooled,3456,9.375026,5.029025,0.027772,42.000004,,
+euclidean_distance,draw_means,64,9.375026,9.372298,5.934722,12.750323,,
+manhattan_distance,pooled,3456,10.001168,6.268128,0.039127,42.06285,,
+manhattan_distance,draw_means,64,10.001168,10.03046,6.352443,13.325114,,

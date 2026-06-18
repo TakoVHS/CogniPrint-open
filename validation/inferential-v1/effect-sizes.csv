@@ -1,0 +1,7 @@
+contrast_id,axis,metric,left_count,right_count,median_difference_left_minus_right,cliffs_delta_left_vs_right,hedges_g_right_vs_left,interpretation_note
+axis_compressed_version_local_vs_public_growth,compressed_version,euclidean_distance,3,20,-3.011392,-0.466667,0.745327,Observed dataset only; small local campaign n limits stability claims.
+axis_formalized_style_local_vs_public_growth,formalized_style,euclidean_distance,3,20,-0.915161,-0.266667,0.483691,Observed dataset only; small local campaign n limits stability claims.
+axis_informalized_style_local_vs_public_growth,informalized_style,euclidean_distance,3,20,-0.632548,-0.266667,0.465298,Observed dataset only; small local campaign n limits stability claims.
+axis_punctuation_cleanup_local_vs_public_growth,punctuation_cleanup,euclidean_distance,3,20,5.062953,0.166667,0.043244,Observed dataset only; small local campaign n limits stability claims.
+axis_sentence_split_merge_local_vs_public_growth,sentence_split_merge,euclidean_distance,3,20,-10.760512,-0.833333,1.08378,Observed dataset only; small local campaign n limits stability claims.
+axis_word_order_shift_local_vs_public_growth,word_order_shift,euclidean_distance,3,20,-6.693934,-0.366667,0.814049,Observed dataset only; small local campaign n limits stability claims.

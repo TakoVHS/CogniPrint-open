@@ -1,0 +1,58 @@
+{
+  "snapshot_id": "inferential-v1-input-manifest-template",
+  "status": "template_only",
+  "readiness_boundary": "descriptive_only",
+  "external_review_required_before_stronger_readiness": true,
+  "run_identifier": null,
+  "frozen_on": null,
+  "input_artifacts": [
+    {
+      "path": "evidence/empirical-v1/counts.json",
+      "role": "local controlled campaign counts",
+      "sha256": null
+    },
+    {
+      "path": "evidence/public-benchmark-v1.1/counts.json",
+      "role": "public benchmark counts",
+      "sha256": null
+    },
+    {
+      "path": "evidence/empirical-growth-v1/counts.json",
+      "role": "public empirical growth counts",
+      "sha256": null
+    },
+    {
+      "path": "evidence/independent-holdout-v1/counts.json",
+      "role": "independent holdout counts",
+      "sha256": null
+    },
+    {
+      "path": "validation/wave005-descriptive-validation/manifest.json",
+      "role": "current descriptive validation manifest",
+      "sha256": null
+    },
+    {
+      "path": "validation/statistical-validation-v1.2/manifest.json",
+      "role": "multiple-comparison correction manifest",
+      "sha256": null
+    },
+    {
+      "path": "validation/conventional-stylometry-baseline-v1/manifest.json",
+      "role": "conventional baseline manifest",
+      "sha256": null
+    }
+  ],
+  "configuration": {
+    "feature_map_version": null,
+    "preprocessing_version": null,
+    "normalization": null,
+    "metrics": [],
+    "random_seed": null,
+    "resamples": null
+  },
+  "command_line": null,
+  "notes": [
+    "Replace null hashes before running inferential-v1.",
+    "Do not use this template as evidence output."
+  ]
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "axis": "compressed_version",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.9863,
+      "mean": 0.992468,
+      "resamples": 2000,
+      "upper": 0.996955
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 5.588342,
+      "mean": 8.084026,
+      "resamples": 2000,
+      "upper": 10.808428
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.992468,
+    "mean_euclidean_distance": 8.084026,
+    "mean_manhattan_distance": 9.261325,
+    "row_count": 20
+  },
+  {
+    "axis": "formalized_style",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.999099,
+      "mean": 0.999575,
+      "resamples": 2000,
+      "upper": 0.999863
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 1.171067,
+      "mean": 1.659729,
+      "resamples": 2000,
+      "upper": 2.297088
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.999575,
+    "mean_euclidean_distance": 1.659729,
+    "mean_manhattan_distance": 2.128132,
+    "row_count": 20
+  },
+  {
+    "axis": "informalized_style",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.985435,
+      "mean": 0.993788,
+      "resamples": 2000,
+      "upper": 0.999161
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 2.420409,
+      "mean": 6.093491,
+      "resamples": 2000,
+      "upper": 10.766134
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.993788,
+    "mean_euclidean_distance": 6.093491,
+    "mean_manhattan_distance": 6.810159,
+    "row_count": 20
+  },
+  {
+    "axis": "punctuation_cleanup",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.968155,
+      "mean": 0.986985,
+      "resamples": 2000,
+      "upper": 0.999415
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.72975,
+      "mean": 4.116498,
+      "resamples": 2000,
+      "upper": 8.633777
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.986985,
+    "mean_euclidean_distance": 4.116498,
+    "mean_manhattan_distance": 4.141262,
+    "row_count": 20
+  },
+  {
+    "axis": "sentence_split_merge",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.857359,
+      "mean": 0.902858,
+      "resamples": 2000,
+      "upper": 0.942923
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 13.236508,
+      "mean": 19.367179,
+      "resamples": 2000,
+      "upper": 25.558583
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.902858,
+    "mean_euclidean_distance": 19.367179,
+    "mean_manhattan_distance": 19.518532,
+    "row_count": 20
+  },
+  {
+    "axis": "word_order_shift",
+    "cosine_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 0.967721,
+      "mean": 0.984057,
+      "resamples": 2000,
+      "upper": 0.995423
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 20,
+      "lower": 5.231071,
+      "mean": 9.852644,
+      "resamples": 2000,
+      "upper": 14.758488
+    },
+    "group_count": 1,
+    "mean_cosine_similarity": 0.984057,
+    "mean_euclidean_distance": 9.852644,
+    "mean_manhattan_distance": 10.088817,
+    "row_count": 20
+  }
+]

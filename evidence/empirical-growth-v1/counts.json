@@ -1,0 +1,11 @@
+{
+  "axis_count": 11,
+  "baseline_count": 20,
+  "comparison_row_count": 220,
+  "generated_public_transform_rows": 100,
+  "language_count": 5,
+  "minimum_axis_row_count": 20,
+  "released_benchmark_variant_rows": 120,
+  "snapshot_id": "empirical-growth-v1",
+  "source_class_count": 3
+}

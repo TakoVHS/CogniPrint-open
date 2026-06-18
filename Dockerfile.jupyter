@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /workspace/CogniPrint
+
+COPY pyproject.toml README.md LICENSE CITATION.cff ./
+COPY src ./src
+COPY scripts ./scripts
+COPY docs ./docs
+COPY evidence ./evidence
+COPY paper ./paper
+COPY datasets ./datasets
+COPY tests ./tests
+
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -e . \
+    && python -m pip install pytest jupyterlab nbconvert matplotlib pandas numpy
+
+EXPOSE 8888
+
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--IdentityProvider.token="]

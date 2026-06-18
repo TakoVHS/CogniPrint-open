@@ -1,0 +1,48 @@
+{
+  "between_campaign_variance": {
+    "mean_cosine_similarity": 0.000137,
+    "mean_euclidean_distance": 1.27235
+  },
+  "per_campaign": [
+    {
+      "campaign_id": "empirical-campaign-001",
+      "comparison_count": 4,
+      "cosine_similarity_variance": 1.2e-05,
+      "euclidean_distance_variance": 0.005458,
+      "mean_cosine_similarity": 0.973802,
+      "mean_euclidean_distance": 4.127904
+    },
+    {
+      "campaign_id": "empirical-campaign-002",
+      "comparison_count": 12,
+      "cosine_similarity_variance": 0.000188,
+      "euclidean_distance_variance": 3.006864,
+      "mean_cosine_similarity": 0.986592,
+      "mean_euclidean_distance": 2.206223
+    },
+    {
+      "campaign_id": "empirical-campaign-003",
+      "comparison_count": 11,
+      "cosine_similarity_variance": 5e-06,
+      "euclidean_distance_variance": 3.347227,
+      "mean_cosine_similarity": 0.998703,
+      "mean_euclidean_distance": 1.601293
+    },
+    {
+      "campaign_id": "empirical-campaign-004",
+      "comparison_count": 11,
+      "cosine_similarity_variance": 1.8e-05,
+      "euclidean_distance_variance": 6.602259,
+      "mean_cosine_similarity": 0.99665,
+      "mean_euclidean_distance": 3.102011
+    },
+    {
+      "campaign_id": "final-v5-campaign",
+      "comparison_count": 3,
+      "cosine_similarity_variance": 1.2e-05,
+      "euclidean_distance_variance": 0.005458,
+      "mean_cosine_similarity": 0.974803,
+      "mean_euclidean_distance": 4.106577
+    }
+  ]
+}

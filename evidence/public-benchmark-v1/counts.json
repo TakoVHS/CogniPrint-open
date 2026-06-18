@@ -1,0 +1,9 @@
+{
+  "snapshot_id": "public-benchmark-v1",
+  "released_samples": 6,
+  "released_variants": 36,
+  "released_languages": 3,
+  "released_source_classes": 3,
+  "released_perturbation_axes": 6,
+  "notes": "Counts reflect the first small public benchmark subset only. They do not imply benchmark analysis results."
+}

@@ -1,0 +1,62 @@
+{
+  "cosine_distance_summary": {
+    "count": 120,
+    "max": 0.063006,
+    "mean": 0.008243,
+    "median": 0.002396,
+    "min": 0.0
+  },
+  "data_mode": "real_public_or_generated_dataset",
+  "euclidean_distance_summary": {
+    "count": 120,
+    "max": 0.809501,
+    "mean": 0.224497,
+    "median": 0.174267,
+    "min": 0.0
+  },
+  "external_review_gate_satisfied": false,
+  "fingerprint_version": "cognitive-fingerprint-v2.0",
+  "guardrail": "Generated paraphrase datasets are marked as generated_paraphrase where applicable. These outputs describe profile behavior on the selected corpora and do not establish validation, source identity, or universal thresholds.",
+  "pair_count": 120,
+  "pair_source_counts": {
+    "adversarial_paraphrase_benchmark": 40,
+    "generated_or_curated_paraphrase_group": 40,
+    "generated_paraphrase_round_trip_translation": 40
+  },
+  "random_cosine_summary": {
+    "count": 300,
+    "max": 0.436951,
+    "mean": 0.07823,
+    "median": 0.060041,
+    "min": 0.001081
+  },
+  "random_euclidean_summary": {
+    "count": 300,
+    "max": 2.3897,
+    "mean": 0.798899,
+    "median": 0.764494,
+    "min": 0.106361
+  },
+  "random_pair_count": 300,
+  "readiness_boundary": "descriptive_only",
+  "significant_euclidean_p_lt_0_05_count": 76,
+  "snapshot_id": "human-paraphrase-v1",
+  "source_dataset_counts": {
+    "cointegrated/ru-paraphrase-NMT-Leipzig": 40,
+    "google-research-datasets/paws": 40,
+    "inkoziev/paraphrases": 40
+  },
+  "source_license_notes": [
+    "CC-BY-4.0",
+    "CC-BY-NC-4.0",
+    "Google Research PAWS public benchmark; freely usable per dataset documentation"
+  ],
+  "status": "real public/generated paraphrase diagnostic",
+  "tfidf_cosine_distance_summary": {
+    "count": 120,
+    "max": 1.0,
+    "mean": 0.416507,
+    "median": 0.452608,
+    "min": 0.0
+  }
+}

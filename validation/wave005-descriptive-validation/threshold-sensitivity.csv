@@ -1,0 +1,10 @@
+metric,direction,grid,low_threshold,moderate_threshold,campaign_low,campaign_moderate,campaign_larger,benchmark_low,benchmark_moderate,benchmark_larger
+euclidean_distance,distance,strict,0.5,2.0,9,9,23,25,19,76
+euclidean_distance,distance,current,1.0,4.0,12,13,16,34,32,54
+euclidean_distance,distance,relaxed,1.5,5.0,17,19,5,42,26,52
+manhattan_distance,distance,strict,1.0,3.5,10,10,21,31,31,58
+manhattan_distance,distance,current,2.0,5.5,15,17,9,42,27,51
+manhattan_distance,distance,relaxed,3.0,7.5,18,22,1,57,19,44
+cosine_similarity,similarity,strict,0.997,0.992,20,6,15,73,6,41
+cosine_similarity,similarity,current,0.995,0.985,24,5,12,77,12,31
+cosine_similarity,similarity,relaxed,0.99,0.975,26,9,6,82,14,24

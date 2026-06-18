@@ -1,0 +1,24 @@
+{
+  "languages": {
+    "de": 2,
+    "en": 2,
+    "es": 2,
+    "fr": 2,
+    "ru": 1
+  },
+  "perturbation_axes": {
+    "compressed_version": 9,
+    "formalized_style": 9,
+    "informalized_style": 9,
+    "punctuation_cleanup": 9,
+    "sentence_split_merge": 9,
+    "word_order_shift": 9
+  },
+  "released_baselines": 9,
+  "released_variants": 54,
+  "source_classes": {
+    "public-domain government text": 3,
+    "public-domain literary text": 4,
+    "public-domain political prose": 2
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "analysis": "minimum_text_length_stability",
+  "first_length_within_10pct_of_lowest_deviation": 320,
+  "guardrail": "This is a corpus-specific stability diagnostic. It is not a universal minimum text length.",
+  "lengths_evaluated": [
+    40,
+    80,
+    120,
+    200,
+    320,
+    500,
+    800
+  ],
+  "lowest_mean_deviation": 0.100484,
+  "readiness_boundary": "descriptive_only",
+  "token_pool_count": 4617
+}

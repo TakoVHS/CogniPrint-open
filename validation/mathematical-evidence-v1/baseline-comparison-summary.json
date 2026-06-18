@@ -1,0 +1,86 @@
+{
+  "analysis": "baseline_contrast_diagnostics",
+  "baseline_variant_count": 120,
+  "guardrail": "Baseline contrasts compare descriptive distance distributions. They do not claim superiority or validated task performance.",
+  "metrics": {
+    "fingerprint_cosine_distance": {
+      "baseline_variant": {
+        "count": 120,
+        "max": 0.338175,
+        "mean": 0.038057,
+        "median": 0.009487,
+        "min": 0.0,
+        "p95": 0.166253
+      },
+      "cohens_d_random_minus_variant": 0.742855,
+      "random_baseline_pair": {
+        "count": 190,
+        "max": 0.433787,
+        "mean": 0.096479,
+        "median": 0.066125,
+        "min": 0.002005,
+        "p95": 0.303714
+      }
+    },
+    "fingerprint_euclidean_distance": {
+      "baseline_variant": {
+        "count": 120,
+        "max": 1.763015,
+        "mean": 0.451674,
+        "median": 0.30287,
+        "min": 0.0,
+        "p95": 1.426786
+      },
+      "cohens_d_random_minus_variant": 0.99153,
+      "random_baseline_pair": {
+        "count": 190,
+        "max": 2.369758,
+        "mean": 0.903516,
+        "median": 0.805996,
+        "min": 0.13339,
+        "p95": 1.822831
+      }
+    },
+    "random_vector_distance": {
+      "baseline_variant": {
+        "count": 120,
+        "max": 1.201413,
+        "mean": 0.987488,
+        "median": 0.994335,
+        "min": 0.0,
+        "p95": 1.162599
+      },
+      "cohens_d_random_minus_variant": 0.134903,
+      "random_baseline_pair": {
+        "count": 190,
+        "max": 1.308984,
+        "mean": 1.003625,
+        "median": 0.993572,
+        "min": 0.722127,
+        "p95": 1.170653
+      }
+    },
+    "tfidf_cosine_distance": {
+      "baseline_variant": {
+        "count": 120,
+        "max": 0.645829,
+        "mean": 0.112916,
+        "median": 0.037143,
+        "min": -0.0,
+        "p95": 0.523314
+      },
+      "cohens_d_random_minus_variant": 6.865292,
+      "random_baseline_pair": {
+        "count": 190,
+        "max": 1.0,
+        "mean": 0.96569,
+        "median": 1.0,
+        "min": 0.638102,
+        "p95": 1.0
+      }
+    }
+  },
+  "random_baseline_pair_count": 190,
+  "readiness_boundary": "descriptive_only",
+  "row_count": 310
+}

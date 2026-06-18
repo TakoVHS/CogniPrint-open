@@ -1,0 +1,7 @@
+axis,cogniprint_mean_euclidean_distance,stylometry_mean_char_ngram_distance
+compressed_version,8.084026,0.201825
+formalized_style,1.659729,0.118872
+informalized_style,6.093491,0.218097
+punctuation_cleanup,4.116498,0.067524
+sentence_split_merge,19.367179,0.110027
+word_order_shift,9.852644,0.103308

@@ -1,0 +1,167 @@
+[
+  {
+    "axis": "holdout_punctuation_strip",
+    "cosine_similarity": {
+      "count": 10,
+      "max": 0.981975,
+      "mean": 0.680818,
+      "median": 0.826051,
+      "min": 0.235823
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 10,
+      "lower": 324.291194,
+      "mean": 348.092654,
+      "resamples": 2000,
+      "upper": 365.808928
+    },
+    "euclidean_distance": {
+      "count": 10,
+      "max": 385.130497,
+      "mean": 348.092654,
+      "median": 352.138895,
+      "min": 256.356985
+    },
+    "manhattan_distance": {
+      "count": 10,
+      "max": 385.508289,
+      "mean": 348.675521,
+      "median": 352.280945,
+      "min": 260.560636
+    },
+    "row_count": 10
+  },
+  {
+    "axis": "holdout_sentence_rotate",
+    "cosine_similarity": {
+      "count": 10,
+      "max": 0.999998,
+      "mean": 0.99985,
+      "median": 0.999824,
+      "min": 0.999648
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 10,
+      "lower": 0.31235,
+      "mean": 1.165923,
+      "resamples": 2000,
+      "upper": 2.595956
+    },
+    "euclidean_distance": {
+      "count": 10,
+      "max": 7.089286,
+      "mean": 1.165923,
+      "median": 0.662043,
+      "min": 0.024052
+    },
+    "manhattan_distance": {
+      "count": 10,
+      "max": 7.09156,
+      "mean": 1.172481,
+      "median": 0.664766,
+      "min": 0.032792
+    },
+    "row_count": 10
+  },
+  {
+    "axis": "holdout_token_pair_swap",
+    "cosine_similarity": {
+      "count": 10,
+      "max": 1.0,
+      "mean": 1.0,
+      "median": 1.0,
+      "min": 0.999997
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 10,
+      "lower": 0.008577,
+      "mean": 0.014416,
+      "resamples": 2000,
+      "upper": 0.021126
+    },
+    "euclidean_distance": {
+      "count": 10,
+      "max": 0.035594,
+      "mean": 0.014416,
+      "median": 0.010273,
+      "min": 0.003641
+    },
+    "manhattan_distance": {
+      "count": 10,
+      "max": 0.035594,
+      "mean": 0.014416,
+      "median": 0.010273,
+      "min": 0.003641
+    },
+    "row_count": 10
+  },
+  {
+    "axis": "holdout_token_stride_drop",
+    "cosine_similarity": {
+      "count": 10,
+      "max": 0.999994,
+      "mean": 0.999713,
+      "median": 0.99975,
+      "min": 0.999397
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 10,
+      "lower": 0.42821,
+      "mean": 0.758839,
+      "resamples": 2000,
+      "upper": 1.102556
+    },
+    "euclidean_distance": {
+      "count": 10,
+      "max": 1.58452,
+      "mean": 0.758839,
+      "median": 0.502234,
+      "min": 0.200954
+    },
+    "manhattan_distance": {
+      "count": 10,
+      "max": 1.921853,
+      "mean": 1.067878,
+      "median": 0.877854,
+      "min": 0.377132
+    },
+    "row_count": 10
+  },
+  {
+    "axis": "holdout_token_stride_duplicate",
+    "cosine_similarity": {
+      "count": 10,
+      "max": 0.999984,
+      "mean": 0.999395,
+      "median": 0.99986,
+      "min": 0.997666
+    },
+    "euclidean_bootstrap": {
+      "confidence": 0.95,
+      "count": 10,
+      "lower": 0.431523,
+      "mean": 1.104154,
+      "resamples": 2000,
+      "upper": 2.1062
+    },
+    "euclidean_distance": {
+      "count": 10,
+      "max": 4.877654,
+      "mean": 1.104154,
+      "median": 0.635402,
+      "min": 0.168865
+    },
+    "manhattan_distance": {
+      "count": 10,
+      "max": 5.229359,
+      "mean": 1.416969,
+      "median": 0.973181,
+      "min": 0.375733
+    },
+    "row_count": 10
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "benchmark_baseline_count": 9,
+  "benchmark_variant_count": 54,
+  "empirical_campaign_count": 5,
+  "empirical_comparison_row_count": 41,
+  "guardrail": "These outputs provide descriptive validation summaries, bootstrap intervals, multi-draw random baseline references, threshold-sensitivity summaries across multiple metric families, and benchmark-versus-campaign bridge materials. They do not claim inferential certainty or publication-level completion.",
+  "snapshot_id": "statistical-validation-v1.1",
+  "status": "expanded descriptive statistical validation layer"
+}

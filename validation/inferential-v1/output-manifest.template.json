@@ -1,0 +1,50 @@
+{
+  "snapshot_id": "inferential-v1-output-manifest-template",
+  "status": "template_only",
+  "readiness_boundary": "descriptive_only",
+  "run_identifier": null,
+  "created_at": null,
+  "input_manifest": "validation/inferential-v1/input-manifest.json",
+  "outputs": [
+    {
+      "path": "validation/inferential-v1/bootstrap-summary.csv",
+      "role": "bootstrap confidence intervals",
+      "sha256": null
+    },
+    {
+      "path": "validation/inferential-v1/permutation-results.csv",
+      "role": "predeclared permutation tests",
+      "sha256": null
+    },
+    {
+      "path": "validation/inferential-v1/effect-sizes.csv",
+      "role": "effect size summaries",
+      "sha256": null
+    },
+    {
+      "path": "validation/inferential-v1/sensitivity-results.csv",
+      "role": "sensitivity analysis",
+      "sha256": null
+    },
+    {
+      "path": "validation/inferential-v1/ablation-results.csv",
+      "role": "feature group ablation",
+      "sha256": null
+    },
+    {
+      "path": "validation/inferential-v1/limitations.md",
+      "role": "limitations and interpretation boundary",
+      "sha256": null
+    }
+  ],
+  "required_checks": [
+    "make claims-drift-check",
+    "make claims-guard-check",
+    "make statistical-readiness-check",
+    "make external-review-check"
+  ],
+  "notes": [
+    "Replace this template only after concrete outputs exist.",
+    "The external-review gate must be true before stronger readiness wording is used."
+  ]
+}

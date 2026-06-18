@@ -1,0 +1,38 @@
+{
+  "guardrail": "CogniPrint and character n-gram distances are on different scales; only axis-level pattern comparison is reported.",
+  "pearson_axis_mean_correlation": -0.072067,
+  "rows": [
+    {
+      "axis": "compressed_version",
+      "cogniprint_mean_euclidean_distance": 8.084026,
+      "stylometry_mean_char_ngram_distance": 0.201825
+    },
+    {
+      "axis": "formalized_style",
+      "cogniprint_mean_euclidean_distance": 1.659729,
+      "stylometry_mean_char_ngram_distance": 0.118872
+    },
+    {
+      "axis": "informalized_style",
+      "cogniprint_mean_euclidean_distance": 6.093491,
+      "stylometry_mean_char_ngram_distance": 0.218097
+    },
+    {
+      "axis": "punctuation_cleanup",
+      "cogniprint_mean_euclidean_distance": 4.116498,
+      "stylometry_mean_char_ngram_distance": 0.067524
+    },
+    {
+      "axis": "sentence_split_merge",
+      "cogniprint_mean_euclidean_distance": 19.367179,
+      "stylometry_mean_char_ngram_distance": 0.110027
+    },
+    {
+      "axis": "word_order_shift",
+      "cogniprint_mean_euclidean_distance": 9.852644,
+      "stylometry_mean_char_ngram_distance": 0.103308
+    }
+  ],
+  "shared_axis_count": 6,
+  "spearman_axis_rank_correlation": -0.085714
+}

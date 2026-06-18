@@ -1,0 +1,30 @@
+{
+  "analysis": "empirical_lipschitz_sensitivity",
+  "edit_distance_summary": {
+    "count": 120,
+    "max": 52.0,
+    "mean": 12.008333,
+    "median": 6.0,
+    "min": 0.0,
+    "p95": 39.0
+  },
+  "guardrail": "K estimates are empirical on observed variants. They are not a formal global Lipschitz proof.",
+  "k_empirical_summary": {
+    "count": 88,
+    "max": 0.46955,
+    "mean": 0.073908,
+    "median": 0.025235,
+    "min": 0.0,
+    "p95": 0.338735
+  },
+  "pair_count": 120,
+  "profile_delta_summary": {
+    "count": 120,
+    "max": 1.763015,
+    "mean": 0.451674,
+    "median": 0.30287,
+    "min": 0.0,
+    "p95": 1.426786
+  },
+  "readiness_boundary": "descriptive_only"
+}

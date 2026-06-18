@@ -1,0 +1,24 @@
+{
+  "baseline_text_count": 20,
+  "external_review_gate_satisfied": false,
+  "feature_count": 12,
+  "fingerprint_version": "cognitive-fingerprint-v2.0",
+  "guardrail": "These outputs characterize fingerprint geometry and sensitivity. They do not establish validation, authorship, provenance, AI detection, legal status, forensic status, or a universal threshold.",
+  "holdout_text_count": 10,
+  "outputs": [
+    "pca-summary.json",
+    "pca-components.csv",
+    "min-text-length-stability.json",
+    "min-text-length-stability.csv",
+    "lipschitz-summary.json",
+    "lipschitz-pair-diagnostics.csv",
+    "feature-sensitivity.csv",
+    "baseline-comparison-summary.json",
+    "baseline-comparison.csv",
+    "README.md"
+  ],
+  "readiness_boundary": "descriptive_only",
+  "snapshot_id": "mathematical-evidence-v1",
+  "status": "pre-review mathematical diagnostics",
+  "variant_pair_count": 120
+}

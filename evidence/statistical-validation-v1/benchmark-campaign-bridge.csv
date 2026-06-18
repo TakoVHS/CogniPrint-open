@@ -1,0 +1,7 @@
+axis,campaign_row_count,benchmark_row_count,campaign_mean_cosine_similarity,benchmark_mean_cosine_similarity,cosine_similarity_delta,cosine_similarity_abs_delta,campaign_mean_euclidean_distance,benchmark_mean_euclidean_distance,euclidean_distance_delta,euclidean_distance_abs_delta,campaign_mean_manhattan_distance,benchmark_mean_manhattan_distance,manhattan_distance_delta,manhattan_distance_abs_delta,alignment_band
+compressed_version,3,9,0.99418,0.990591,-0.003589,0.003589,3.522476,7.459324,3.936848,3.936848,4.228894,8.363535,4.134641,4.134641,wider
+formalized_style,3,9,0.999374,0.999214,-0.00016,0.00016,1.038277,1.910191,0.871914,0.871914,1.776839,2.534902,0.758063,0.758063,close
+informalized_style,3,9,0.99785,0.986353,-0.011497,0.011497,1.527384,11.762124,10.23474,10.23474,2.455715,12.923603,10.467888,10.467888,wider
+punctuation_cleanup,3,9,0.996644,0.976852,-0.019792,0.019792,3.707315,8.223324,4.516009,4.516009,3.712973,8.254065,4.541092,4.541092,wider
+sentence_split_merge,3,9,0.984256,0.966768,-0.017488,0.017488,3.447801,18.392628,14.944827,14.944827,3.739148,18.72797,14.988822,14.988822,wider
+word_order_shift,3,9,0.999354,0.980594,-0.01876,0.01876,1.108345,9.728097,8.619752,8.619752,1.436529,10.252926,8.816397,8.816397,wider

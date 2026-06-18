@@ -1,0 +1,38 @@
+{
+  "snapshot_id": "public-benchmark-v1.1",
+  "status": "fifth released benchmark-expansion wave after the public-benchmark-v1 subset",
+  "dataset_root": "datasets/public-benchmark-v1.1",
+  "evidence_root": "evidence/public-benchmark-v1.1",
+  "released_samples": 20,
+  "released_variants": 120,
+  "released_languages": [
+    "de",
+    "ru",
+    "en",
+    "fr",
+    "es"
+  ],
+  "released_source_classes": [
+    "public-domain literary text",
+    "public-domain government text",
+    "public-domain political prose"
+  ],
+  "released_perturbation_axes": [
+    "punctuation_cleanup",
+    "compressed_version",
+    "sentence_split_merge",
+    "word_order_shift",
+    "formalized_style",
+    "informalized_style"
+  ],
+  "released_baselines_by_wave": {
+    "wave-001": 2,
+    "wave-002": 2,
+    "wave-003": 2,
+    "wave-004": 3,
+    "wave-005": 11
+  },
+  "counts_source": "datasets/public-benchmark-v1.1/metadata/sample-plan-template.csv",
+  "source_url_check": "Wave-005 source URLs returned HTTP 200 during the 2026-05-05 local verification pass.",
+  "guardrail": "This release extends the public benchmark layer with five approved waves. It remains a benchmark increment and does not support broader benchmark-performance claims."
+}

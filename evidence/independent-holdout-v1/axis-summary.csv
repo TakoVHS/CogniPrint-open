@@ -1,0 +1,6 @@
+axis,row_count
+holdout_punctuation_strip,10
+holdout_sentence_rotate,10
+holdout_token_pair_swap,10
+holdout_token_stride_drop,10
+holdout_token_stride_duplicate,10

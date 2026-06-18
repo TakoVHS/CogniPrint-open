@@ -1,0 +1,23 @@
+{
+  "cosine_similarity": {
+    "count": 220,
+    "max": 1.0,
+    "mean": 0.98406,
+    "median": 0.999819,
+    "min": 0.652922
+  },
+  "euclidean_distance": {
+    "count": 220,
+    "max": 48.857143,
+    "mean": 6.413855,
+    "median": 2.006016,
+    "min": 0.0
+  },
+  "manhattan_distance": {
+    "count": 220,
+    "max": 48.857143,
+    "mean": 6.75574,
+    "median": 2.305337,
+    "min": 0.0
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "components_for_90pct": 5,
+  "components_for_95pct": 6,
+  "effective_dimension_participation_ratio": 4.284743,
+  "feature_count": 12,
+  "feature_means": {
+    "char_bigram_uniqueness": 0.42309633,
+    "char_entropy": 0.8529823,
+    "digit_token_ratio": 0.0316278,
+    "flesch_reading_ease": 0.64228957,
+    "mean_sentence_length_words": 0.69994557,
+    "mean_syllables_per_word": 0.4426728,
+    "mean_word_length": 0.31623387,
+    "punctuation_ratio": 0.12004813,
+    "simpson_diversity": 1.0383919,
+    "type_token_ratio": 0.70004857,
+    "uppercase_ratio": 0.0947167,
+    "word_entropy": 0.44259123
+  },
+  "feature_stddevs": {
+    "char_bigram_uniqueness": 0.2483148,
+    "char_entropy": 0.0756265,
+    "digit_token_ratio": 0.08585709,
+    "flesch_reading_ease": 0.3292767,
+    "mean_sentence_length_words": 0.54078893,
+    "mean_syllables_per_word": 0.12032327,
+    "mean_word_length": 0.06857141,
+    "punctuation_ratio": 0.06341866,
+    "simpson_diversity": 0.0226961,
+    "type_token_ratio": 0.18251458,
+    "uppercase_ratio": 0.13235666,
+    "word_entropy": 0.13403089
+  },
+  "interpretive_note": "PCA summarizes covariance geometry for the current corpus only. It is not a universal dimensionality proof.",
+  "sample_count": 30
+}

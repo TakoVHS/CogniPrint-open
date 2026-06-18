@@ -1,0 +1,31 @@
+{
+  "char_ngram_cosine_distance": {
+    "draw_mean_bootstrap": {
+      "confidence": 0.95,
+      "count": 64,
+      "lower": 0.948016,
+      "mean": 0.948987,
+      "resamples": 2000,
+      "upper": 0.95
+    },
+    "draw_mean_summary": {
+      "count": 64,
+      "max": 0.958217,
+      "mean": 0.948987,
+      "median": 0.948914,
+      "min": 0.940433
+    },
+    "pooled_summary": {
+      "count": 7680,
+      "max": 1.0,
+      "mean": 0.948987,
+      "median": 0.962876,
+      "min": 0.735218
+    }
+  },
+  "draw_count": 64,
+  "mode": "repeatable character-ngram cross-baseline reference distribution",
+  "pair_count_per_draw": 120,
+  "seed": 2718,
+  "total_pairs": 7680
+}

@@ -1,0 +1,10 @@
+{
+  "baseline_comparison_present": true,
+  "benchmark_baselines": 20,
+  "benchmark_variants": 120,
+  "bh_fdr_flagged_axis_count": 0,
+  "correction_test_count": 6,
+  "empirical_comparison_rows": 41,
+  "holm_flagged_axis_count": 0,
+  "snapshot_id": "statistical-validation-v1.2"
+}

@@ -1,0 +1,29 @@
+{
+  "row_count": 6,
+  "rows": [
+    {
+      "count": 6,
+      "perturbation_axis": "compressed_version"
+    },
+    {
+      "count": 6,
+      "perturbation_axis": "formalized_style"
+    },
+    {
+      "count": 6,
+      "perturbation_axis": "informalized_style"
+    },
+    {
+      "count": 6,
+      "perturbation_axis": "punctuation_cleanup"
+    },
+    {
+      "count": 6,
+      "perturbation_axis": "sentence_split_merge"
+    },
+    {
+      "count": 6,
+      "perturbation_axis": "word_order_shift"
+    }
+  ]
+}

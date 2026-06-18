@@ -1,0 +1,7 @@
+axis,row_count,mean_char_ngram_cosine_similarity,mean_char_ngram_cosine_distance
+compressed_version,20,0.798175,0.201825
+formalized_style,20,0.881128,0.118872
+informalized_style,20,0.781903,0.218097
+punctuation_cleanup,20,0.932476,0.067524
+sentence_split_merge,20,0.889973,0.110027
+word_order_shift,20,0.896692,0.103308
