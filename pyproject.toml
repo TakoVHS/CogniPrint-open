@@ -44,7 +44,7 @@ demo = [
 
 [project.urls]
 Homepage = "https://cogniprint.org"
-Repository = "https://github.com/TakoVHS/CogniPrint"
+Repository = "https://github.com/TakoVHS/CogniPrint-open"
 
 [project.scripts]
 cogniprint = "cogniprint.cli:main"
