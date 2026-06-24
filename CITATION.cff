@@ -7,9 +7,10 @@ authors:
     orcid: "https://orcid.org/0009-0009-6337-1806"
     affiliation: "CogniPrint Research Initiative"
 version: "0.1.2"
-date-released: 2026-06-12
+date-released: 2026-06-18
 url: "https://cogniprint.org"
-repository-code: "https://github.com/TakoVHS/CogniPrint"
+repository-code: "https://github.com/TakoVHS/CogniPrint-open"
+doi: "10.5281/zenodo.20756421"
 license: MIT
 abstract: "CogniPrint is a research framework for constructing compact statistical profiles of text and studying profile similarity and stability under controlled perturbations. Its current scientific status is descriptive_only."
 keywords:

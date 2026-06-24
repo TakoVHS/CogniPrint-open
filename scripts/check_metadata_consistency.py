@@ -14,7 +14,7 @@ EXPECTED_AUTHOR = "Adriashkin Roman"
 EXPECTED_ORCID = "0009-0009-6337-1806"
 EXPECTED_TITLE = "CogniPrint: A mathematical framework for cognitive fingerprint analysis of text"
 EXPECTED_PROJECT_URL = "https://cogniprint.org"
-EXPECTED_REPOSITORY_URL = "https://github.com/TakoVHS/CogniPrint"
+EXPECTED_REPOSITORY_URL = "https://github.com/TakoVHS/CogniPrint-open"
 EXPECTED_YEAR = "2026"
 
 
@@ -98,8 +98,10 @@ def collect_metadata(root: Path, site_root: Path | None = None) -> dict[str, dic
     metadata = {
         "README.md": extract_readme_metadata(root / "README.md"),
         "CITATION.cff": extract_citation_metadata(root / "CITATION.cff"),
-        ".zenodo.json": extract_zenodo_metadata(root / ".zenodo.json"),
     }
+    zenodo_path = root / ".zenodo.json"
+    if zenodo_path.exists():
+        metadata[".zenodo.json"] = extract_zenodo_metadata(zenodo_path)
     if site_root and site_root.exists():
         metadata["website"] = extract_site_metadata(site_root)
     return metadata
