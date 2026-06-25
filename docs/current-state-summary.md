@@ -5,7 +5,7 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 - Scientific readiness: `descriptive_only`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
-- DOI: `10.5281/zenodo.20756421`
+- DOI: pending direct public Zenodo verification
 - Repository: https://github.com/TakoVHS/CogniPrint-open
 
-The project does not establish authorship, source, AI origin, legal status, forensic identity, or a universal classification result.
+The project remains bounded to descriptive measurement and does not expand its public claim scope.

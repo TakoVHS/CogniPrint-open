@@ -7,10 +7,10 @@ CogniPrint is an MIT-licensed research framework for constructing compact, inter
 - Readiness: `descriptive_only`
 - External methodological reviews: `0/1`
 - Release: `v0.1.2`
-- DOI: `10.5281/zenodo.20756421`
+- DOI: pending direct public Zenodo verification
 - Repository: https://github.com/TakoVHS/CogniPrint-open
 
-CogniPrint does **not** establish authorship, source, AI origin, legal status, forensic identity, or a universal classification result.
+CogniPrint keeps the bounded claim policy documented in the public research package and current-state summary.
 
 ## Public research package
 
@@ -41,7 +41,7 @@ Repository: https://github.com/TakoVHS/CogniPrint-open
 
 Project website: https://cogniprint.org
 
-DOI: https://doi.org/10.5281/zenodo.20756421
+DOI: pending direct public Zenodo verification
 
 ## License
 
