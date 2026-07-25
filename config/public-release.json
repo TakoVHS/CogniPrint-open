@@ -22,6 +22,7 @@
     "demo/**",
     "evidence/**",
     "validation/**",
+    "challenge-001/**",
     "benchmarks/model-fingerprint-v0.1/**",
     "integrations/qvac/**",
     "integrations/autonomys/**",
@@ -30,6 +31,7 @@
     "scripts/bootstrap_validation.py",
     "scripts/build_arxiv_package.sh",
     "scripts/build_paper.sh",
+    "scripts/build_research_lock_001.py",
     "scripts/check_challenge_leakage.py",
     "scripts/check_claims_drift.py",
     "scripts/check_empirical_growth_v1.py",
@@ -90,6 +92,7 @@
     "docs/attribution-challenge-001.md",
     "docs/preregistration-challenge-001-draft.md",
     "docs/stage-a-development-001.md",
+    "docs/research-lock-001.md",
     "docs/evaluation-contract-v1.md",
     "docs/independent-evaluator-v0.1.md",
     "docs/evidence-ontology-v1.md",
@@ -145,6 +148,8 @@
     "pyproject.toml",
     "config/public-release.json",
     "schemas/cogniprint-evidence-v1.schema.json",
+    "schemas/challenge-001-blinded-sample-v1.schema.json",
+    "schemas/challenge-001-revealed-label-v1.schema.json",
     "docs/trust.md"
   ],
   "public_safe_workflows": [
