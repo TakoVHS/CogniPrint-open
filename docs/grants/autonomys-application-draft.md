@@ -93,6 +93,14 @@ Implemented in the prototype branch/repository:
 - no automatic `publishObject()` call;
 - privacy/integrity tests.
 
+Verified during local development:
+
+- **4/4 capsule core tests PASS**: determinism/privacy, tamper detection, encrypted-intent secret exclusion, and invalid-input rejection;
+- **build → verify round-trip PASS** on a non-sensitive fixture;
+- an intentionally inserted `TOP_SECRET_TEXT` value is absent from the generated capsule.
+
+These are local schema/CLI results only. They are not an Auto Drive network validation.
+
 Not yet completed:
 
 - real Auto Drive upload;
@@ -118,6 +126,8 @@ Acceptance:
 - same bounded input produces the same capsule hash;
 - mutation causes verification failure;
 - deliberately inserted raw/private fields do not survive the schema.
+
+**Prototype status: complete locally; 4/4 core tests and build/verify round-trip passed.**
 
 ### M2 — Auto Drive storage integration
 
@@ -193,7 +203,8 @@ The storage layer preserves an evidence state; it does not strengthen unsupporte
 
 Change HOLD to READY only after:
 
-- [ ] local capsule tests pass;
+- [x] local capsule tests pass;
+- [x] local build/verify round-trip passes;
 - [ ] one non-sensitive capsule is uploaded through the current Auto Drive SDK;
 - [ ] a CID is returned and preserved;
 - [ ] retrieval/download produces the expected capsule;
