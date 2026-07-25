@@ -8,14 +8,18 @@ on:
       - "src/cogniprint/benchmarks/**"
       - "src/cogniprint/fingerprint.py"
       - "scripts/prepare_raid_pilot.py"
+      - "scripts/analyze_raid_pilot.py"
       - "tests/test_raid_pilot_adapter.py"
+      - "tests/test_raid_pilot_evaluation.py"
   pull_request:
     paths:
       - ".github/workflows/raid-pilot-ci.yml"
       - "src/cogniprint/benchmarks/**"
       - "src/cogniprint/fingerprint.py"
       - "scripts/prepare_raid_pilot.py"
+      - "scripts/analyze_raid_pilot.py"
       - "tests/test_raid_pilot_adapter.py"
+      - "tests/test_raid_pilot_evaluation.py"
   workflow_dispatch:
 
 permissions:
@@ -23,7 +27,7 @@ permissions:
 
 jobs:
   offline-adapter-test:
-    name: Offline adapter / Python ${{ matrix.python-version }}
+    name: Offline M1 tooling / Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -42,8 +46,12 @@ jobs:
       - name: Install CogniPrint without external benchmark dependencies
         run: python -m pip install -e .
 
-      - name: Compile RAID preparation CLI
-        run: python -m py_compile scripts/prepare_raid_pilot.py
+      - name: Compile M1 CLIs
+        run: |
+          python -m py_compile scripts/prepare_raid_pilot.py
+          python -m py_compile scripts/analyze_raid_pilot.py
 
-      - name: Run RAID adapter unit tests
-        run: python -m unittest tests/test_raid_pilot_adapter.py -v
+      - name: Run M1 offline unit tests
+        run: |
+          python -m unittest tests/test_raid_pilot_adapter.py -v
+          python -m unittest tests/test_raid_pilot_evaluation.py -v
