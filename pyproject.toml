@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cogniprint"
 version = "0.1.2"
-description = "Local research workstation for CogniPrint text profile analysis."
+description = "Open research framework for reproducible text fingerprints and synthetic-language provenance studies."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -15,7 +15,10 @@ authors = [
 keywords = [
   "statistical text analysis",
   "cognitive fingerprint",
-  "research workstation",
+  "synthetic language",
+  "content provenance",
+  "human AI coauthoring",
+  "reproducible research",
   "profile comparison"
 ]
 classifiers = [
@@ -45,6 +48,7 @@ demo = [
 [project.urls]
 Homepage = "https://cogniprint.org"
 Repository = "https://github.com/TakoVHS/CogniPrint-open"
+Research = "https://github.com/TakoVHS/CogniPrint-open/blob/main/docs/research-vision.md"
 
 [project.scripts]
 cogniprint = "cogniprint.cli:main"
