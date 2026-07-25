@@ -14,6 +14,7 @@
     "Dockerfile.jupyter",
     "config/public-release.json",
     ".github/workflows/public-release-ci.yml",
+    ".github/workflows/stage-a-proof.yml",
     "schemas/**",
     "src/**",
     "tests/**",
@@ -93,6 +94,7 @@
     "docs/attribution-challenge-001.md",
     "docs/preregistration-challenge-001-draft.md",
     "docs/stage-a-development-001.md",
+    "docs/stage-b-custody-001.md",
     "docs/research-lock-001.md",
     "docs/evaluation-contract-v1.md",
     "docs/independent-evaluator-v0.1.md",
@@ -154,6 +156,7 @@
     "docs/trust.md"
   ],
   "public_safe_workflows": [
-    ".github/workflows/public-release-ci.yml"
+    ".github/workflows/public-release-ci.yml",
+    ".github/workflows/stage-a-proof.yml"
   ]
 }
