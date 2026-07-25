@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 
 const HASH_RE = /^[0-9a-f]{64}$/i
+const GIT_COMMIT_RE = /^[0-9a-f]{40}([0-9a-f]{24})?$/i
 const CAPSULE_SCHEMA = 'cogniprint-evidence-capsule-v1'
 const ALLOWED_ASSERTION_KINDS = new Set([
   'c2pa',
@@ -27,6 +28,15 @@ function requireSha256(value, label) {
 function optionalSha256(value, label) {
   if (value === undefined || value === null || value === '') return null
   return requireSha256(value, label)
+}
+
+function optionalGitCommit(value, label) {
+  if (value === undefined || value === null || value === '') return null
+  const normalized = String(value).toLowerCase()
+  if (!GIT_COMMIT_RE.test(normalized)) {
+    throw new TypeError(`${label} must be a 40- or 64-character hexadecimal commit ID`)
+  }
+  return normalized
 }
 
 function cleanString(value, label, { maxLength = 256, required = false } = {}) {
@@ -124,7 +134,7 @@ export function buildEvidenceCapsule(profile, context = {}) {
       legal_or_forensic_provenance: false
     },
     reproducibility: {
-      cogniprint_commit_sha: optionalSha256(context.cogniprint_commit_sha, 'cogniprint_commit_sha'),
+      cogniprint_commit_sha: optionalGitCommit(context.cogniprint_commit_sha, 'cogniprint_commit_sha'),
       experiment_id: cleanString(context.experiment_id, 'experiment_id'),
       dataset_id: cleanString(context.dataset_id, 'dataset_id'),
       dataset_revision: cleanString(context.dataset_revision, 'dataset_revision'),
