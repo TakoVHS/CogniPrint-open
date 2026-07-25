@@ -34,6 +34,9 @@ Reviewer entry points:
 
 - [`docs/current-state-summary.md`](docs/current-state-summary.md)
 - [`docs/evidence-dossier.md`](docs/evidence-dossier.md)
+- [`docs/external-review.md`](docs/external-review.md)
+- [`docs/reviewer-response-template.md`](docs/reviewer-response-template.md)
+- [`docs/grant-readiness-next-call.md`](docs/grant-readiness-next-call.md)
 - [`paper/main.tex`](paper/main.tex)
 - [`CITATION.cff`](CITATION.cff)
 
