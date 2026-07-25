@@ -18,9 +18,9 @@
     "sample_id": {"type": "string", "minLength": 1},
     "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "stage": {"enum": ["STAGE_A_DEVELOPMENT", "STAGE_B_SEALED"]},
-    "prompt_hash": {"type": "string", "minLength": 1},
-    "lineage_group_hash": {"type": "string", "minLength": 1},
-    "origin_record_hash": {"type": "string", "minLength": 1},
+    "prompt_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lineage_group_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "origin_record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "reference_set_membership": {
       "enum": ["DEVELOPMENT_ONLY", "REFERENCE_CANDIDATE", "SEALED_EVALUATION"]
     },
