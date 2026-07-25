@@ -8,6 +8,7 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 - Research mode: `PROOF_MODE`
 - Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`
 - CI evidence status: `NOT_EXECUTED`
+- Local exact-snapshot execution: `NOT_EXECUTED`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
 - DOI: pending direct public Zenodo verification
@@ -42,38 +43,88 @@ The repository contains implementation-level primitives for the next research la
 - Data Constitution for licensing, PII minimisation, benchmark contamination, lineage and reference-registry governance;
 - evaluation contracts for calibration, OOD, generator/temporal/domain/language holdouts, human-edit survival and model-to-model rewrite tests;
 - an independent sealed-challenge evaluator that is separate from fitting/threshold tuning and binds prediction/label artifacts by SHA-256;
+- eight golden mathematical evaluator fixtures covering perfect, all-wrong, missing-class, all-unknown, known-as-unknown, unknown-as-known, single-class and imbalanced behavior;
 - a canonical public trust/claim-unlock contract at `docs/trust.md`.
 
 These are evidence/research controls. They do **not** make current attribution scientifically validated.
 
+## Implemented Challenge 001 integrity controls
+
+Challenge 001 now has explicit pre-freeze controls:
+
+- physically separated namespaces for Stage A development, frozen protocol artifacts and sealed Stage B evaluation;
+- a blinded-sample schema that forbids direct ground-truth/model-family fields;
+- a separate revealed-label schema for post-prediction label reveal;
+- schema-enforced Stage A/Stage B visibility and reference-membership invariants;
+- a **Development Exposure Registry** that quarantines already inspected/used corpora from sealed Stage B;
+- `public-benchmark-v1.1` and the already specified RAID `raid/train` Pilot A matrix are development-visible and cannot later be represented as sealed Stage B evidence;
+- a Stage A public-benchmark materializer that hashes already released files into development-only blinded manifest records;
+- a machine-readable leakage audit that blocks freeze on sample/content overlap or duplicate identifiers/content hashes;
+- **Research Lock 001** tooling that can bind the exact frozen protocol/evaluator/config/manifests/reference files to one deterministic SHA-256.
+
+The Research Lock is an integrity binding, **not** a digital signature or scientific-validity certificate. Its final file set and final hash do not exist yet because the protocol remains `PRE-FREEZE`.
+
+No real Stage A manifest, real A/B leakage report, frozen Research Lock, sealed Stage B corpus, or Challenge 001 result is currently claimed.
+
 ## Proof mode / feature freeze
 
-CogniPrint is now under a **no-new-feature rule until Evidence Milestone 001 / Challenge 001**.
+CogniPrint is under a **no-new-feature rule until Evidence Milestone 001 / Challenge 001**.
 
 Allowed work is limited to:
 
 1. correctness/security fixes;
 2. reproducibility;
 3. test/runner infrastructure;
-4. preregistration and research-freeze work;
-5. benchmark integrity/sealing;
-6. corrections needed to keep public claims aligned with evidence.
+4. Stage A development calibration needed to finalise the pre-registered protocol;
+5. preregistration and research-freeze work;
+6. benchmark integrity/sealing;
+7. corrections needed to keep public claims aligned with evidence.
 
 New detector families, new headline capabilities, decorative dashboards and additional regulatory/provenance integrations are deferred unless they are required to repair correctness or reproducibility.
 
-The pre-freeze contract is `RESEARCH_FREEZE_001.md`. It is intentionally marked `PRE-FREEZE` until exact model/source families, corpus/reference versions, sample strata, minimum-evidence rules, OOD/calibration methods, exclusions, thresholds and external preregistration are fixed.
+The pre-freeze contract is `RESEARCH_FREEZE_001.md`. It is intentionally marked `PRE-FREEZE` until Stage A has fixed the remaining numerical/operational choices and exact model/source families, corpus/reference versions, sample strata, minimum-evidence rules, OOD/calibration methods, exclusions, thresholds and external preregistration are fixed.
 
-## CI evidence status
+## CI / execution evidence status
 
-Current status: **`NOT_EXECUTED`**.
+GitHub Actions CI: **`NOT_EXECUTED`**.
 
-Recent GitHub Actions jobs were created but reached no executable steps (`steps: []`), so checkout and test commands did not run. This is not evidence that tests passed or failed.
+A minimal Runner Canary with no checkout, dependencies, cache, matrix or secrets was created specifically to isolate runner startup. Its job was created, but GitHub reported `steps: []`; neither the shell canary nor `python --version` executed. A control rerun after GitHub reported Actions operational produced the same `steps: []` result.
+
+Therefore this is not evidence that tests passed or failed.
 
 Correct public wording:
 
-> CI evidence status: NOT_EXECUTED — runner failed before checkout.
+> CI execution: NOT_EXECUTED — GitHub-hosted runner did not reach the first executable step.
 
-Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the commit, Python versions, job logs and test counts are preserved.
+Local exact-snapshot execution is also **`NOT_EXECUTED`** in the current execution environment because that environment could not resolve/fetch `github.com`; it therefore could not obtain an exact repository snapshot for the requested Python 3.10/3.11/3.12 matrix.
+
+Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the exact commit, Python versions, job logs and test counts are preserved.
+
+## Stage A — development calibration
+
+Stage A is **development-only** and is not blind Challenge 001 evidence.
+
+It exists to fix pre-freeze choices such as:
+
+- minimum-evidence / length bins;
+- source-family feasibility;
+- OOD/UNKNOWN methodology;
+- calibration procedure and binning;
+- feature stability;
+- sample-count/strata feasibility;
+- exclusion mechanics;
+- evaluator sanity.
+
+Anything used for these choices becomes development-visible. It may not later be relabelled as sealed Stage B simply because a particular script did not consume every record.
+
+Before freeze, the real candidate Stage A and Stage B manifests must pass the leakage gate with at least:
+
+```text
+sample_id_overlap = 0
+content_hash_overlap = 0
+```
+
+Prompt overlap is reported separately and its policy must be frozen before Stage B.
 
 ## External-provenance / regulatory interfaces
 
@@ -89,17 +140,18 @@ The C2PA runtime reader/validator is not yet implemented or validated.
 
 Stage B is currently **not authorised to start**.
 
-Before sealed evaluation the project must:
+The required order is:
 
-1. complete and freeze `RESEARCH_FREEZE_001.md`;
-2. preserve the exact protocol/commit hashes;
-3. complete external timestamped preregistration (issue #28);
-4. establish actual runtime test evidence (issue #30 or equivalent reproducible runner record);
-5. freeze corpus/reference/split artifacts;
-6. keep sealed ground truth unavailable to the prediction process;
-7. generate/freeze predictions before label reveal;
-8. evaluate with the independent evaluator without post-reveal fitting/tuning;
-9. publish failure analysis with the result.
+1. obtain real execution evidence on a functioning runner;
+2. execute Stage A development calibration without using future Stage B samples;
+3. materialise Stage A and candidate Stage B manifests and obtain a leakage-audit PASS;
+4. complete and freeze `RESEARCH_FREEZE_001.md`;
+5. create/preserve the final Research Lock 001 hash;
+6. complete external timestamped preregistration (issue #28);
+7. seal corpus/reference/split artifacts and keep ground truth unavailable to prediction code;
+8. generate and hash frozen predictions before label reveal;
+9. reveal labels and evaluate with the independent evaluator without post-reveal fitting/tuning;
+10. publish failure analysis and a separate Scientific Claim Review.
 
 The frozen-design direction includes:
 
@@ -108,6 +160,7 @@ The frozen-design direction includes:
 - held-out unseen generators;
 - `UNKNOWN / OUT_OF_DISTRIBUTION / INSUFFICIENT EVIDENCE`;
 - Brier/ECE and selective-risk reporting where calibrated outputs exist;
+- false-known rate as a first-class open-world safety metric;
 - domain/temporal/generalisation checks;
 - translation, human-edit and model-to-model rewrite stress tracks;
 - explicit falsification criteria and public failure reporting;
@@ -162,8 +215,12 @@ Content-derived signals can support bounded hypotheses. Claims about actors, too
 
 - external methodological review: `0/1`;
 - DOI reference not directly publicly verified;
-- CI evidence status: `NOT_EXECUTED` — issue #30;
+- CI execution: `NOT_EXECUTED` — issue #30;
+- local exact-snapshot execution: `NOT_EXECUTED` in the current environment;
+- real Stage A manifest/calibration outputs: not yet executed;
+- real A/B leakage audit: not yet executed;
 - Challenge 001 research freeze: `PRE-FREEZE`;
+- final Research Lock 001: not yet generated;
 - Challenge 001 external preregistration: open issue #28;
 - C2PA runtime validation: open issue #26;
 - real detached `.cogcase` signatures: open issue #27;
