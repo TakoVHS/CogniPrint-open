@@ -65,6 +65,17 @@ class CaseManifestTests(unittest.TestCase):
             paths = [entry["path"] for entry in manifest["files"]]
             self.assertEqual(paths, ["CASE.json"])
 
+    def test_fake_signed_status_is_rejected_until_signing_is_implemented(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "CASE.json").write_text("{}", encoding="utf-8")
+            manifest = build_case_manifest(root, case_id="case-005")
+            manifest["signature_status"] = "SIGNED"
+
+            result = verify_case_manifest(root, manifest)
+            self.assertFalse(result["ok"])
+            self.assertIn("digital signature verification is not implemented", result["reason"])
+
 
 if __name__ == "__main__":
     unittest.main()
