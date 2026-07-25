@@ -1,24 +1,52 @@
 # CogniPrint — grant one-pager
 
-## Synthetic-language fingerprints and verifiable provenance
+## Cognitive provenance for a synthetic internet
 
 ### The problem
 
-AI is becoming part of the production process for documents, agents, media, software, research workflows, education, and synthetic digital environments. The binary question “human or AI?” is therefore becoming inadequate. Real artifacts may pass through several models, human editors, translation systems, and publishing tools before they reach a user.
+“AI-generated” is becoming too coarse a description of digital artifacts.
 
-The more useful question is:
+A document may pass through several models, human editors, translation systems, agents, and publishing tools before it reaches the public. The trust problem therefore shifts from a binary question — “Was AI used?” — toward a harder one:
 
-> What production process is consistent with the available evidence, where did human intervention occur, and which parts of that reconstruction are independently verifiable?
+> **What production process is consistent with the available evidence, where did that process change, and which parts of the reconstruction are independently verifiable?**
 
 ### The idea
 
-CogniPrint is an open-source research programme that treats generated language as a fingerprinting and provenance problem.
+CogniPrint is an open-source research programme for **cognitive provenance**: measurable fingerprints, generation-lineage hypotheses, and reproducible evidence about human-and-model production processes.
 
-The current system builds compact, interpretable statistical profiles of text and measures how those profiles change under comparison and controlled edits. The proposed research programme tests whether those signals can support calibrated model-family attribution, human–AI intervention mapping, and fusion with authenticated provenance such as hashes, revision history, tool logs, and Content Credentials.
+The current system does **not** claim to reconstruct that lineage. It already provides the lower-level measurement foundation: compact statistical text profiles, perturbation analysis, hashes, versioned evidence artifacts, and reproducibility tooling.
+
+The proposed research programme asks whether that foundation can support progressively stronger — and falsifiable — capabilities:
+
+- benchmark-bounded model-family candidates;
+- `UNKNOWN / OUT OF DISTRIBUTION / INSUFFICIENT EVIDENCE` abstention;
+- human–AI regime-change mapping;
+- fingerprint drift over time;
+- controlled cross-model lineage experiments;
+- fusion of content-derived measurements with authenticated provenance records.
+
+### Evidence, not verdicts
+
+CogniPrint is not designed around a single “87% AI” answer.
+
+The intended product of an analysis is a reproducible evidence dossier containing, where available:
+
+- artifact hash;
+- feature-map/extractor version;
+- measured feature vector;
+- benchmark/reference-registry version;
+- candidate results and alternatives;
+- transformation/robustness diagnostics;
+- calibration and abstention state;
+- external provenance assertions;
+- software commit and reproducibility command;
+- explicit non-claims.
+
+**Every conclusion should map to evidence. Every uncertainty should remain visible.**
 
 ### What exists now
 
-Current release: v0.1.2. Scientific readiness: `descriptive_only`.
+Current public release: `v0.1.2`. Scientific readiness: `descriptive_only`.
 
 Implemented:
 
@@ -26,59 +54,95 @@ Implemented:
 - Euclidean and cosine comparison;
 - perturbation analysis `Δφ`;
 - corpus aggregation;
-- Shannon entropy analysis;
-- word and character n-gram diagnostics;
-- corpus-relative exploratory thresholds;
-- public benchmark material, tests, evidence artifacts, and manuscript source.
+- entropy and n-gram diagnostics;
+- public benchmark/evidence material;
+- pinned RAID external-pilot infrastructure;
+- leakage-safe transparent baseline evaluation;
+- bounded QVAC local-evidence prototype;
+- canonical CogniPrint Evidence Capsule with strict privacy/non-claim boundaries;
+- reviewer and reproducibility tooling.
 
-The current release does not claim reliable model identification, authorship identification, AI-origin proof, or actor attribution.
+The current release does not claim reliable model identification, authorship identification, AI-origin proof, generation-lineage reconstruction, or actor attribution.
 
-### Fundable research programme
+### Flagship experiment — Attribution Challenge 001
 
-**WP1 — Open model-fingerprint benchmark**  
-Build a controlled multilingual benchmark across known model families, prompt regimes, sampling settings, and domains. Compare CogniPrint with simple and learned baselines.
+Before stronger public claims, CogniPrint will run a preregistered blind challenge designed to prove or falsify the model-family fingerprint hypothesis.
 
-**WP2 — Human–AI intervention map**  
-Create controlled revision chains and test sentence/span-level transition detection between generated text and substantive human editing.
+The protocol includes:
 
-**WP3 — Robustness and open-world evaluation**  
-Measure failure under paraphrasing, translation, model drift, domain shift, and unseen model families. Add calibrated abstention instead of forced attribution.
+- multiple known source families and human controls;
+- prompt/domain/length balancing;
+- leakage-safe lineage grouping;
+- length, surface-statistic, character n-gram and word n-gram baselines;
+- blinded predictions before label reveal;
+- Top-1 / Top-k candidates;
+- calibration;
+- held-out unseen families;
+- mandatory `UNKNOWN / insufficient evidence`;
+- paraphrase, translation, human-edit and AI-to-AI rewrite stress tracks;
+- a public failure report.
 
-**WP4 — Provenance fusion**  
-Prototype a separate evidence channel for hashes, signed metadata, C2PA-style credentials, revision history, and authenticated tool records. Test content-only, provenance-only, and combined evidence.
+Protocol: `docs/attribution-challenge-001.md`.
 
-**WP5 — Reproducible evidence bundles**  
-Produce machine-readable reports containing input hashes, feature-map version, experiment configuration, calibration context, uncertainty, provenance assertions, and explicit non-claims.
+### Fundable work packages
+
+**WP1 — Attribution Challenge 001**  
+Execute and publish the controlled model-family benchmark, including open-world abstention and negative results.
+
+**WP2 — Human–AI Intervention Map**  
+Create controlled revision chains and test sentence/span-level statistical regime-change detection without converting a change point into an authorship claim.
+
+**WP3 — Fingerprint Registry & Drift**  
+Build versioned reference fingerprints and measure how model updates, time, prompting, domain and decoding change the reference space.
+
+**WP4 — Provenance Fusion**  
+Combine content-derived evidence with hashes, signed credentials, revision history and authenticated tool/workflow records while keeping those evidence classes separate.
+
+**WP5 — Reproducible Evidence Infrastructure**  
+Produce machine-readable Evidence Capsules/dossiers with hashes, configurations, calibration context, uncertainty, provenance assertions and explicit non-claims.
 
 ### What would count as success
 
-Success is not “a detector that always knows who made a text.” A scientifically useful outcome is a reproducible map of where fingerprint-based attribution works, where it fails, and when provenance metadata is required.
+Success is not “a detector that always knows who made a text.”
 
-Primary outputs:
+A scientifically useful outcome is a reproducible map of:
 
-- open benchmark and protocol;
-- calibrated baseline results;
-- robustness/open-world evaluation;
-- human–AI intervention dataset and metrics;
-- provenance-fusion prototype;
-- reproducible research artifacts and manuscript updates.
+- where fingerprint-based family attribution works;
+- where simple baselines explain the apparent signal;
+- where human editing or translation destroys it;
+- how often unseen models are falsely forced into known classes;
+- when `UNKNOWN` prevents an unsafe conclusion;
+- how quickly reference fingerprints drift;
+- when authenticated provenance is required because content alone is insufficient.
 
 Negative results remain publishable outcomes.
 
-### Why now
+### Where CogniPrint fails
 
-NIST’s synthetic-content transparency work treats detection, authentication, watermarking, and provenance as complementary approaches. NIST GenAI Text 2026 evaluates text discriminators with discrimination and calibration metrics. C2PA provides a standard architecture for cryptographically bound content provenance. CogniPrint’s research programme sits at the intersection of those problems: measurable content fingerprints plus auditable provenance.
+Failure reporting is a first-class deliverable, not a footnote.
+
+The project has a public failure charter covering short inputs, domain shift, prompt leakage, length/n-gram confounding, paraphrase, translation, human editing, cross-model rewriting, unseen models, drift, multilingual limits, calibration and provenance conflicts.
+
+Failure charter: `docs/where-cogniprint-fails.md`.
+
+### Why this matters
+
+As synthetic content becomes a normal layer of the internet, the useful trust question is increasingly not merely whether a model participated, but **what process produced an artifact and what evidence survives that process**.
+
+CogniPrint’s long-term role is therefore not “another AI detector.” It is an open evidence layer for studying cognitive provenance — beginning with text, while keeping the architecture compatible with future multimodal evidence without claiming those modalities exist today.
 
 ### Scientific boundary
 
 CogniPrint does not infer a commissioning person or organisation from text. Actor/workflow identity may only enter a provenance graph when authenticated external records support it.
 
-Current public outputs remain descriptive until dedicated benchmarks, independent methodological review, and reproducibility evidence justify stronger claims.
+CogniPrint is not currently a validated legal-forensics instrument. Current outputs remain descriptive until dedicated benchmarks, independent methodological review, calibration/open-world evidence, and reproducibility results justify stronger claims.
 
 ### Public resources
 
 - Website: https://cogniprint.org
 - Source: https://github.com/TakoVHS/CogniPrint-open
 - Research vision: `docs/research-vision.md`
-- Benchmark protocol: `docs/model-fingerprint-benchmark-v0.1.md`
+- Attribution Challenge 001: `docs/attribution-challenge-001.md`
+- Failure charter: `docs/where-cogniprint-fails.md`
+- External RAID pilot: `docs/raid-pilot-m1.md`
 - ORCID: https://orcid.org/0009-0009-6337-1806
