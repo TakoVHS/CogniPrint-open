@@ -12,8 +12,6 @@
     "Dockerfile.jupyter",
     "config/public-release.json",
     ".github/workflows/public-release-ci.yml",
-    ".github/workflows/raid-pilot-ci.yml",
-    ".github/workflows/raid-pilot-external.yml",
     "src/**",
     "tests/**",
     "paper/**",
@@ -124,8 +122,6 @@
     "config/public-release.json"
   ],
   "public_safe_workflows": [
-    ".github/workflows/public-release-ci.yml",
-    ".github/workflows/raid-pilot-ci.yml",
-    ".github/workflows/raid-pilot-external.yml"
+    ".github/workflows/public-release-ci.yml"
   ]
 }
