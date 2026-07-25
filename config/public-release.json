@@ -15,6 +15,7 @@
     "src/**",
     "tests/**",
     "paper/**",
+    "reviewer-bundle/**",
     "demo/**",
     "evidence/**",
     "validation/**",
