@@ -64,17 +64,25 @@ jobs:
           python --version
           python -c "print('PYTHON_EXECUTED')"
 
+      - name: Compile proof tooling
+        run: |
+          python -m py_compile \
+            scripts/evaluate_challenge_predictions.py \
+            scripts/check_challenge_leakage.py \
+            scripts/build_research_lock_001.py \
+            scripts/materialize_stage_a_public_benchmark.py
+
       - name: Run evaluator golden fixtures
-        run: python -m unittest tests.test_challenge_evaluator_golden -v
+        run: python -m unittest discover -s tests -p "test_challenge_evaluator_golden.py" -v
 
       - name: Run leakage guard tests
-        run: python -m unittest tests.test_challenge_leakage -v
+        run: python -m unittest discover -s tests -p "test_challenge_leakage.py" -v
 
       - name: Run Research Lock tests
-        run: python -m unittest tests.test_research_lock_001 -v
+        run: python -m unittest discover -s tests -p "test_research_lock_001.py" -v
 
       - name: Run Stage A materializer tests
-        run: python -m unittest tests.test_materialize_stage_a_public_benchmark -v
+        run: python -m unittest discover -s tests -p "test_materialize_stage_a_public_benchmark.py" -v
 
   materialize-stage-a:
     name: Materialize Stage A development manifest
@@ -110,6 +118,7 @@ jobs:
           import json
           import os
           import platform
+          import re
           from pathlib import Path
 
           out = Path(os.environ["OUT_DIR"])
@@ -119,6 +128,7 @@ jobs:
           if len(rows) != 140:
               raise SystemExit(f"expected 140 Stage A records, got {len(rows)}")
 
+          sha256_re = re.compile(r"^[0-9a-f]{64}$")
           seen_ids = set()
           seen_hashes = set()
           for row in rows:
@@ -132,9 +142,11 @@ jobs:
                   raise SystemExit("unexpected reference-set membership")
               sample_id = row.get("sample_id")
               content_hash = row.get("content_sha256")
+              if not isinstance(sample_id, str) or not sample_id:
+                  raise SystemExit("invalid sample_id")
               if sample_id in seen_ids:
                   raise SystemExit(f"duplicate sample_id: {sample_id}")
-              if not isinstance(content_hash, str) or len(content_hash) != 64:
+              if not isinstance(content_hash, str) or not sha256_re.fullmatch(content_hash):
                   raise SystemExit(f"invalid content_sha256 for {sample_id}")
               seen_ids.add(sample_id)
               seen_hashes.add(content_hash)
