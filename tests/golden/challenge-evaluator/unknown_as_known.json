@@ -1,0 +1,16 @@
+{
+  "predictions": [
+    {"sample_id":"u","decision":"known","top1_candidate":"A"}
+  ],
+  "labels": [
+    {"sample_id":"u","true_class":"HELD_OUT_X","known_to_reference":false}
+  ],
+  "expected": {
+    "top1_accuracy":null,
+    "balanced_accuracy":null,
+    "macro_f1":null,
+    "coverage":null,
+    "unknown_rejection_rate":0.0,
+    "false_known_rate":1.0
+  }
+}
