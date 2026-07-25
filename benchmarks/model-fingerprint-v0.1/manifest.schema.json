@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cogniprint.org/schema/model-fingerprint-manifest-v0.1.json",
+  "title": "CogniPrint Model-Fingerprint Sample Manifest v0.1",
+  "description": "Metadata schema for controlled model-fingerprint research. Presence of a field does not imply public release or validated attribution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_id",
+    "origin_class",
+    "language",
+    "domain",
+    "text_sha256",
+    "release_status"
+  ],
+  "properties": {
+    "sample_id": {"type": "string", "minLength": 1},
+    "origin_class": {
+      "type": "string",
+      "enum": ["human", "model", "mixed", "unknown"]
+    },
+    "prompt_id": {"type": ["string", "null"]},
+    "prompt_family": {"type": ["string", "null"]},
+    "language": {"type": "string", "minLength": 2},
+    "domain": {"type": "string", "minLength": 1},
+    "model_provider": {"type": ["string", "null"]},
+    "model_family": {"type": ["string", "null"]},
+    "model_identifier": {"type": ["string", "null"]},
+    "generation_timestamp": {"type": ["string", "null"], "format": "date-time"},
+    "temperature": {"type": ["number", "null"]},
+    "top_p": {"type": ["number", "null"]},
+    "max_output_tokens": {"type": ["integer", "null"], "minimum": 1},
+    "system_prompt_class": {"type": ["string", "null"]},
+    "text_sha256": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "parent_sample_id": {"type": ["string", "null"]},
+    "transformation_type": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "paraphrase",
+        "translation",
+        "back_translation",
+        "grammar_edit",
+        "punctuation_edit",
+        "compression",
+        "expansion",
+        "style_transfer",
+        "sentence_reorder",
+        "human_light_edit",
+        "human_substantive_edit",
+        "second_model_rewrite",
+        "other"
+      ]
+    },
+    "human_edit_intensity": {
+      "type": ["string", "null"],
+      "enum": [null, "none", "light", "medium", "high"]
+    },
+    "provenance_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "status"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["hash", "c2pa", "revision_history", "tool_log", "repository_history", "authenticated_approval", "other"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["present", "absent", "withheld", "not_applicable"]
+          },
+          "reference": {"type": ["string", "null"]}
+        }
+      },
+      "default": []
+    },
+    "license": {"type": ["string", "null"]},
+    "usage_note": {"type": ["string", "null"]},
+    "release_status": {
+      "type": "string",
+      "enum": ["private_research", "releasable_metadata", "released"]
+    }
+  }
+}
