@@ -1,0 +1,22 @@
+{
+  "predictions": [
+    {"sample_id":"a1","decision":"known","top1_candidate":"A"},
+    {"sample_id":"a2","decision":"known","top1_candidate":"A"},
+    {"sample_id":"a3","decision":"known","top1_candidate":"A"},
+    {"sample_id":"b1","decision":"known","top1_candidate":"A"}
+  ],
+  "labels": [
+    {"sample_id":"a1","true_class":"A","known_to_reference":true},
+    {"sample_id":"a2","true_class":"A","known_to_reference":true},
+    {"sample_id":"a3","true_class":"A","known_to_reference":true},
+    {"sample_id":"b1","true_class":"B","known_to_reference":true}
+  ],
+  "expected": {
+    "top1_accuracy":0.75,
+    "balanced_accuracy":0.5,
+    "macro_f1":0.428571,
+    "coverage":1.0,
+    "selective_accuracy":0.75,
+    "selective_risk":0.25
+  }
+}
