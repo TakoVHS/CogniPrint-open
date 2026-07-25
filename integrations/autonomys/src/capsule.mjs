@@ -2,11 +2,8 @@ import { createHash } from 'node:crypto'
 
 const HASH_RE = /^[0-9a-f]{64}$/i
 const GIT_COMMIT_RE = /^[0-9a-f]{40}([0-9a-f]{24})?$/i
-const SAFE_NUMERIC_KEY_RE = /^[a-z][a-z0-9_]{0,63}$/i
-const SAFE_IDENTIFIER_RE = /^[a-z0-9][a-z0-9._:/@+-]{0,127}$/i
-const SAFE_VERSION_RE = /^[a-z0-9][a-z0-9._-]{0,79}$/i
+const SAFE_KEY_RE = /^[a-z][a-z0-9_]{0,63}$/
 const CAPSULE_SCHEMA = 'cogniprint-evidence-capsule-v1'
-const CAPSULE_DISCLAIMER = 'CogniPrint outputs are descriptive research measurements, not identity, source, model, legal, or forensic conclusions.'
 const ALLOWED_ASSERTION_KINDS = new Set([
   'c2pa',
   'tool-log',
@@ -16,6 +13,8 @@ const ALLOWED_ASSERTION_KINDS = new Set([
   'other-authenticated-record'
 ])
 const ALLOWED_ASSERTION_STATES = new Set(['verified', 'declared', 'missing', 'conflict'])
+const FIXED_DISCLAIMER =
+  'CogniPrint outputs are descriptive research measurements. They do not establish identity, exact model source, definitive AI origin, actor or commissioner identity, intent, legal status, or forensic provenance.'
 
 function requireSha256(value, label) {
   const normalized = String(value || '').toLowerCase()
@@ -39,72 +38,67 @@ function optionalGitCommit(value, label) {
   return normalized
 }
 
-function safeIdentifier(value, label, { required = false } = {}) {
-  if (value === undefined || value === null || value === '') {
-    if (required) throw new TypeError(`${label} is required`)
-    return null
-  }
-  const normalized = String(value).trim()
-  if (!SAFE_IDENTIFIER_RE.test(normalized)) {
-    throw new TypeError(`${label} contains unsupported characters or exceeds 128 characters`)
-  }
-  return normalized
+function cleanString(value, label, { maxLength = 256, required = false } = {}) {
+  const normalized = value === undefined || value === null ? '' : String(value).trim()
+  if (required && !normalized) throw new TypeError(`${label} is required`)
+  if (normalized.length > maxLength) throw new TypeError(`${label} exceeds ${maxLength} characters`)
+  return normalized || null
 }
 
-function safeVersion(value, label) {
-  const normalized = String(value || '').trim()
-  if (!SAFE_VERSION_RE.test(normalized)) {
-    throw new TypeError(`${label} must be a safe version identifier`)
-  }
-  return normalized
-}
-
-function sanitizeNumericMap(value, label) {
+function safeNumericMap(value, label) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    throw new TypeError(`${label} must be an object of finite numeric values`)
+    throw new TypeError(`${label} must be an object of finite numeric coordinates`)
   }
-  const entries = Object.entries(value)
-  if (!entries.length) throw new TypeError(`${label} must not be empty`)
 
-  return Object.fromEntries(entries.map(([key, item]) => {
-    if (!SAFE_NUMERIC_KEY_RE.test(key)) {
-      throw new TypeError(`${label} contains an unsupported key: ${key}`)
+  const out = {}
+  for (const [key, raw] of Object.entries(value)) {
+    if (!SAFE_KEY_RE.test(key)) {
+      throw new TypeError(`${label} contains unsafe coordinate name: ${key}`)
     }
-    if (typeof item !== 'number' || !Number.isFinite(item)) {
+    if (typeof raw !== 'number' || !Number.isFinite(raw)) {
       throw new TypeError(`${label}.${key} must be a finite number`)
     }
-    return [key, item]
-  }))
+    out[key] = raw
+  }
+  if (Object.keys(out).length === 0) {
+    throw new TypeError(`${label} must contain at least one coordinate`)
+  }
+  return out
 }
 
-function sanitizeNumericVector(value, label) {
-  if (!Array.isArray(value) || !value.length) {
+function safeNumericVector(value, label) {
+  if (!Array.isArray(value) || value.length === 0) {
     throw new TypeError(`${label} must be a non-empty numeric array`)
   }
-  return value.map((item, index) => {
-    if (typeof item !== 'number' || !Number.isFinite(item)) {
+  return value.map((raw, index) => {
+    if (typeof raw !== 'number' || !Number.isFinite(raw)) {
       throw new TypeError(`${label}[${index}] must be a finite number`)
     }
-    return item
+    return raw
   })
 }
 
 function sanitizeNormalization(value) {
+  if (value === undefined || value === null) return null
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new TypeError('normalization must be an object')
   }
-  if (value.method !== 'bounded_minmax_v1') {
-    throw new TypeError('unsupported normalization.method')
+
+  const method = cleanString(value.method, 'normalization.method', { required: true })
+  const boundsSource = cleanString(value.bounds_source, 'normalization.bounds_source', { required: true })
+  if (method !== 'bounded_minmax_v1') {
+    throw new TypeError(`unsupported normalization.method: ${method}`)
   }
-  if (value.bounds_source !== 'cogniprint.fingerprint.FEATURE_SPECS') {
-    throw new TypeError('unsupported normalization.bounds_source')
+  if (boundsSource !== 'cogniprint.fingerprint.FEATURE_SPECS') {
+    throw new TypeError(`unsupported normalization.bounds_source: ${boundsSource}`)
   }
   if (typeof value.clip !== 'boolean') {
     throw new TypeError('normalization.clip must be boolean')
   }
+
   return {
-    method: value.method,
-    bounds_source: value.bounds_source,
+    method,
+    bounds_source: boundsSource,
     clip: value.clip
   }
 }
@@ -117,8 +111,8 @@ function sanitizeAssertions(assertions) {
     if (!assertion || typeof assertion !== 'object' || Array.isArray(assertion)) {
       throw new TypeError(`provenance_assertions[${index}] must be an object`)
     }
-    const kind = safeIdentifier(assertion.kind, `provenance_assertions[${index}].kind`, { required: true })
-    const state = safeIdentifier(assertion.state, `provenance_assertions[${index}].state`, { required: true })
+    const kind = cleanString(assertion.kind, `provenance_assertions[${index}].kind`, { required: true })
+    const state = cleanString(assertion.state, `provenance_assertions[${index}].state`, { required: true })
     if (!ALLOWED_ASSERTION_KINDS.has(kind)) {
       throw new TypeError(`unsupported provenance assertion kind: ${kind}`)
     }
@@ -162,7 +156,7 @@ export function buildEvidenceCapsule(profile, context = {}) {
     throw new TypeError('CogniPrint profile must be a JSON object')
   }
 
-  const publicationIntent = safeIdentifier(context.publication_intent, 'publication_intent') || 'public-audit'
+  const publicationIntent = cleanString(context.publication_intent, 'publication_intent') || 'public-audit'
   if (!['public-audit', 'encrypted'].includes(publicationIntent)) {
     throw new TypeError('publication_intent must be public-audit or encrypted')
   }
@@ -171,10 +165,10 @@ export function buildEvidenceCapsule(profile, context = {}) {
     schema: CAPSULE_SCHEMA,
     publication_intent: publicationIntent,
     source_content_sha256: requireSha256(profile.content_hash, 'content_hash'),
-    fingerprint_version: safeVersion(profile.fingerprint_version, 'fingerprint_version'),
-    metrics: sanitizeNumericMap(profile.metrics, 'metrics'),
-    fingerprint: sanitizeNumericMap(profile.fingerprint, 'fingerprint'),
-    fingerprint_vector: sanitizeNumericVector(profile.fingerprint_vector, 'fingerprint_vector'),
+    fingerprint_version: cleanString(profile.fingerprint_version, 'fingerprint_version', { required: true }),
+    metrics: safeNumericMap(profile.metrics, 'metrics'),
+    fingerprint: safeNumericMap(profile.fingerprint, 'fingerprint'),
+    fingerprint_vector: safeNumericVector(profile.fingerprint_vector, 'fingerprint_vector'),
     normalization: sanitizeNormalization(profile.normalization),
     scientific_boundary: {
       readiness: 'descriptive_only',
@@ -183,13 +177,14 @@ export function buildEvidenceCapsule(profile, context = {}) {
       definitive_ai_origin: false,
       actor_or_commissioner_identification: false,
       intent_or_responsibility: false,
-      legal_or_forensic_provenance: false
+      legal_or_forensic_provenance: false,
+      unknown_or_insufficient_evidence_required: true
     },
     reproducibility: {
       cogniprint_commit_sha: optionalGitCommit(context.cogniprint_commit_sha, 'cogniprint_commit_sha'),
-      experiment_id: safeIdentifier(context.experiment_id, 'experiment_id'),
-      dataset_id: safeIdentifier(context.dataset_id, 'dataset_id'),
-      dataset_revision: safeIdentifier(context.dataset_revision, 'dataset_revision'),
+      experiment_id: cleanString(context.experiment_id, 'experiment_id'),
+      dataset_id: cleanString(context.dataset_id, 'dataset_id'),
+      dataset_revision: cleanString(context.dataset_revision, 'dataset_revision'),
       configuration_sha256: optionalSha256(context.configuration_sha256, 'configuration_sha256'),
       calibration_context_sha256: optionalSha256(
         context.calibration_context_sha256,
@@ -197,7 +192,7 @@ export function buildEvidenceCapsule(profile, context = {}) {
       )
     },
     provenance_assertions: sanitizeAssertions(context.provenance_assertions),
-    disclaimer: CAPSULE_DISCLAIMER
+    disclaimer: FIXED_DISCLAIMER
   }
 
   const evidenceSha256 = sha256Canonical(body)
