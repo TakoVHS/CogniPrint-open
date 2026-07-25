@@ -89,7 +89,6 @@
   "$defs": {
     "baseEvidence": {
       "type": "object",
-      "additionalProperties": false,
       "required": ["class", "code", "summary"],
       "properties": {
         "class": { "type": "string" },
@@ -105,7 +104,8 @@
           "type": "object",
           "properties": { "class": { "const": "OBSERVED" } }
         }
-      ]
+      ],
+      "unevaluatedProperties": false
     },
     "inferredEvidence": {
       "allOf": [
@@ -126,7 +126,8 @@
             }
           }
         }
-      ]
+      ],
+      "unevaluatedProperties": false
     },
     "attestedEvidence": {
       "allOf": [
@@ -144,7 +145,8 @@
             }
           }
         }
-      ]
+      ],
+      "unevaluatedProperties": false
     },
     "unknownEvidence": {
       "allOf": [
@@ -166,7 +168,8 @@
             }
           }
         }
-      ]
+      ],
+      "unevaluatedProperties": false
     }
   }
 }
