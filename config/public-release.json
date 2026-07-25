@@ -66,6 +66,7 @@
     "scripts/generate_statistical_validation.py",
     "scripts/generate_validation_v12.py",
     "scripts/generate_wave005_results.py",
+    "scripts/materialize_stage_a_public_benchmark.py",
     "scripts/materialize_wave005_public_benchmark.py",
     "scripts/post_decision.py",
     "scripts/prepare_cross_genre_data.py",
