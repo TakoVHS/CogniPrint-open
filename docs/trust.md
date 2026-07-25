@@ -50,13 +50,19 @@ A claim remains locked even if a prototype can technically produce a score.
 
 Current scientific readiness: `descriptive_only`.
 
+Research mode: `PROOF_MODE`.
+
+Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`.
+
 This means CogniPrint currently supports reproducible measurement and evidence structuring. It does not currently have validated source-attribution authority.
 
-## Current CI evidence status
+## Current execution evidence status
+
+### GitHub Actions
 
 `NOT_EXECUTED`
 
-Reason: recent GitHub Actions jobs were created but failed before checkout/job steps (`steps: []`). No test command executed in those runs.
+A minimal Runner Canary was created with no checkout, dependencies, cache, matrix or secrets. The job was created, but GitHub reported `steps: []`; neither the shell canary nor `python --version` executed. A control rerun after GitHub reported Actions operational produced the same outcome.
 
 Therefore the project must not describe those runs as:
 
@@ -66,26 +72,88 @@ Therefore the project must not describe those runs as:
 
 The correct statement is:
 
-> CI evidence status: NOT_EXECUTED — runner failed before checkout.
+> CI execution: NOT_EXECUTED — runner did not reach the first executable step.
+
+### Local exact-snapshot execution
+
+`NOT_EXECUTED`
+
+The current local execution environment could not resolve/fetch `github.com`, so it could not obtain an exact repository snapshot for the requested Python 3.10/3.11/3.12 execution matrix. This is not a local PASS or FAIL.
 
 Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the runner/Python versions, commit SHA, job logs and test counts are preserved.
 
-## Attribution Challenge 001
+## Attribution Challenge 001 — pre-freeze state
 
 Stage B status: `NOT AUTHORISED TO START`.
 
-Required before sealed evaluation:
+The project now separates:
 
-1. complete `RESEARCH_FREEZE_001.md`;
-2. preserve its hash/commit;
-3. complete external timestamped preregistration (issue #28);
-4. establish actual runtime test evidence (issue #30 or equivalent reproducible runner record);
-5. freeze corpus/reference/split artifacts;
-6. keep sealed ground truth unavailable until predictions are frozen.
+```text
+Stage A development
+  -> leakage audit
+  -> protocol freeze
+  -> Research Lock
+  -> external preregistration
+  -> sealed Stage B
+  -> frozen predictions
+  -> label reveal
+  -> independent evaluation
+```
+
+### Stage A
+
+Stage A is development-only. It exists to fix numerical and operational choices before freeze, including minimum-evidence/length bins, OOD/UNKNOWN methodology, calibration procedure, feature stability, sample feasibility, exclusions and evaluator sanity.
+
+Anything used to make those choices is development-visible and cannot later be represented as sealed Stage B evidence.
+
+The Development Exposure Registry already quarantines:
+
+- CogniPrint `public-benchmark-v1.1`;
+- the already specified RAID `raid/train` Pilot A matrix.
+
+A Stage A public-benchmark materializer exists, but a real materialized Stage A manifest has **not yet been executed/preserved** because the available runners remain unavailable.
+
+### Stage A / Stage B boundary
+
+The blinded-sample schema enforces:
+
+- Stage A: `development_visibility=true`, `evaluation_visibility=false`;
+- sealed Stage B: `development_visibility=false`, `evaluation_visibility=true`, `reference_set_membership=SEALED_EVALUATION`.
+
+Direct ground-truth fields such as `true_class`, `known_to_reference`, generator/model-family labels and `ground_truth` are prohibited from the blinded Stage B record format.
+
+Ground truth lives in a separate revealed-label schema and is exposed only after predictions are frozen and hashed.
+
+### Leakage gate
+
+Before freeze, real Stage A and candidate Stage B manifests must pass the machine-readable leakage audit.
+
+Minimum freeze conditions include:
+
+```text
+sample_id_overlap = 0
+content_hash_overlap = 0
+```
+
+Duplicate sample/content identifiers inside a stage also block the gate. Prompt-hash overlap is reported separately and its policy must be fixed in the frozen protocol.
+
+No real A/B leakage report exists yet.
+
+### Research Lock 001
+
+Research Lock 001 tooling is implemented to bind selected frozen protocol/evaluator/config/manifest/reference files plus the exact repository commit into one deterministic SHA-256.
+
+It is an integrity binding only. It is **not**:
+
+- a digital signature;
+- a signer-identity proof;
+- a scientific-validity certificate.
+
+The final lock file set and final Research Lock hash do not exist yet because the protocol remains `PRE-FREEZE`.
 
 ## Evidence dimensions are not one confidence number
 
-CogniPrint must keep at least these concepts separate:
+CogniPrint keeps at least these concepts separate:
 
 - **reference similarity** — how close an artifact is to a stated reference distribution;
 - **calibration status/quality** — whether an inference score has demonstrated probability reliability on the relevant validation scope;
@@ -158,9 +226,10 @@ Allowed work:
 1. correctness/security bug fixes;
 2. reproducibility;
 3. test/runner infrastructure;
-4. preregistration/freeze work;
-5. benchmark integrity/sealing;
-6. corrections required to keep public claims aligned with evidence.
+4. Stage A development calibration required to freeze the protocol;
+5. preregistration/freeze work;
+6. benchmark integrity/sealing;
+7. corrections required to keep public claims aligned with evidence.
 
 Deferred work:
 
