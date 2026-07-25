@@ -5,6 +5,7 @@
     "README.md",
     "LICENSE",
     "DATA_LICENSE.md",
+    "DATA_CONSTITUTION.md",
     "CITATION.cff",
     "pyproject.toml",
     "Makefile",
@@ -12,6 +13,7 @@
     "Dockerfile.jupyter",
     "config/public-release.json",
     ".github/workflows/public-release-ci.yml",
+    "schemas/**",
     "src/**",
     "tests/**",
     "paper/**",
@@ -82,6 +84,12 @@
     "docs/model-fingerprint-benchmark-v0.1.md",
     "docs/raid-pilot-m1.md",
     "docs/attribution-challenge-001.md",
+    "docs/evaluation-contract-v1.md",
+    "docs/evidence-ontology-v1.md",
+    "docs/c2pa-conflict-bridge-v0.1.md",
+    "docs/article-50-evidence-mapping.md",
+    "docs/NIST-AI-RMF-MAPPING.md",
+    "docs/cogcase-format-v0.1.md",
     "docs/where-cogniprint-fails.md",
     "docs/fingerprint-registry-v0.1.md",
     "docs/site-message-architecture.md",
@@ -124,9 +132,11 @@
     "README.md",
     "LICENSE",
     "DATA_LICENSE.md",
+    "DATA_CONSTITUTION.md",
     "CITATION.cff",
     "pyproject.toml",
-    "config/public-release.json"
+    "config/public-release.json",
+    "schemas/cogniprint-evidence-v1.schema.json"
   ],
   "public_safe_workflows": [
     ".github/workflows/public-release-ci.yml"
