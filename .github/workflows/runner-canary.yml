@@ -1,0 +1,29 @@
+name: Runner Canary
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/runner-canary.yml"
+      - "tests/golden/**"
+      - "docs/stage-a-development-001.md"
+      - "docs/leakage-audit-001.md"
+      - "scripts/check_challenge_leakage.py"
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Runner started
+        run: |
+          echo "RUNNER_EXECUTED"
+          uname -a
+
+      - name: Python
+        run: |
+          python --version
+          python -c "print('PYTHON_EXECUTED')"
