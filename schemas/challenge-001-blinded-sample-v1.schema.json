@@ -10,6 +10,7 @@
     "content_sha256",
     "stage",
     "lineage_group_hash",
+    "reference_set_membership",
     "development_visibility",
     "evaluation_visibility"
   ],
@@ -29,6 +30,28 @@
     "collection_window": {"type": "string", "minLength": 1},
     "notes_public": {"type": "string", "maxLength": 500}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"stage": {"const": "STAGE_A_DEVELOPMENT"}}, "required": ["stage"]},
+      "then": {
+        "properties": {
+          "development_visibility": {"const": true},
+          "evaluation_visibility": {"const": false},
+          "reference_set_membership": {"enum": ["DEVELOPMENT_ONLY", "REFERENCE_CANDIDATE"]}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"stage": {"const": "STAGE_B_SEALED"}}, "required": ["stage"]},
+      "then": {
+        "properties": {
+          "development_visibility": {"const": false},
+          "evaluation_visibility": {"const": true},
+          "reference_set_membership": {"const": "SEALED_EVALUATION"}
+        }
+      }
+    }
+  ],
   "not": {
     "anyOf": [
       {"required": ["true_class"]},
