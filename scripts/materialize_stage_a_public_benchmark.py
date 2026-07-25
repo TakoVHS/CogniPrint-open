@@ -36,8 +36,23 @@ def stable_hash(value: str) -> str:
     return sha256_bytes(value.encode("utf-8"))
 
 
+def confined_file(root: Path, relative_or_absolute: Path, *, label: str) -> Path:
+    resolved_root = root.resolve()
+    candidate = relative_or_absolute if relative_or_absolute.is_absolute() else root / relative_or_absolute
+    if candidate.is_symlink():
+        raise ValueError(f"{label} must not be a symlink")
+    resolved = candidate.resolve(strict=True)
+    try:
+        resolved.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes repository root") from exc
+    if not resolved.is_file():
+        raise ValueError(f"{label} must resolve to a regular file")
+    return resolved
+
+
 def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
-    metadata_path = metadata_csv if metadata_csv.is_absolute() else root / metadata_csv
+    metadata_path = confined_file(root, metadata_csv, label="metadata CSV")
     rows: list[dict[str, object]] = []
     seen_ids: set[str] = set()
 
@@ -56,7 +71,7 @@ def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
             raise ValueError(f"metadata CSV missing required columns: {sorted(missing)}")
 
         for line_number, source in enumerate(reader, 2):
-            if source.get("release_status") != "released":
+            if (source.get("release_status") or "").strip() != "released":
                 continue
             sample_id = (source.get("sample_id") or "").strip()
             if not sample_id:
@@ -68,13 +83,10 @@ def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
             relative = Path((source.get("file_path") or "").strip())
             if relative.is_absolute() or ".." in relative.parts:
                 raise ValueError(f"metadata line {line_number}: unsafe file_path {relative}")
-            target = (root / relative).resolve(strict=True)
             try:
-                target.relative_to(root.resolve())
-            except ValueError as exc:
-                raise ValueError(f"metadata line {line_number}: file escapes repository root") from exc
-            if not target.is_file() or target.is_symlink():
-                raise ValueError(f"metadata line {line_number}: file_path must resolve to a regular non-symlink file")
+                target = confined_file(root, relative, label=f"metadata line {line_number} file_path")
+            except (OSError, ValueError) as exc:
+                raise ValueError(str(exc)) from exc
 
             baseline_id = (source.get("baseline_sample_id") or "").strip() or sample_id
             source_url = (source.get("source_url") or "").strip()
