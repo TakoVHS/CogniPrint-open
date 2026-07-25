@@ -11,6 +11,9 @@ Sources:
 - Dataset: https://huggingface.co/datasets/liamdugan/raid
 - Repository: https://github.com/liamdugan/raid
 - Paper: https://aclanthology.org/2024.acl-long.674/
+- Pinned dataset revision: `865cac74188466cb0c3b7574a10204007b57a459`
+
+The pinned revision is the verified Hugging Face commit that updates the dataset configs to `raid` and `raid_test`. Using an immutable revision prevents the pilot from silently changing if the dataset repository changes later.
 
 Using RAID gives CogniPrint an external test bed that was not constructed to make the current 12-dimensional fingerprint look good.
 
@@ -18,6 +21,8 @@ Using RAID gives CogniPrint an external test bed that was not constructed to mak
 
 The first executable pilot deliberately fixes several obvious confounders:
 
+- dataset config: `raid`;
+- split: `train`;
 - model classes: `human`, `chatgpt`, `gpt4`, `llama-chat`, `mistral-chat`;
 - domains: `abstracts`, `news`, `reviews`, `wiki`;
 - machine decoding: `sampling`;
@@ -36,12 +41,12 @@ source .venv/bin/activate
 pip install -e '.[real-data]'
 python scripts/prepare_raid_pilot.py \
   --split train \
-  --revision main \
+  --revision 865cac74188466cb0c3b7574a10204007b57a459 \
   --per-cell 25 \
   --output-dir evidence/model-fingerprint-m1/raid-pilot
 ```
 
-Before a result is cited in a paper or grant application, replace `--revision main` with an immutable Hugging Face dataset revision and record the exact CogniPrint commit SHA.
+The script uses that immutable revision by default; it is shown explicitly in the command so a reviewer can see the data boundary without reading source code. Record the exact CogniPrint commit SHA together with the output.
 
 ## Outputs
 
@@ -56,7 +61,7 @@ Before a result is cited in a paper or grant application, replace `--revision ma
 - raw and normalized 12-dimensional feature dictionaries;
 - `descriptive_only` readiness boundary.
 
-`summary.json` records the source, revision, selection policy, seed, row counts, fingerprint version, and cell balance.
+`summary.json` records the source, config, immutable revision, selection policy, seed, row counts, fingerprint version, and cell balance.
 
 ## Analysis order
 
