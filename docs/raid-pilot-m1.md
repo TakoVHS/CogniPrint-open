@@ -11,6 +11,9 @@ Sources:
 - Dataset: https://huggingface.co/datasets/liamdugan/raid
 - Repository: https://github.com/liamdugan/raid
 - Paper: https://aclanthology.org/2024.acl-long.674/
+- Pinned dataset revision: `865cac74188466cb0c3b7574a10204007b57a459`
+
+The pinned revision is the verified Hugging Face commit that updates the dataset configs to `raid` and `raid_test`. Using an immutable revision prevents the pilot from silently changing if the dataset repository changes later.
 
 Using RAID gives CogniPrint an external test bed that was not constructed to make the current 12-dimensional fingerprint look good.
 
@@ -18,6 +21,8 @@ Using RAID gives CogniPrint an external test bed that was not constructed to mak
 
 The first executable pilot deliberately fixes several obvious confounders:
 
+- dataset config: `raid`;
+- split: `train`;
 - model classes: `human`, `chatgpt`, `gpt4`, `llama-chat`, `mistral-chat`;
 - domains: `abstracts`, `news`, `reviews`, `wiki`;
 - machine decoding: `sampling`;
@@ -28,7 +33,7 @@ The first executable pilot deliberately fixes several obvious confounders:
 
 The adapter computes CogniPrint features in memory and writes only metadata, hashes, and feature values. It does not copy raw RAID generations or prompts into the evidence directory.
 
-## Run
+## Prepare the feature evidence
 
 ```bash
 python3 -m venv .venv
@@ -36,14 +41,14 @@ source .venv/bin/activate
 pip install -e '.[real-data]'
 python scripts/prepare_raid_pilot.py \
   --split train \
-  --revision main \
+  --revision 865cac74188466cb0c3b7574a10204007b57a459 \
   --per-cell 25 \
   --output-dir evidence/model-fingerprint-m1/raid-pilot
 ```
 
-Before a result is cited in a paper or grant application, replace `--revision main` with an immutable Hugging Face dataset revision and record the exact CogniPrint commit SHA.
+The script uses that immutable revision by default; it is shown explicitly in the command so a reviewer can see the data boundary without reading source code. Record the exact CogniPrint commit SHA together with the output.
 
-## Outputs
+## Feature outputs
 
 `features.jsonl` contains one metadata-only record per selected source sample:
 
@@ -56,20 +61,37 @@ Before a result is cited in a paper or grant application, replace `--revision ma
 - raw and normalized 12-dimensional feature dictionaries;
 - `descriptive_only` readiness boundary.
 
-`summary.json` records the source, revision, selection policy, seed, row counts, fingerprint version, and cell balance.
+`summary.json` records the source, config, immutable revision, selection policy, seed, row counts, fingerprint version, and cell balance.
 
-## Analysis order
+## First analysis
 
-Do not begin with a complex classifier. The first analysis should compare:
+Run the transparent baseline layer before introducing a learned detector:
 
-1. chance / majority baseline;
-2. length-only controls;
-3. current 12-dimensional CogniPrint features;
-4. character n-gram baseline;
-5. word n-gram baseline;
-6. only then, combined or learned feature models.
+```bash
+python scripts/analyze_raid_pilot.py \
+  --features evidence/model-fingerprint-m1/raid-pilot/features.jsonl \
+  --output-dir evidence/model-fingerprint-m1/raid-pilot \
+  --test-fraction 0.30 \
+  --seed 20260725
+```
 
-Prompt/source lineage must be grouped so related samples do not leak across train and evaluation partitions.
+The analysis keeps related samples together using `source_id`, then `prompt_sha256`, then `text_sha256` as the fallback lineage key. A lineage group can occur in train or test, never both.
+
+It produces:
+
+- `baseline-metrics.json` — machine-readable split counts, class counts, confusion matrices, balanced accuracy and macro F1;
+- `baseline-report.md` — compact reviewer-facing summary.
+
+The first committed comparison is deliberately simple:
+
+1. chance accuracy reference;
+2. majority baseline;
+3. length-only nearest-centroid baseline using character/token counts;
+4. current 12-dimensional CogniPrint nearest-centroid baseline.
+
+Both numeric baselines are standardized using **training data only**. The nearest-centroid outputs are uncalibrated labels; probability-quality metrics and abstention thresholds belong to a later explicitly calibrated stage.
+
+Character and word n-gram baselines should be evaluated in a second in-memory analysis that has access to RAID source text. Raw RAID text should not be committed merely to make those baselines convenient.
 
 ## Pilot B — robustness
 
