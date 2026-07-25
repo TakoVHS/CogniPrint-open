@@ -28,21 +28,27 @@ let modelId
 try {
   modelId = await loadModel({
     modelSrc: QWEN3_600M_INST_Q4,
+    modelType: 'llm',
     modelConfig: { ctx_size: 4096 }
   })
 
-  const result = completion({
+  const run = completion({
     modelId,
     history: [{ role: 'user', content: prompt }],
     stream: true
   })
 
   let explanation = ''
-  for await (const token of result.tokenStream) {
-    explanation += token
-    if (!outputPath) process.stdout.write(token)
+  for await (const event of run.events) {
+    if (event.type !== 'contentDelta') continue
+    explanation += event.text
+    if (!outputPath) process.stdout.write(event.text)
   }
   if (!outputPath) process.stdout.write('\n')
+
+  // Await the canonical final result so stream-level failures surface before
+  // an output artifact is treated as complete.
+  await run.final
 
   if (outputPath) {
     await fs.writeFile(outputPath, explanation.trimEnd() + '\n', 'utf8')
