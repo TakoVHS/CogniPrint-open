@@ -12,6 +12,8 @@ from cogniprint.fingerprint import FINGERPRINT_VERSION
 
 
 DATASET_ID = "liamdugan/raid"
+DATASET_CONFIG = "raid"
+DATASET_REVISION = "865cac74188466cb0c3b7574a10204007b57a459"
 SOURCE_URL = "https://huggingface.co/datasets/liamdugan/raid"
 SOURCE_PAPER = "https://aclanthology.org/2024.acl-long.674/"
 
@@ -26,7 +28,11 @@ def parse_csv(value: str) -> tuple[str, ...]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", default="train")
-    parser.add_argument("--revision", default="main", help="Hugging Face dataset revision; pin when publishing evidence")
+    parser.add_argument(
+        "--revision",
+        default=DATASET_REVISION,
+        help="Immutable Hugging Face dataset revision. Override only deliberately and record the replacement revision.",
+    )
     parser.add_argument("--models", type=parse_csv, default=None)
     parser.add_argument("--domains", type=parse_csv, default=None)
     parser.add_argument("--per-cell", type=int, default=25)
@@ -51,7 +57,13 @@ def main() -> int:
     except ImportError as exc:
         raise SystemExit("Install the real-data extra first: pip install -e '.[real-data]'") from exc
 
-    stream = load_dataset(DATASET_ID, split=args.split, revision=args.revision, streaming=True)
+    stream = load_dataset(
+        DATASET_ID,
+        DATASET_CONFIG,
+        split=args.split,
+        revision=args.revision,
+        streaming=True,
+    )
     stream = stream.shuffle(seed=args.seed, buffer_size=args.shuffle_buffer)
     records, scanned = collect_records(stream, config, max_scanned=args.max_scanned)
 
@@ -66,6 +78,7 @@ def main() -> int:
 
     summary = {
         "dataset_id": DATASET_ID,
+        "dataset_config": DATASET_CONFIG,
         "dataset_revision": args.revision,
         "dataset_license": "MIT",
         "source_url": SOURCE_URL,
@@ -92,7 +105,7 @@ def main() -> int:
         "notes": [
             "This pilot emits features and hashes, not RAID source text.",
             "The default first pilot is English-only because CogniPrint v2 tokenization has not been validated for Czech/German diacritics.",
-            "Pin --revision to an immutable dataset revision before citing a final result.",
+            "The default dataset revision is immutable and must be recorded with the exact CogniPrint commit SHA.",
             "No model-origin or authorship claim follows from this feature export alone.",
         ],
     }
