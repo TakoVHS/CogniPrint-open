@@ -11,8 +11,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Any
+
+
+SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def load_manifest(path: Path) -> list[dict[str, Any]]:
@@ -27,10 +31,25 @@ def load_manifest(path: Path) -> list[dict[str, Any]]:
                 raise ValueError(f"{path}:{line_number}: invalid JSON: {exc}") from exc
             if not isinstance(row, dict):
                 raise ValueError(f"{path}:{line_number}: row must be an object")
-            for field in ("sample_id", "content_sha256"):
-                value = row.get(field)
-                if not isinstance(value, str) or not value.strip():
-                    raise ValueError(f"{path}:{line_number}: {field} must be a non-empty string")
+
+            sample_id = row.get("sample_id")
+            if not isinstance(sample_id, str) or not sample_id.strip():
+                raise ValueError(f"{path}:{line_number}: sample_id must be a non-empty string")
+
+            content_sha256 = row.get("content_sha256")
+            if not isinstance(content_sha256, str) or not SHA256_RE.fullmatch(content_sha256):
+                raise ValueError(
+                    f"{path}:{line_number}: content_sha256 must be exactly 64 hexadecimal characters"
+                )
+            row["content_sha256"] = content_sha256.lower()
+
+            prompt_hash = row.get("prompt_hash")
+            if prompt_hash is not None:
+                if not isinstance(prompt_hash, str) or not prompt_hash.strip():
+                    raise ValueError(f"{path}:{line_number}: prompt_hash must be a non-empty string when present")
+                if SHA256_RE.fullmatch(prompt_hash):
+                    row["prompt_hash"] = prompt_hash.lower()
+
             rows.append(row)
     if not rows:
         raise ValueError(f"{path}: manifest is empty")
