@@ -14,8 +14,12 @@ function fixtureProfile() {
     fingerprint_vector: [0.275, 0.51],
     content_hash: 'a'.repeat(64),
     fingerprint_version: 'cognitive-fingerprint-v2.0',
-    normalization: { method: 'bounded_minmax_v1' },
-    disclaimer: 'descriptive research only',
+    normalization: {
+      method: 'bounded_minmax_v1',
+      bounds_source: 'cogniprint.fingerprint.FEATURE_SPECS',
+      clip: false
+    },
+    disclaimer: 'TOP_SECRET_DISCLAIMER',
     source: { type: 'file', ref: '/private/path/to/source.txt' },
     saved_profile: '/private/path/to/saved.json',
     raw_text: 'TOP_SECRET_TEXT'
@@ -59,6 +63,7 @@ test('capsule is deterministic and excludes unapproved source/context fields', (
   const serialized = canonicalJson(left)
   for (const forbidden of [
     'TOP_SECRET_TEXT',
+    'TOP_SECRET_DISCLAIMER',
     'TOP_SECRET_CONTEXT',
     'DO_NOT_PERSIST_ME',
     '/private/path',
@@ -70,6 +75,7 @@ test('capsule is deterministic and excludes unapproved source/context fields', (
   assert.equal(left.scientific_boundary.readiness, 'descriptive_only')
   assert.equal(left.scientific_boundary.exact_model_attribution, false)
   assert.equal(left.scientific_boundary.actor_or_commissioner_identification, false)
+  assert.equal(left.scientific_boundary.unknown_or_insufficient_evidence_required, true)
   assert.equal(left.provenance_assertions[0].kind, 'publication-record')
   assert.equal('dangerous_note' in left.provenance_assertions[0], false)
 })
@@ -97,6 +103,32 @@ test('encrypted intent is represented in the capsule without storing a password'
   const serialized = canonicalJson(capsule)
   assert.equal(capsule.publication_intent, 'encrypted')
   assert.equal(serialized.includes('NEVER_STORE_THIS_PASSWORD'), false)
+})
+
+test('free-form strings cannot hide inside metrics, fingerprint, vector, or normalization', () => {
+  assert.throws(
+    () => buildEvidenceCapsule({ ...fixtureProfile(), metrics: { word_count: 42, note: 'TOP_SECRET_TEXT' } }, fixtureContext()),
+    /finite number/
+  )
+  assert.throws(
+    () => buildEvidenceCapsule({ ...fixtureProfile(), fingerprint: { mean_word_length: 'TOP_SECRET_TEXT' } }, fixtureContext()),
+    /finite number/
+  )
+  assert.throws(
+    () => buildEvidenceCapsule({ ...fixtureProfile(), fingerprint_vector: [0.2, Number.NaN] }, fixtureContext()),
+    /finite number/
+  )
+  assert.throws(
+    () => buildEvidenceCapsule({
+      ...fixtureProfile(),
+      normalization: {
+        method: 'custom-secret-mode',
+        bounds_source: '/private/path',
+        clip: false
+      }
+    }, fixtureContext()),
+    /unsupported normalization/
+  )
 })
 
 test('invalid hashes, commit IDs, assertion kinds, and publication intents are rejected', () => {
