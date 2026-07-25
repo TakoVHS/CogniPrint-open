@@ -5,6 +5,9 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 ## Current scientific status
 
 - Scientific readiness: `descriptive_only`
+- Research mode: `PROOF_MODE`
+- Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`
+- CI evidence status: `NOT_EXECUTED`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
 - DOI: pending direct public Zenodo verification
@@ -26,25 +29,55 @@ CogniPrint currently provides:
 
 ## Implemented trust/evidence foundation
 
-The repository now also contains implementation-level primitives for the next research layer:
+The repository contains implementation-level primitives for the next research layer:
 
 - **Evidence Schema v1** with four explicit truth classes: `OBSERVED`, `INFERRED`, `ATTESTED`, `UNKNOWN`;
 - **Claim Firewall v1** that keeps model-family attribution disabled by default until minimum-evidence, in-distribution, calibration and explicit research gates are satisfied;
 - exact-model identity is not inferred from prose; under the current policy it may only be represented as a validated external `ATTESTED` statement;
 - authorship, actor/commissioner, intent/responsibility and legal/forensic conclusions remain blocked as content-only claims;
-- machine-readable limitations such as `SHORT_TEXT`, `OUT_OF_DISTRIBUTION`, `UNCALIBRATED_SCORE`, `NO_EXTERNAL_PROVENANCE` and `CONFLICTING_PROVENANCE`;
+- machine-readable limitations such as `SHORT_TEXT`, `OUT_OF_DISTRIBUTION`, `UNCALIBRATED_SCORE`, `NO_EXTERNAL_PROVENANCE`, `CONFLICTING_PROVENANCE` and `UNSUPPORTED_CLAIM`;
 - **Provenance Conflict Engine** that preserves disagreement between authorised statistical inference and validated external provenance rather than silently choosing one source as truth;
 - deterministic `.cogcase` manifest/integrity primitives with SHA-256, file-set validation and tamper detection;
 - `.cogcase` signing is **not implemented**: v0.1 accepts only `UNSIGNED` and rejects a fake signed status;
 - Data Constitution for licensing, PII minimisation, benchmark contamination, lineage and reference-registry governance;
 - evaluation contracts for calibration, OOD, generator/temporal/domain/language holdouts, human-edit survival and model-to-model rewrite tests;
-- an independent sealed-challenge evaluator that is separate from fitting/threshold tuning and binds prediction/label artifacts by SHA-256.
+- an independent sealed-challenge evaluator that is separate from fitting/threshold tuning and binds prediction/label artifacts by SHA-256;
+- a canonical public trust/claim-unlock contract at `docs/trust.md`.
 
 These are evidence/research controls. They do **not** make current attribution scientifically validated.
 
+## Proof mode / feature freeze
+
+CogniPrint is now under a **no-new-feature rule until Evidence Milestone 001 / Challenge 001**.
+
+Allowed work is limited to:
+
+1. correctness/security fixes;
+2. reproducibility;
+3. test/runner infrastructure;
+4. preregistration and research-freeze work;
+5. benchmark integrity/sealing;
+6. corrections needed to keep public claims aligned with evidence.
+
+New detector families, new headline capabilities, decorative dashboards and additional regulatory/provenance integrations are deferred unless they are required to repair correctness or reproducibility.
+
+The pre-freeze contract is `RESEARCH_FREEZE_001.md`. It is intentionally marked `PRE-FREEZE` until exact model/source families, corpus/reference versions, sample strata, minimum-evidence rules, OOD/calibration methods, exclusions, thresholds and external preregistration are fixed.
+
+## CI evidence status
+
+Current status: **`NOT_EXECUTED`**.
+
+Recent GitHub Actions jobs were created but reached no executable steps (`steps: []`), so checkout and test commands did not run. This is not evidence that tests passed or failed.
+
+Correct public wording:
+
+> CI evidence status: NOT_EXECUTED — runner failed before checkout.
+
+Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the commit, Python versions, job logs and test counts are preserved.
+
 ## External-provenance / regulatory interfaces
 
-Documented interfaces now include:
+Documented interfaces include:
 
 - C2PA / Content Credentials bridge contract and validation-state model;
 - Article-50-oriented transparency evidence mapping that explicitly does **not** claim EU AI Act compliance or certification;
@@ -54,7 +87,19 @@ The C2PA runtime reader/validator is not yet implemented or validated.
 
 ## Flagship research target — Attribution Challenge 001
 
-The next scientific step is a preregistered blind family-level challenge that asks whether source-family information survives beyond simple confounders while supporting calibrated abstention.
+Stage B is currently **not authorised to start**.
+
+Before sealed evaluation the project must:
+
+1. complete and freeze `RESEARCH_FREEZE_001.md`;
+2. preserve the exact protocol/commit hashes;
+3. complete external timestamped preregistration (issue #28);
+4. establish actual runtime test evidence (issue #30 or equivalent reproducible runner record);
+5. freeze corpus/reference/split artifacts;
+6. keep sealed ground truth unavailable to the prediction process;
+7. generate/freeze predictions before label reveal;
+8. evaluate with the independent evaluator without post-reveal fitting/tuning;
+9. publish failure analysis with the result.
 
 The frozen-design direction includes:
 
@@ -69,6 +114,24 @@ The frozen-design direction includes:
 - independent post-reveal evaluation.
 
 No Challenge 001 result is currently claimed.
+
+## Evidence Milestone 001
+
+Evidence Milestone 001 is reached only when all of these exist together:
+
+- timestamped preregistration;
+- actually executed reproducible test suite;
+- frozen/sealed blind benchmark;
+- frozen predictions and SHA-256;
+- revealed labels and SHA-256 after prediction freeze;
+- independent evaluator output;
+- calibration metrics where calibrated outputs are claimed;
+- OOD/UNKNOWN metrics including false-known rate;
+- published failure analysis;
+- immutable integrity-verifiable evidence bundle;
+- external methodological review requested against the actual results.
+
+Reaching the milestone does **not** automatically change `descriptive_only`. A separate Scientific Claim Review must classify each proposed public claim as `ALLOW`, `ALLOW_WITH_SCOPE`, `REJECT`, or `REQUIRES_MORE_EVIDENCE`.
 
 ## What the research is trying to reach
 
@@ -99,15 +162,15 @@ Content-derived signals can support bounded hypotheses. Claims about actors, too
 
 - external methodological review: `0/1`;
 - DOI reference not directly publicly verified;
-- GitHub Actions runner currently fails before executing job steps, so new truth/evaluator unit tests do not yet have a runtime-green CI record;
+- CI evidence status: `NOT_EXECUTED` — issue #30;
+- Challenge 001 research freeze: `PRE-FREEZE`;
+- Challenge 001 external preregistration: open issue #28;
 - C2PA runtime validation: open issue #26;
 - real detached `.cogcase` signatures: open issue #27;
-- Attribution Challenge 001 external preregistration: open issue #28;
-- trust/evaluator unit-test runtime validation: open issue #30;
 - QVAC runtime demo remains HOLD;
 - Auto Drive CID upload/retrieval round-trip remains HOLD;
 - OTF practitioner discovery remains NO-GO until real user evidence exists.
 
 ## Positioning
 
-CogniPrint should be understood as an **evidence-first cognitive-provenance research programme**. Its moat is not a headline AI score; it is the attempt to make every conclusion state whether it is observed, inferred, externally attested, or unknown — with reproducibility and failure conditions preserved alongside the result.
+CogniPrint should be understood as an **evidence-first cognitive-provenance research programme**. Its moat is not a headline AI score; it is the attempt to make every conclusion state whether it is observed, inferred, externally attested, or unknown — with reproducibility, scope and failure conditions preserved alongside the result.

@@ -6,6 +6,7 @@
     "LICENSE",
     "DATA_LICENSE.md",
     "DATA_CONSTITUTION.md",
+    "RESEARCH_FREEZE_001.md",
     "CITATION.cff",
     "pyproject.toml",
     "Makefile",
@@ -79,6 +80,7 @@
     "docs/validation-*.md",
     "docs/empirical-evidence-summary-v1.md",
     "docs/current-state-summary.md",
+    "docs/trust.md",
     "docs/research-vision.md",
     "docs/grant-one-pager.md",
     "docs/grant-readiness-next-call.md",
@@ -135,10 +137,12 @@
     "LICENSE",
     "DATA_LICENSE.md",
     "DATA_CONSTITUTION.md",
+    "RESEARCH_FREEZE_001.md",
     "CITATION.cff",
     "pyproject.toml",
     "config/public-release.json",
-    "schemas/cogniprint-evidence-v1.schema.json"
+    "schemas/cogniprint-evidence-v1.schema.json",
+    "docs/trust.md"
   ],
   "public_safe_workflows": [
     ".github/workflows/public-release-ci.yml"
