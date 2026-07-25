@@ -21,6 +21,7 @@
     "validation/**",
     "benchmarks/model-fingerprint-v0.1/**",
     "integrations/qvac/**",
+    "integrations/autonomys/**",
     "datasets/public-benchmark-v1.1/**",
     "scripts/analyze_raid_pilot.py",
     "scripts/bootstrap_validation.py",

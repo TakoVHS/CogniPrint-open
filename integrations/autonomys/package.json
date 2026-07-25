@@ -1,0 +1,20 @@
+{
+  "name": "@cogniprint/autonomys-evidence-capsule",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Experimental content-addressed CogniPrint evidence capsules for Autonomys Auto Drive.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build:capsule": "node src/build.mjs",
+    "verify:capsule": "node src/verify.mjs",
+    "upload:capsule": "node src/upload.mjs"
+  },
+  "dependencies": {
+    "@autonomys/auto-drive": "1.6.14",
+    "@autonomys/auto-utils": "1.6.14"
+  }
+}
