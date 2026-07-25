@@ -1,0 +1,30 @@
+{
+  "sample_id": "example-model-en-policy-001",
+  "origin_class": "model",
+  "prompt_id": "example-prompt-001",
+  "prompt_family": "expository-summary",
+  "language": "en",
+  "domain": "public-policy-expository",
+  "model_provider": "example-provider",
+  "model_family": "example-family",
+  "model_identifier": "example-model-version",
+  "generation_timestamp": "2026-07-25T00:00:00Z",
+  "temperature": 0.7,
+  "top_p": 1.0,
+  "max_output_tokens": 512,
+  "system_prompt_class": "benchmark-neutral",
+  "text_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "parent_sample_id": null,
+  "transformation_type": null,
+  "human_edit_intensity": "none",
+  "provenance_evidence": [
+    {
+      "type": "hash",
+      "status": "present",
+      "reference": "example only — replace with a permitted evidence reference"
+    }
+  ],
+  "license": "Example metadata only; not an empirical benchmark sample",
+  "usage_note": "Schema demonstration. Must not be used as a scientific observation.",
+  "release_status": "released"
+}
