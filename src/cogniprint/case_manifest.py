@@ -76,6 +76,11 @@ def verify_case_manifest(root: str | Path, manifest: dict[str, object]) -> dict[
         return {"ok": False, "reason": "case root must be an existing directory"}
     if manifest.get("schema") != CASE_MANIFEST_SCHEMA:
         return {"ok": False, "reason": "unexpected schema"}
+    if manifest.get("signature_status") != "UNSIGNED":
+        return {
+            "ok": False,
+            "reason": "signature_status unsupported by v0.1; digital signature verification is not implemented",
+        }
 
     claimed_hash = str(manifest.get("manifest_sha256", ""))
     body = {key: value for key, value in manifest.items() if key != "manifest_sha256"}
@@ -132,5 +137,5 @@ def verify_case_manifest(root: str | Path, manifest: dict[str, object]) -> dict[
     return {
         "ok": True,
         "manifest_sha256": computed_hash,
-        "signature_status": manifest.get("signature_status", "UNSIGNED"),
+        "signature_status": "UNSIGNED",
     }
