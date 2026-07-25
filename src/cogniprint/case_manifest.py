@@ -27,6 +27,8 @@ def _canonical_json(value: object) -> bytes:
 def _iter_case_files(root: Path) -> list[Path]:
     files: list[Path] = []
     for path in root.rglob("*"):
+        if path.is_symlink():
+            raise ValueError(f"symlinks are not permitted in a case bundle: {path}")
         if not path.is_file():
             continue
         rel = path.relative_to(root)
@@ -70,6 +72,8 @@ def build_case_manifest(root: str | Path, *, case_id: str) -> dict[str, object]:
 
 def verify_case_manifest(root: str | Path, manifest: dict[str, object]) -> dict[str, object]:
     base = Path(root).resolve()
+    if not base.is_dir():
+        return {"ok": False, "reason": "case root must be an existing directory"}
     if manifest.get("schema") != CASE_MANIFEST_SCHEMA:
         return {"ok": False, "reason": "unexpected schema"}
 
@@ -97,12 +101,17 @@ def verify_case_manifest(root: str | Path, manifest: dict[str, object]) -> dict[
             return {"ok": False, "reason": "invalid file path"}
         if path_value.startswith("/") or ".." in Path(path_value).parts:
             return {"ok": False, "reason": "unsafe file path"}
+        if path_value in expected_by_path:
+            return {"ok": False, "reason": "duplicate file path", "path": path_value}
         expected_by_path[path_value] = entry
 
-    actual_paths = {
-        path.relative_to(base).as_posix(): path
-        for path in _iter_case_files(base)
-    }
+    try:
+        actual_paths = {
+            path.relative_to(base).as_posix(): path
+            for path in _iter_case_files(base)
+        }
+    except ValueError as exc:
+        return {"ok": False, "reason": str(exc)}
 
     if set(actual_paths) != set(expected_by_path):
         return {
