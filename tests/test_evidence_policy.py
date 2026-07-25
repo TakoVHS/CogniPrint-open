@@ -79,26 +79,26 @@ class ClaimFirewallTests(unittest.TestCase):
                 in_distribution=True,
                 calibrated=True,
                 attribution_enabled=True,
-                external_attestation=False,
+                validated_external_attestation=False,
             ),
         )
         self.assertFalse(decision.allowed)
         self.assertEqual(decision.evidence_class, EvidenceClass.UNKNOWN)
         self.assertIn(LimitationCode.NO_EXTERNAL_PROVENANCE, decision.limitations)
 
-    def test_exact_model_may_be_reported_only_as_external_attestation(self) -> None:
+    def test_exact_model_may_be_reported_only_as_validated_external_attestation(self) -> None:
         decision = evaluate_claim(
             ClaimKind.EXACT_MODEL,
             EvidenceContext(
                 strength=ClaimLevel.ATTESTED_PROVENANCE,
-                external_attestation=True,
+                validated_external_attestation=True,
             ),
         )
         self.assertTrue(decision.allowed)
         self.assertEqual(decision.evidence_class, EvidenceClass.ATTESTED)
         self.assertIn("does not infer", decision.safe_statement)
 
-    def test_high_stakes_identity_claims_are_denied(self) -> None:
+    def test_high_stakes_identity_claims_are_denied_even_with_attestation(self) -> None:
         for kind in (
             ClaimKind.AUTHORSHIP,
             ClaimKind.ACTOR_OR_COMMISSIONER,
@@ -114,11 +114,13 @@ class ClaimFirewallTests(unittest.TestCase):
                         in_distribution=True,
                         calibrated=True,
                         attribution_enabled=True,
-                        external_attestation=True,
+                        validated_external_attestation=True,
                     ),
                 )
                 self.assertFalse(decision.allowed)
                 self.assertEqual(decision.evidence_class, EvidenceClass.UNKNOWN)
+                self.assertIn(LimitationCode.UNSUPPORTED_CLAIM, decision.limitations)
+                self.assertNotIn(LimitationCode.NO_EXTERNAL_PROVENANCE, decision.limitations)
 
 
 if __name__ == "__main__":
