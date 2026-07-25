@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cogniprint.org/schemas/challenge-001-blinded-sample-v1.schema.json",
+  "title": "CogniPrint Challenge 001 blinded sample record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "sample_id",
+    "content_sha256",
+    "stage",
+    "lineage_group_hash",
+    "development_visibility",
+    "evaluation_visibility"
+  ],
+  "properties": {
+    "schema": {"const": "cogniprint-challenge-001-blinded-sample-v1"},
+    "sample_id": {"type": "string", "minLength": 1},
+    "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stage": {"enum": ["STAGE_A_DEVELOPMENT", "STAGE_B_SEALED"]},
+    "prompt_hash": {"type": "string", "minLength": 1},
+    "lineage_group_hash": {"type": "string", "minLength": 1},
+    "origin_record_hash": {"type": "string", "minLength": 1},
+    "reference_set_membership": {
+      "enum": ["DEVELOPMENT_ONLY", "REFERENCE_CANDIDATE", "SEALED_EVALUATION"]
+    },
+    "development_visibility": {"type": "boolean"},
+    "evaluation_visibility": {"type": "boolean"},
+    "collection_window": {"type": "string", "minLength": 1},
+    "notes_public": {"type": "string", "maxLength": 500}
+  },
+  "not": {
+    "anyOf": [
+      {"required": ["true_class"]},
+      {"required": ["known_to_reference"]},
+      {"required": ["generator"]},
+      {"required": ["model_family"]},
+      {"required": ["ground_truth"]}
+    ]
+  }
+}
