@@ -5,9 +5,8 @@ import process from 'node:process'
 
 import { buildEvidenceCapsule, canonicalJson } from './capsule.mjs'
 
-const [profilePath, contextPath, outputPath] = process.argv.slice(2)
-
-if (!profilePath || !outputPath) {
+const args = process.argv.slice(2)
+if (args.length !== 2 && args.length !== 3) {
   console.error('Usage: node src/build.mjs <cogniprint-profile.json> [context.json] <capsule.json>')
   console.error('Examples:')
   console.error('  node src/build.mjs profile.json capsule.json')
@@ -15,23 +14,20 @@ if (!profilePath || !outputPath) {
   process.exit(2)
 }
 
-let actualContextPath = contextPath
-let actualOutputPath = outputPath
-if (!outputPath) {
-  actualOutputPath = contextPath
-  actualContextPath = null
-}
+const profilePath = args[0]
+const contextPath = args.length === 3 ? args[1] : null
+const outputPath = args.length === 3 ? args[2] : args[1]
 
 const profile = JSON.parse(await fs.readFile(profilePath, 'utf8'))
-const context = actualContextPath
-  ? JSON.parse(await fs.readFile(actualContextPath, 'utf8'))
+const context = contextPath
+  ? JSON.parse(await fs.readFile(contextPath, 'utf8'))
   : {}
 
 const capsule = buildEvidenceCapsule(profile, context)
-await fs.writeFile(actualOutputPath, canonicalJson(capsule) + '\n', 'utf8')
+await fs.writeFile(outputPath, canonicalJson(capsule) + '\n', 'utf8')
 
 console.log(JSON.stringify({
-  output: actualOutputPath,
+  output: outputPath,
   schema: capsule.schema,
   publication_intent: capsule.publication_intent,
   evidence_sha256: capsule.evidence_sha256
