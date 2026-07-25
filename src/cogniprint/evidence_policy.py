@@ -60,6 +60,7 @@ class LimitationCode(str, Enum):
     UNCALIBRATED_SCORE = "UNCALIBRATED_SCORE"
     NO_EXTERNAL_PROVENANCE = "NO_EXTERNAL_PROVENANCE"
     CONFLICTING_PROVENANCE = "CONFLICTING_PROVENANCE"
+    UNSUPPORTED_CLAIM = "UNSUPPORTED_CLAIM"
 
 
 @dataclass(frozen=True)
@@ -69,6 +70,10 @@ class EvidenceContext:
     `attribution_enabled` must remain False until a dedicated benchmark,
     calibration and open-world review gate has been passed for the relevant
     scope.  It is intentionally not inferred from a model score.
+
+    `validated_external_attestation` means an external provenance record has
+    already passed the selected validation policy.  It does not make unrelated
+    authorship, intent, responsibility or legal conclusions valid.
     """
 
     strength: ClaimLevel = ClaimLevel.NONE
@@ -76,7 +81,7 @@ class EvidenceContext:
     in_distribution: bool = False
     calibrated: bool = False
     attribution_enabled: bool = False
-    external_attestation: bool = False
+    validated_external_attestation: bool = False
     limitations: tuple[LimitationCode, ...] = ()
 
 
@@ -119,19 +124,20 @@ def evaluate_claim(kind: ClaimKind, context: EvidenceContext) -> ClaimDecision:
     limitations = context.limitations
 
     if kind in HIGH_STAKES_DENY:
+        extra = [LimitationCode.UNSUPPORTED_CLAIM]
+        if not context.validated_external_attestation:
+            extra.append(LimitationCode.NO_EXTERNAL_PROVENANCE)
         return ClaimDecision(
             allowed=False,
             evidence_class=EvidenceClass.UNKNOWN,
             requested_claim=kind,
             maximum_level=min(context.strength, ClaimLevel.SIMILARITY_ONLY),
             safe_statement=(
-                "CogniPrint does not establish this claim from content analysis. "
-                "Independent, appropriately governed evidence is required."
+                "CogniPrint does not establish this high-stakes conclusion from content analysis. "
+                "A validated external record may be represented separately as ATTESTED evidence, "
+                "but it is not converted here into authorship, intent, responsibility, or a legal conclusion."
             ),
-            limitations=_merge_limitations(
-                limitations,
-                (LimitationCode.NO_EXTERNAL_PROVENANCE,),
-            ),
+            limitations=_merge_limitations(limitations, extra),
         )
 
     if kind is ClaimKind.MEASUREMENT:
@@ -215,14 +221,14 @@ def evaluate_claim(kind: ClaimKind, context: EvidenceContext) -> ClaimDecision:
         )
 
     if kind is ClaimKind.EXACT_MODEL:
-        if context.external_attestation and context.strength >= ClaimLevel.ATTESTED_PROVENANCE:
+        if context.validated_external_attestation and context.strength >= ClaimLevel.ATTESTED_PROVENANCE:
             return ClaimDecision(
                 allowed=True,
                 evidence_class=EvidenceClass.ATTESTED,
                 requested_claim=kind,
                 maximum_level=ClaimLevel.ATTESTED_PROVENANCE,
                 safe_statement=(
-                    "An external provenance source attests a model identity; "
+                    "A validated external provenance source attests a model identity; "
                     "CogniPrint does not infer that identity from text alone."
                 ),
                 limitations=limitations,
