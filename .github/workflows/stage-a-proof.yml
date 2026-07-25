@@ -1,0 +1,175 @@
+name: Stage A Proof
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/stage-a-proof.yml"
+      - "scripts/evaluate_challenge_predictions.py"
+      - "scripts/check_challenge_leakage.py"
+      - "scripts/build_research_lock_001.py"
+      - "scripts/materialize_stage_a_public_benchmark.py"
+      - "tests/golden/challenge-evaluator/**"
+      - "tests/test_challenge_evaluator_golden.py"
+      - "tests/test_challenge_leakage.py"
+      - "tests/test_research_lock_001.py"
+      - "tests/test_materialize_stage_a_public_benchmark.py"
+      - "datasets/public-benchmark-v1.1/**"
+      - "challenge-001/development/stage-a/**"
+  pull_request:
+    paths:
+      - ".github/workflows/stage-a-proof.yml"
+      - "scripts/evaluate_challenge_predictions.py"
+      - "scripts/check_challenge_leakage.py"
+      - "scripts/build_research_lock_001.py"
+      - "scripts/materialize_stage_a_public_benchmark.py"
+      - "tests/golden/challenge-evaluator/**"
+      - "tests/test_challenge_evaluator_golden.py"
+      - "tests/test_challenge_leakage.py"
+      - "tests/test_research_lock_001.py"
+      - "tests/test_materialize_stage_a_public_benchmark.py"
+      - "datasets/public-benchmark-v1.1/**"
+      - "challenge-001/development/stage-a/**"
+
+permissions:
+  contents: read
+
+jobs:
+  proof-tests:
+    name: Proof tests / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Runner evidence
+        run: |
+          echo "RUNNER_EXECUTED"
+          uname -a
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Python evidence
+        run: |
+          python --version
+          python -c "print('PYTHON_EXECUTED')"
+
+      - name: Run evaluator golden fixtures
+        run: python -m unittest tests.test_challenge_evaluator_golden -v
+
+      - name: Run leakage guard tests
+        run: python -m unittest tests.test_challenge_leakage -v
+
+      - name: Run Research Lock tests
+        run: python -m unittest tests.test_research_lock_001 -v
+
+      - name: Run Stage A materializer tests
+        run: python -m unittest tests.test_materialize_stage_a_public_benchmark -v
+
+  materialize-stage-a:
+    name: Materialize Stage A development manifest
+    needs: proof-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Materialize public benchmark as Stage A only
+        run: |
+          mkdir -p "$RUNNER_TEMP/stage-a-proof"
+          python scripts/materialize_stage_a_public_benchmark.py \
+            --root . \
+            --output "$RUNNER_TEMP/stage-a-proof/public-benchmark-v1.1.manifest.jsonl"
+
+      - name: Validate manifest and write execution evidence
+        env:
+          OUT_DIR: ${{ runner.temp }}/stage-a-proof
+          REPOSITORY_COMMIT: ${{ github.sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+          WORKFLOW_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import platform
+          from pathlib import Path
+
+          out = Path(os.environ["OUT_DIR"])
+          manifest = out / "public-benchmark-v1.1.manifest.jsonl"
+          rows = [json.loads(line) for line in manifest.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+          if len(rows) != 140:
+              raise SystemExit(f"expected 140 Stage A records, got {len(rows)}")
+
+          seen_ids = set()
+          seen_hashes = set()
+          for row in rows:
+              if row.get("stage") != "STAGE_A_DEVELOPMENT":
+                  raise SystemExit("non-Stage-A record found")
+              if row.get("development_visibility") is not True:
+                  raise SystemExit("Stage A record is not development-visible")
+              if row.get("evaluation_visibility") is not False:
+                  raise SystemExit("Stage A record is evaluation-visible")
+              if row.get("reference_set_membership") != "DEVELOPMENT_ONLY":
+                  raise SystemExit("unexpected reference-set membership")
+              sample_id = row.get("sample_id")
+              content_hash = row.get("content_sha256")
+              if sample_id in seen_ids:
+                  raise SystemExit(f"duplicate sample_id: {sample_id}")
+              if not isinstance(content_hash, str) or len(content_hash) != 64:
+                  raise SystemExit(f"invalid content_sha256 for {sample_id}")
+              seen_ids.add(sample_id)
+              seen_hashes.add(content_hash)
+
+          manifest_sha256 = hashlib.sha256(manifest.read_bytes()).hexdigest()
+          evidence = {
+              "schema": "cogniprint-stage-a-execution-001",
+              "status": "EXECUTED",
+              "scientific_claim_evidence": False,
+              "stage": "STAGE_A_DEVELOPMENT",
+              "repository_commit": os.environ["REPOSITORY_COMMIT"],
+              "workflow_run_id": os.environ["WORKFLOW_RUN_ID"],
+              "workflow_run_attempt": os.environ["WORKFLOW_RUN_ATTEMPT"],
+              "python": platform.python_version(),
+              "records": len(rows),
+              "unique_sample_ids": len(seen_ids),
+              "unique_content_hashes": len(seen_hashes),
+              "manifest_sha256": manifest_sha256,
+              "boundary": "Development calibration only. Not sealed Stage B evidence.",
+          }
+          (out / "STAGE_A_EXECUTION_001.json").write_text(
+              json.dumps(evidence, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          (out / "public-benchmark-v1.1.manifest.sha256").write_text(
+              f"{manifest_sha256}  public-benchmark-v1.1.manifest.jsonl\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(evidence, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload Stage A execution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: challenge-001-stage-a-public-benchmark
+          path: ${{ runner.temp }}/stage-a-proof
+          retention-days: 30
+          if-no-files-found: error
