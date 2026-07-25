@@ -58,7 +58,8 @@
           "LOW_REFERENCE_COVERAGE",
           "UNCALIBRATED_SCORE",
           "NO_EXTERNAL_PROVENANCE",
-          "CONFLICTING_PROVENANCE"
+          "CONFLICTING_PROVENANCE",
+          "UNSUPPORTED_CLAIM"
         ]
       }
     },
