@@ -1,0 +1,107 @@
+name: RAID M1 External Pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      per_cell:
+        description: "Samples per model x domain cell"
+        required: false
+        default: "25"
+      max_scanned:
+        description: "Maximum streamed RAID rows before failing incomplete quotas"
+        required: false
+        default: "250000"
+
+permissions:
+  contents: read
+
+env:
+  RAID_REVISION: "865cac74188466cb0c3b7574a10204007b57a459"
+  OUTPUT_DIR: "evidence/model-fingerprint-m1/raid-pilot"
+
+jobs:
+  run-pilot:
+    name: Prepare and analyze pinned RAID pilot
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out exact CogniPrint commit
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install CogniPrint real-data dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[real-data]'
+
+      - name: Prepare metadata-only RAID features
+        run: |
+          python scripts/prepare_raid_pilot.py \
+            --split train \
+            --revision "$RAID_REVISION" \
+            --per-cell "${{ inputs.per_cell }}" \
+            --max-scanned "${{ inputs.max_scanned }}" \
+            --output-dir "$OUTPUT_DIR"
+
+      - name: Analyze transparent baselines
+        run: |
+          python scripts/analyze_raid_pilot.py \
+            --features "$OUTPUT_DIR/features.jsonl" \
+            --output-dir "$OUTPUT_DIR" \
+            --test-fraction 0.30 \
+            --seed 20260725
+
+      - name: Verify public evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("evidence/model-fingerprint-m1/raid-pilot/features.jsonl")
+          rows = 0
+          for line in path.read_text(encoding="utf-8").splitlines():
+              if not line.strip():
+                  continue
+              payload = json.loads(line)
+              forbidden = {"generation", "prompt"} & set(payload)
+              if forbidden:
+                  raise SystemExit(f"raw source fields leaked into feature artifact: {sorted(forbidden)}")
+              rows += 1
+          if rows == 0:
+              raise SystemExit("feature artifact is empty")
+          print(f"verified metadata-only artifact: {rows} rows")
+          PY
+
+      - name: Record execution provenance
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path(os.environ["OUTPUT_DIR"])
+          payload = {
+              "cogniprint_commit_sha": os.environ["GITHUB_SHA"],
+              "github_run_id": os.environ["GITHUB_RUN_ID"],
+              "github_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "raid_revision": os.environ["RAID_REVISION"],
+              "readiness_boundary": "descriptive_only",
+          }
+          (output / "run-provenance.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload M1 evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cogniprint-m1-raid-${{ github.sha }}
+          path: evidence/model-fingerprint-m1/raid-pilot
+          retention-days: 14
+          if-no-files-found: error
