@@ -148,6 +148,8 @@ jobs:
                   raise SystemExit(f"duplicate sample_id: {sample_id}")
               if not isinstance(content_hash, str) or not sha256_re.fullmatch(content_hash):
                   raise SystemExit(f"invalid content_sha256 for {sample_id}")
+              if content_hash in seen_hashes:
+                  raise SystemExit(f"duplicate content_sha256: {content_hash}")
               seen_ids.add(sample_id)
               seen_hashes.add(content_hash)
 
