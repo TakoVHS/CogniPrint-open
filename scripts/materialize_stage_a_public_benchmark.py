@@ -55,6 +55,7 @@ def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
     metadata_path = confined_file(root, metadata_csv, label="metadata CSV")
     rows: list[dict[str, object]] = []
     seen_ids: set[str] = set()
+    seen_hashes: set[str] = set()
 
     with metadata_path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
@@ -88,6 +89,13 @@ def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
             except (OSError, ValueError) as exc:
                 raise ValueError(str(exc)) from exc
 
+            content_hash = sha256_file(target)
+            if content_hash in seen_hashes:
+                raise ValueError(
+                    f"metadata line {line_number}: duplicate content_sha256 {content_hash}"
+                )
+            seen_hashes.add(content_hash)
+
             baseline_id = (source.get("baseline_sample_id") or "").strip() or sample_id
             source_url = (source.get("source_url") or "").strip()
             acquisition_date = (source.get("acquisition_date") or "").strip()
@@ -110,7 +118,7 @@ def materialize(root: Path, metadata_csv: Path) -> list[dict[str, object]]:
                 {
                     "schema": SCHEMA,
                     "sample_id": sample_id,
-                    "content_sha256": sha256_file(target),
+                    "content_sha256": content_hash,
                     "stage": "STAGE_A_DEVELOPMENT",
                     "lineage_group_hash": lineage_group_hash,
                     "origin_record_hash": origin_record_hash,
