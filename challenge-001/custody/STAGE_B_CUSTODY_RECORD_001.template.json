@@ -1,5 +1,6 @@
 {
   "schema": "cogniprint-stage-b-custody-record-001",
+  "record_mode": "TEMPLATE",
   "status": "HOLD",
   "challenge_id": "challenge-001",
   "scientific_state": {
@@ -92,11 +93,11 @@
     "deviation_record_sha256": null,
     "notes": []
   },
-  "template_guards": {
+  "safety_guards": {
     "contains_real_stage_b_sample_ids": false,
     "contains_real_labels": false,
     "contains_secret_locations": false,
     "contains_access_credentials": false,
-    "stage_b_data_created": false
+    "stage_b_artifacts_created": false
   }
 }
