@@ -1,0 +1,100 @@
+{
+  "schema": "cogniprint-preregistration-submission-manifest-001",
+  "status": "HOLD",
+  "scientific_state": {
+    "readiness": "descriptive_only",
+    "research_mode": "PROOF_MODE",
+    "research_freeze": "PRE-FREEZE",
+    "stage_b_status": "NOT_AUTHORISED_TO_START",
+    "scientific_claim_evidence": false
+  },
+  "registration": {
+    "provider": "OSF",
+    "template": "TO_BE_SELECTED_AT_FREEZE",
+    "visibility": "UNDECIDED",
+    "embargo_end_rule": null,
+    "registration_id": null,
+    "canonical_url": null,
+    "submitted_at_utc": null,
+    "accepted_at_utc": null,
+    "public_doi": null,
+    "contributors_verified": false,
+    "license_verified": false
+  },
+  "repository": {
+    "remote": "https://github.com/TakoVHS/CogniPrint-open.git",
+    "commit_sha": null,
+    "tree_sha": null,
+    "dirty_status": null,
+    "evaluator_commit_sha": null,
+    "environment_lock_sha256": null
+  },
+  "frozen_controls": {
+    "research_freeze_status": "PRE-FREEZE",
+    "research_freeze_sha256": null,
+    "attribution_challenge_protocol_sha256": null,
+    "preregistration_packet_sha256": null,
+    "custody_plan_sha256": null,
+    "research_lock_status": "NOT_CREATED",
+    "research_lock_sha256": null,
+    "development_exposure_registry_sha256": null,
+    "stage_a_manifest_sha256": null,
+    "candidate_blinded_stage_b_manifest_sha256": null,
+    "split_manifest_sha256": null,
+    "reference_registry_sha256": null,
+    "calibration_manifest_sha256": null,
+    "custody_record_sha256": null
+  },
+  "scientific_decisions": {
+    "hypotheses_frozen": false,
+    "non_hypotheses_frozen": false,
+    "source_families_frozen": false,
+    "held_out_unknown_policy_frozen": false,
+    "human_control_frozen": false,
+    "collection_window_frozen": false,
+    "sample_counts_and_strata_frozen": false,
+    "lineage_and_split_rules_frozen": false,
+    "minimum_evidence_policy_frozen": false,
+    "ood_unknown_method_frozen": false,
+    "calibration_method_frozen": false,
+    "baseline_implementations_frozen": false,
+    "metric_semantics_frozen": false,
+    "exclusion_rules_frozen": false,
+    "stop_and_claim_narrowing_rules_frozen": false,
+    "custody_and_reveal_procedure_frozen": false
+  },
+  "execution_gates": {
+    "runner_gate_issue": 30,
+    "runner_gate_status": "NOT_EXECUTED",
+    "equivalent_reproducible_runner_record_accepted": false,
+    "stage_a_completed": true,
+    "real_stage_a_b_leakage_audit_status": "NOT_EXECUTED",
+    "sample_id_overlap": null,
+    "content_hash_overlap": null,
+    "sealed_predictions_exist": false,
+    "sealed_labels_revealed": false,
+    "stage_b_execution_authorised": false
+  },
+  "privacy_and_custody": {
+    "sealed_labels_in_registration": false,
+    "sealed_labels_in_public_repository": false,
+    "secrets_or_keys_in_registration": false,
+    "per_sample_label_hashes_public": false,
+    "whole_label_artifact_hash_policy": "TO_BE_FROZEN",
+    "prediction_process_has_label_access": false,
+    "custodian_role_assigned": false,
+    "prediction_role_assigned": false,
+    "independent_review_role_assigned": false
+  },
+  "hold_reasons": [
+    "RESEARCH_FREEZE_001.md remains PRE-FREEZE",
+    "issue #30 remains NOT_EXECUTED",
+    "final Stage B source and holdout design is not frozen",
+    "minimum-evidence, OOD/UNKNOWN, calibration and numeric stop criteria are not frozen",
+    "candidate Stage B manifests and real leakage audit do not exist",
+    "final Research Lock 001 does not exist",
+    "external registration has not been submitted"
+  ],
+  "created_as_template": true,
+  "stage_b_data_created": false
+}
