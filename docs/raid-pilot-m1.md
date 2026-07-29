@@ -46,7 +46,7 @@ Observed outputs:
 - `467985` scanned source rows before satisfying all quotas;
 - source SHA-256 `c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4`;
 - source repository revision `7cfcefef239323e6fa1ec43d1a6ecc815c8b8642`;
-- repository commit `84967e6a4ceed5e6f16358eb1d5f1f52f6019780` used for the evidence rerun.
+- evidence code commit `9d9ba5e2c34740c42864eb2810272dbc2652d69c`.
 
 Baseline metrics from the metadata-only pilot:
 
@@ -65,10 +65,22 @@ These are descriptive benchmark-bounded baselines. They are not calibrated confi
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[real-data]'
-python scripts/prepare_raid_pilot.py   --split train   --revision 865cac74188466cb0c3b7574a10204007b57a459   --per-cell 25   --output-dir evidence/model-fingerprint-m1/raid-pilot
+
+RAID_SOURCE=/path/to/train_none.csv
+RAID_CONTRACT=/path/to/RAID_SOURCE_CONTRACT_001.json
+
+python scripts/prepare_raid_pilot.py \
+  --input-file "$RAID_SOURCE" \
+  --expected-source-sha256 c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4 \
+  --source-contract "$RAID_CONTRACT" \
+  --models human,chatgpt,gpt4,llama-chat,mistral-chat \
+  --domains abstracts,news,reviews,wiki \
+  --per-cell 25 \
+  --seed 20260725 \
+  --output-dir evidence/model-fingerprint-m1/raid-pilot
 ```
 
-For the authoritative local evidence run on Wednesday, July 29, 2026, the script was executed against the published clean-train CSV with an explicit source contract, expected byte size, and expected SHA-256. That contract is documented separately so reviewers can distinguish the benchmark revision boundary from the raw-file custody boundary.
+This authoritative path verifies the local raw file against the expected SHA-256 and the machine-readable source contract before scanning it. The raw CSV remains outside the repository and outside the metadata-only evidence bundle. The pinned Hugging Face revision remains a benchmark revision boundary; it is not a substitute for the complete raw-source custody pin.
 
 ## Feature outputs
 
@@ -90,7 +102,11 @@ For the authoritative local evidence run on Wednesday, July 29, 2026, the script
 Run the transparent baseline layer before introducing a learned detector:
 
 ```bash
-python scripts/analyze_raid_pilot.py   --features evidence/model-fingerprint-m1/raid-pilot/features.jsonl   --output-dir evidence/model-fingerprint-m1/raid-pilot   --test-fraction 0.30   --seed 20260725
+python scripts/analyze_raid_pilot.py \
+  --features evidence/model-fingerprint-m1/raid-pilot/features.jsonl \
+  --output-dir evidence/model-fingerprint-m1/raid-pilot \
+  --test-fraction 0.30 \
+  --seed 20260725
 ```
 
 The analysis keeps related samples together using `source_id`, then `prompt_sha256`, then `text_sha256` as the fallback lineage key. A lineage group can occur in train or test, never both.
@@ -123,7 +139,7 @@ RAID also includes Czech and German material. CogniPrint v2 currently uses a del
 
 Therefore the default RAID pilot is English-only. A multilingual benchmark must either:
 
-- validate the existing feature map language by language; or
+- validate the existing feature map language by language;
 - introduce a separately versioned Unicode or multilingual feature map and compare it against v2.
 
 Do not describe the current RAID adapter as multilingual validation.
