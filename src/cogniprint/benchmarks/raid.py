@@ -18,6 +18,34 @@ from cogniprint.fingerprint import CognitiveFingerprint, FINGERPRINT_VERSION
 
 DEFAULT_MODELS = ("human", "chatgpt", "gpt4", "llama-chat", "mistral-chat")
 DEFAULT_DOMAINS = ("abstracts", "news", "reviews", "wiki")
+REQUIRED_SOURCE_COLUMNS = (
+    "id",
+    "adv_source_id",
+    "source_id",
+    "model",
+    "decoding",
+    "repetition_penalty",
+    "attack",
+    "domain",
+    "prompt",
+    "generation",
+)
+MODEL_ALIASES = {
+    "human": "human",
+    "chatgpt": "chatgpt",
+    "gpt4": "gpt4",
+    "gpt-4": "gpt4",
+    "llama-chat": "llama-chat",
+    "mistral-chat": "mistral-chat",
+}
+DOMAIN_ALIASES = {
+    "abstracts": "abstracts",
+    "news": "news",
+    "reviews": "reviews",
+    "wiki": "wiki",
+    "wikipedia": "wiki",
+}
+CLEAN_ATTACK_VALUES = {"", "clean", "none", "null"}
 
 
 @dataclass(frozen=True)
@@ -39,15 +67,53 @@ def _clean(value: Any) -> str:
     return "" if value is None else str(value).strip().lower()
 
 
+def canonical_model(value: Any) -> str:
+    return MODEL_ALIASES.get(_clean(value), "")
+
+
+def canonical_domain(value: Any) -> str:
+    return DOMAIN_ALIASES.get(_clean(value), "")
+
+
+def canonical_attack(value: Any) -> str:
+    cleaned = _clean(value)
+    return "none" if cleaned in CLEAN_ATTACK_VALUES else cleaned
+
+
+def validate_source_columns(fieldnames: Iterable[str] | None) -> tuple[str, ...]:
+    columns = tuple(fieldnames or ())
+    return tuple(column for column in REQUIRED_SOURCE_COLUMNS if column not in columns)
+
+
+def source_lineage_id(source_id: str, prompt_sha256: str | None, text_sha256: str) -> str:
+    if source_id.strip():
+        return f"source_id:{source_id.strip()}"
+    if prompt_sha256:
+        return f"prompt_sha256:{prompt_sha256}"
+    return f"text_sha256:{text_sha256}"
+
+
+def stable_selection_key(row: dict[str, Any], seed: int) -> str:
+    parts = (
+        str(seed),
+        canonical_model(row.get("model")),
+        canonical_domain(row.get("domain")),
+        str(row.get("id") or ""),
+        str(row.get("source_id") or ""),
+        str(row.get("adv_source_id") or ""),
+    )
+    return hashlib.sha256("|".join(parts).encode("utf-8")).hexdigest()
+
+
 def _is_clean_attack(value: Any) -> bool:
-    return _clean(value) in {"", "none", "null"}
+    return canonical_attack(value) == "none"
 
 
 def is_eligible_row(row: dict[str, Any], config: RaidPilotConfig) -> bool:
     """Return True only for rows that match the frozen, low-confound pilot."""
 
-    model = _clean(row.get("model"))
-    domain = _clean(row.get("domain"))
+    model = canonical_model(row.get("model"))
+    domain = canonical_domain(row.get("domain"))
     if model not in config.models or domain not in config.domains:
         return False
     if not _is_clean_attack(row.get("attack")):
@@ -81,21 +147,25 @@ def feature_record(row: dict[str, Any], config: RaidPilotConfig) -> dict[str, An
     prompt = row.get("prompt")
     prompt_text = prompt if isinstance(prompt, str) else ""
     fingerprint = CognitiveFingerprint(text, language=config.language)
+    text_sha256 = _sha256_text(text)
+    prompt_sha256 = _sha256_text(prompt_text) if prompt_text else None
+    source_id = str(row.get("source_id") or "")
 
     return {
         "source_dataset": "liamdugan/raid",
         "source_license": "MIT",
         "source_record_id": str(row.get("id") or ""),
-        "source_id": str(row.get("source_id") or ""),
+        "source_id": source_id,
         "adv_source_id": str(row.get("adv_source_id") or ""),
-        "model_family": _clean(row.get("model")),
-        "domain": _clean(row.get("domain")),
+        "lineage_id": source_lineage_id(source_id, prompt_sha256, text_sha256),
+        "model_family": canonical_model(row.get("model")),
+        "domain": canonical_domain(row.get("domain")),
         "decoding": _clean(row.get("decoding")),
         "repetition_penalty": _clean(row.get("repetition_penalty")),
-        "attack": _clean(row.get("attack")) or "none",
+        "attack": canonical_attack(row.get("attack")),
         "language": config.language,
-        "text_sha256": _sha256_text(text),
-        "prompt_sha256": _sha256_text(prompt_text) if prompt_text else None,
+        "text_sha256": text_sha256,
+        "prompt_sha256": prompt_sha256,
         "character_count": len(text),
         "token_count": len(fingerprint.words),
         "fingerprint_version": FINGERPRINT_VERSION,
@@ -125,7 +195,7 @@ def collect_records(
         if not is_eligible_row(row, config):
             continue
 
-        cell = (_clean(row.get("model")), _clean(row.get("domain")))
+        cell = (canonical_model(row.get("model")), canonical_domain(row.get("domain")))
         if cell not in targets or counts[cell] >= config.per_cell:
             continue
 
