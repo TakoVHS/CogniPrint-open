@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TakoVHS/CogniPrint-open/schemas/challenge-001-stage-b-custody-record-v1.schema.json",
+  "title": "CogniPrint Challenge 001 Stage B custody record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "challenge_id",
+    "scientific_state",
+    "roles",
+    "access_matrix",
+    "storage_boundary",
+    "artifacts",
+    "eligibility",
+    "events",
+    "reveal_gate",
+    "compromise_and_deviation",
+    "template_guards"
+  ],
+  "properties": {
+    "schema": {"const": "cogniprint-stage-b-custody-record-001"},
+    "status": {"enum": ["HOLD", "READY_FOR_CANDIDATE_CONSTRUCTION", "SEALED", "PREDICTIONS_FROZEN", "REVEALED", "EVALUATED", "COMPROMISED"]},
+    "challenge_id": {"const": "challenge-001"},
+    "scientific_state": {
+      "type": "object",
+      "required": ["readiness", "research_mode", "research_freeze", "stage_b_status"],
+      "properties": {
+        "readiness": {"const": "descriptive_only"},
+        "research_mode": {"const": "PROOF_MODE"},
+        "research_freeze": {"enum": ["PRE-FREEZE", "FROZEN"]},
+        "stage_b_status": {"enum": ["NOT_AUTHORISED_TO_START", "AUTHORISED_AFTER_REGISTRATION"]}
+      }
+    },
+    "roles": {
+      "type": "object",
+      "required": ["protocol_owner_role_id", "corpus_label_custodian_role_id", "prediction_operator_role_id", "independent_evaluator_role_id", "same_human_role_overlap_disclosed", "technical_separation_documented"],
+      "properties": {
+        "protocol_owner_role_id": {"type": ["string", "null"]},
+        "corpus_label_custodian_role_id": {"type": ["string", "null"]},
+        "prediction_operator_role_id": {"type": ["string", "null"]},
+        "independent_evaluator_role_id": {"type": ["string", "null"]},
+        "same_human_role_overlap_disclosed": {"type": "boolean"},
+        "technical_separation_documented": {"type": "boolean"}
+      }
+    },
+    "access_matrix": {
+      "type": "object",
+      "required": ["protocol_owner", "corpus_label_custodian", "prediction_operator", "independent_evaluator"],
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "blinded_inputs": {"type": "boolean"},
+          "sealed_labels": {"type": "boolean"},
+          "prediction_outputs_before_freeze": {"type": "boolean"}
+        }
+      }
+    },
+    "storage_boundary": {
+      "type": "object",
+      "required": ["blinded_package_location_id", "sealed_label_location_id", "locations_logically_separate", "sealed_location_not_mounted_to_prediction_process", "sealed_location_not_committed_to_public_repository", "sealed_location_not_in_predictor_visible_ci_artifacts", "secret_paths_credentials_or_keys_recorded_here"],
+      "properties": {
+        "blinded_package_location_id": {"type": ["string", "null"]},
+        "sealed_label_location_id": {"type": ["string", "null"]},
+        "locations_logically_separate": {"type": "boolean"},
+        "sealed_location_not_mounted_to_prediction_process": {"const": true},
+        "sealed_location_not_committed_to_public_repository": {"const": true},
+        "sealed_location_not_in_predictor_visible_ci_artifacts": {"const": true},
+        "secret_paths_credentials_or_keys_recorded_here": {"const": false}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "blinded_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "blinded_package_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "sealed_label_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "sealed_label_package_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "custody_event_log_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "prediction_freeze_receipt_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "reveal_receipt_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "evaluation_receipt_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "required": ["development_exposure_registry_checked", "stage_a_b_leakage_audit_status", "sample_id_overlap", "content_hash_overlap", "prompt_overlap_policy_applied", "labels_unseen_by_prediction_development", "source_selection_frozen_before_predictions", "licensing_and_retention_verified"],
+      "properties": {
+        "development_exposure_registry_checked": {"type": "boolean"},
+        "stage_a_b_leakage_audit_status": {"enum": ["NOT_EXECUTED", "PASS", "FAIL"]},
+        "sample_id_overlap": {"type": ["integer", "null"], "minimum": 0},
+        "content_hash_overlap": {"type": ["integer", "null"], "minimum": 0},
+        "prompt_overlap_policy_applied": {"type": "boolean"},
+        "labels_unseen_by_prediction_development": {"type": "boolean"},
+        "source_selection_frozen_before_predictions": {"type": "boolean"},
+        "licensing_and_retention_verified": {"type": "boolean"}
+      }
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "null"], "format": "date-time"}
+    },
+    "reveal_gate": {
+      "type": "object",
+      "required": ["predictions_exist", "predictions_sha256", "prediction_sample_set_sha256", "research_lock_sha256", "prediction_freeze_receipt_verified", "sealed_label_bytes_unchanged", "reveal_authorised"],
+      "properties": {
+        "predictions_exist": {"type": "boolean"},
+        "predictions_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "prediction_sample_set_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "research_lock_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "prediction_freeze_receipt_verified": {"type": "boolean"},
+        "sealed_label_bytes_unchanged": {"type": ["boolean", "null"]},
+        "reveal_authorised": {"type": "boolean"}
+      }
+    },
+    "compromise_and_deviation": {
+      "type": "object",
+      "required": ["blinding_compromised", "protocol_deviation", "downgraded_to_development_evidence", "deviation_record_sha256", "notes"],
+      "properties": {
+        "blinding_compromised": {"type": "boolean"},
+        "protocol_deviation": {"type": "boolean"},
+        "downgraded_to_development_evidence": {"type": "boolean"},
+        "deviation_record_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "template_guards": {
+      "type": "object",
+      "required": ["contains_real_stage_b_sample_ids", "contains_real_labels", "contains_secret_locations", "contains_access_credentials", "stage_b_data_created"],
+      "properties": {
+        "contains_real_stage_b_sample_ids": {"const": false},
+        "contains_real_labels": {"const": false},
+        "contains_secret_locations": {"const": false},
+        "contains_access_credentials": {"const": false},
+        "stage_b_data_created": {"const": false}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "SEALED"}}},
+      "then": {
+        "properties": {
+          "scientific_state": {
+            "properties": {
+              "research_freeze": {"const": "FROZEN"},
+              "stage_b_status": {"const": "AUTHORISED_AFTER_REGISTRATION"}
+            }
+          },
+          "eligibility": {
+            "properties": {
+              "stage_a_b_leakage_audit_status": {"const": "PASS"},
+              "sample_id_overlap": {"const": 0},
+              "content_hash_overlap": {"const": 0},
+              "labels_unseen_by_prediction_development": {"const": true},
+              "source_selection_frozen_before_predictions": {"const": true}
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["PREDICTIONS_FROZEN", "REVEALED", "EVALUATED"]}}},
+      "then": {
+        "properties": {
+          "reveal_gate": {
+            "properties": {
+              "predictions_exist": {"const": true},
+              "predictions_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "prediction_sample_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "research_lock_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
