@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TakoVHS/CogniPrint-open/schemas/challenge-001-preregistration-submission-manifest-v1.schema.json",
+  "title": "CogniPrint Challenge 001 preregistration submission manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "scientific_state",
+    "registration",
+    "repository",
+    "frozen_controls",
+    "scientific_decisions",
+    "execution_gates",
+    "privacy_and_custody",
+    "hold_reasons",
+    "created_as_template",
+    "stage_b_data_created"
+  ],
+  "properties": {
+    "schema": {
+      "const": "cogniprint-preregistration-submission-manifest-001"
+    },
+    "status": {
+      "enum": ["HOLD", "READY_TO_SUBMIT", "REGISTERED"]
+    },
+    "scientific_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readiness", "research_mode", "research_freeze", "stage_b_status", "scientific_claim_evidence"],
+      "properties": {
+        "readiness": {"const": "descriptive_only"},
+        "research_mode": {"const": "PROOF_MODE"},
+        "research_freeze": {"enum": ["PRE-FREEZE", "FROZEN"]},
+        "stage_b_status": {"enum": ["NOT_AUTHORISED_TO_START", "AUTHORISED_AFTER_REGISTRATION"]},
+        "scientific_claim_evidence": {"const": false}
+      }
+    },
+    "registration": {
+      "type": "object",
+      "required": ["provider", "template", "visibility", "registration_id", "canonical_url", "submitted_at_utc", "accepted_at_utc", "contributors_verified", "license_verified"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "template": {"type": "string", "minLength": 1},
+        "visibility": {"enum": ["UNDECIDED", "PUBLIC_IMMEDIATE", "EMBARGOED"]},
+        "embargo_end_rule": {"type": ["string", "null"]},
+        "registration_id": {"type": ["string", "null"]},
+        "canonical_url": {"type": ["string", "null"]},
+        "submitted_at_utc": {"type": ["string", "null"], "format": "date-time"},
+        "accepted_at_utc": {"type": ["string", "null"], "format": "date-time"},
+        "public_doi": {"type": ["string", "null"]},
+        "contributors_verified": {"type": "boolean"},
+        "license_verified": {"type": "boolean"}
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": ["remote", "commit_sha", "tree_sha", "dirty_status", "evaluator_commit_sha", "environment_lock_sha256"],
+      "properties": {
+        "remote": {"const": "https://github.com/TakoVHS/CogniPrint-open.git"},
+        "commit_sha": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "tree_sha": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "dirty_status": {"type": ["string", "null"]},
+        "evaluator_commit_sha": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+        "environment_lock_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "frozen_controls": {
+      "type": "object",
+      "required": ["research_freeze_status", "research_lock_status"],
+      "properties": {
+        "research_freeze_status": {"enum": ["PRE-FREEZE", "FROZEN"]},
+        "research_freeze_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "attribution_challenge_protocol_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "preregistration_packet_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "custody_plan_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "research_lock_status": {"enum": ["NOT_CREATED", "CREATED", "VERIFIED"]},
+        "research_lock_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "development_exposure_registry_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "stage_a_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "candidate_blinded_stage_b_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "split_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "reference_registry_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "calibration_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "custody_record_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "scientific_decisions": {
+      "type": "object",
+      "additionalProperties": {"type": "boolean"}
+    },
+    "execution_gates": {
+      "type": "object",
+      "required": ["runner_gate_issue", "runner_gate_status", "stage_a_completed", "real_stage_a_b_leakage_audit_status", "sealed_predictions_exist", "sealed_labels_revealed", "stage_b_execution_authorised"],
+      "properties": {
+        "runner_gate_issue": {"const": 30},
+        "runner_gate_status": {"enum": ["NOT_EXECUTED", "EXECUTED", "EQUIVALENT_RECORD_ACCEPTED"]},
+        "equivalent_reproducible_runner_record_accepted": {"type": "boolean"},
+        "stage_a_completed": {"type": "boolean"},
+        "real_stage_a_b_leakage_audit_status": {"enum": ["NOT_EXECUTED", "PASS", "FAIL"]},
+        "sample_id_overlap": {"type": ["integer", "null"], "minimum": 0},
+        "content_hash_overlap": {"type": ["integer", "null"], "minimum": 0},
+        "sealed_predictions_exist": {"type": "boolean"},
+        "sealed_labels_revealed": {"type": "boolean"},
+        "stage_b_execution_authorised": {"type": "boolean"}
+      }
+    },
+    "privacy_and_custody": {
+      "type": "object",
+      "required": ["sealed_labels_in_registration", "sealed_labels_in_public_repository", "secrets_or_keys_in_registration", "per_sample_label_hashes_public", "prediction_process_has_label_access"],
+      "properties": {
+        "sealed_labels_in_registration": {"const": false},
+        "sealed_labels_in_public_repository": {"const": false},
+        "secrets_or_keys_in_registration": {"const": false},
+        "per_sample_label_hashes_public": {"const": false},
+        "whole_label_artifact_hash_policy": {"type": "string"},
+        "prediction_process_has_label_access": {"const": false},
+        "custodian_role_assigned": {"type": "boolean"},
+        "prediction_role_assigned": {"type": "boolean"},
+        "independent_review_role_assigned": {"type": "boolean"}
+      }
+    },
+    "hold_reasons": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "created_as_template": {"type": "boolean"},
+    "stage_b_data_created": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "REGISTERED"}}},
+      "then": {
+        "properties": {
+          "scientific_state": {
+            "properties": {
+              "research_freeze": {"const": "FROZEN"}
+            }
+          },
+          "registration": {
+            "properties": {
+              "registration_id": {"type": "string", "minLength": 1},
+              "canonical_url": {"type": "string", "minLength": 1},
+              "submitted_at_utc": {"type": "string", "format": "date-time"},
+              "accepted_at_utc": {"type": "string", "format": "date-time"},
+              "contributors_verified": {"const": true},
+              "license_verified": {"const": true}
+            }
+          },
+          "execution_gates": {
+            "properties": {
+              "sealed_predictions_exist": {"const": false},
+              "sealed_labels_revealed": {"const": false}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
