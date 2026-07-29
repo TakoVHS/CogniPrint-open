@@ -1,10 +1,10 @@
 # M1 RAID pilot — privacy-preserving n-gram baselines
 
-Status: implementation-ready Stage A development protocol. Real pinned-source execution is pending. Readiness remains `descriptive_only`, research status remains `PRE-FREEZE`, and Challenge 001 Stage B remains `NOT_AUTHORISED_TO_START`.
+Status: executed local Stage A development evidence on Wednesday, July 29, 2026. Readiness remains `descriptive_only`, research mode remains `PROOF_MODE`, research status remains `PRE-FREEZE`, and Challenge 001 Stage B remains `NOT_AUTHORISED_TO_START`.
 
 ## Purpose
 
-The completed RAID Pilot A showed that the current 12-dimensional CogniPrint representation outperformed the majority and length-only baselines on the fixed 500-record benchmark slice. That result is not sufficient by itself: conventional lexical and surface-form baselines may carry more model-family signal than the compact 12D representation.
+The completed RAID Pilot A showed that the current 12-dimensional CogniPrint representation outperformed the majority and length-only baselines on the fixed 500-record benchmark slice. That result was still incomplete: conventional lexical and surface-form baselines might carry more model-family signal than the compact 12D representation.
 
 This protocol adds two deliberately fixed comparisons without changing the Pilot A source, selected records, grouped split, seed, or scientific claim boundary:
 
@@ -13,7 +13,7 @@ This protocol adds two deliberately fixed comparisons without changing the Pilot
 
 ## Frozen input boundary
 
-The n-gram run must reuse the completed Pilot A artifacts:
+The n-gram run reuses the completed Pilot A artifacts:
 
 - authoritative source: official RAID `train_none.csv`;
 - source SHA-256: `c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4`;
@@ -38,7 +38,7 @@ with SHA-256:
 
 The analyzer streams the pinned raw CSV and rehydrates only the 500 selected source rows. Every selected generation is verified against the persisted `text_sha256`; prompts are verified by hash where present.
 
-Raw source material is used only in memory. The implementation must not persist:
+Raw source material is used only in memory. The implementation does not persist:
 
 - generation text;
 - prompt text;
@@ -70,42 +70,42 @@ Permitted outputs are aggregate protocol settings, source and selection hashes, 
 - word n-gram lengths: 1–2;
 - hashing: SHA-256 into `131072` non-negative bins.
 
-These parameters are fixed before the real test metrics are observed. Do not tune them against the held-out Pilot A test partition.
+These parameters are fixed before the real test metrics are observed. They are not tuned against the held-out Pilot A test partition.
 
-## Execution
+## Executed local evidence on Wednesday, July 29, 2026
 
-```bash
-python scripts/analyze_raid_ngrams.py \
-  --features /path/to/raid-pilot/features.jsonl \
-  --baseline-metrics /path/to/raid-pilot/baseline-metrics.json \
-  --input-file /home/vietcash/projects/cogniprint-data/raid/train_none.csv \
-  --expected-source-sha256 c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4 \
-  --source-contract /path/to/RAID_SOURCE_CONTRACT_001.json \
-  --output-dir /path/to/ngram-evidence \
-  --seed 20260725 \
-  --test-fraction 0.30
-```
+The fixed-source local run verified:
 
-The script performs two complete source rehydration and analysis passes. It fails unless the rehydration-audit and metrics hashes are identical.
+- exact authoritative source byte size and SHA-256;
+- exact prior evidence archive SHA-256;
+- exact selected-features SHA-256;
+- exact selected-record manifest SHA-256;
+- exact source-contract SHA-256;
+- exact 500/500 record rehydration;
+- zero train/test lineage overlap on the reused grouped split;
+- deterministic two-run equality for metrics and rehydration audit outputs.
 
-## Outputs
+Split counts remained:
 
-- `ngram-baseline-metrics.json`;
-- `ngram-baseline-report.md`;
-- `ngram-source-rehydration-audit.json`;
-- `ngram-reproducibility-check.json`.
+- train/test records: `351 / 149`;
+- train/test lineage groups: `336 / 145`;
+- lineage overlap: `0`.
 
-The report compares:
+## Results
 
-1. chance reference;
-2. majority baseline;
-3. length-only nearest centroid;
-4. CogniPrint 12D nearest centroid;
-5. character 3–5 hashed TF-IDF;
-6. word 1–2 hashed TF-IDF.
+Comparison on the fixed Pilot A split:
+
+- chance accuracy reference: `0.200000`;
+- majority: accuracy `0.161074`, balanced accuracy `0.200000`, macro-F1 `0.055491`;
+- length-only nearest centroid: accuracy `0.295302`, balanced accuracy `0.302231`, macro-F1 `0.247431`;
+- CogniPrint 12D nearest centroid: accuracy `0.536913`, balanced accuracy `0.542001`, macro-F1 `0.535883`;
+- character 3–5 hashed TF-IDF: accuracy `0.583893`, balanced accuracy `0.590475`, macro-F1 `0.578782`;
+- word 1–2 hashed TF-IDF: accuracy `0.597315`, balanced accuracy `0.601996`, macro-F1 `0.595220`.
+
+Within this fixed descriptive pilot, both conventional n-gram baselines outperformed the current 12D representation. The strongest of the tested baselines was word `1–2` hashed TF-IDF.
 
 ## Interpretation boundary
 
-A stronger n-gram result would show that conventional lexical or surface-form features outperform the compact CogniPrint 12D representation on this particular controlled benchmark. A weaker n-gram result would not prove general model attribution.
+A stronger n-gram result shows that conventional lexical or surface-form features outperform the compact CogniPrint 12D representation on this controlled benchmark slice. It does not prove general model attribution.
 
 All outputs remain uncalibrated Stage A diagnostics. They do not establish exact model identity, AI origin, authorship, operator identity, commissioner identity, intent, responsibility, legal provenance, or forensic provenance. They do not authorize Stage B or change the project from `PRE-FREEZE`.
