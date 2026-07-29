@@ -1,0 +1,102 @@
+{
+  "schema": "cogniprint-stage-b-custody-record-001",
+  "status": "HOLD",
+  "challenge_id": "challenge-001",
+  "scientific_state": {
+    "readiness": "descriptive_only",
+    "research_mode": "PROOF_MODE",
+    "research_freeze": "PRE-FREEZE",
+    "stage_b_status": "NOT_AUTHORISED_TO_START"
+  },
+  "roles": {
+    "protocol_owner_role_id": null,
+    "corpus_label_custodian_role_id": null,
+    "prediction_operator_role_id": null,
+    "independent_evaluator_role_id": null,
+    "same_human_role_overlap_disclosed": false,
+    "technical_separation_documented": false
+  },
+  "access_matrix": {
+    "protocol_owner": {
+      "blinded_inputs": false,
+      "sealed_labels": false,
+      "prediction_outputs_before_freeze": false
+    },
+    "corpus_label_custodian": {
+      "blinded_inputs": true,
+      "sealed_labels": true,
+      "prediction_outputs_before_freeze": false
+    },
+    "prediction_operator": {
+      "blinded_inputs": false,
+      "sealed_labels": false,
+      "prediction_outputs_before_freeze": true
+    },
+    "independent_evaluator": {
+      "blinded_inputs": false,
+      "sealed_labels": false,
+      "prediction_outputs_before_freeze": false
+    }
+  },
+  "storage_boundary": {
+    "blinded_package_location_id": null,
+    "sealed_label_location_id": null,
+    "locations_logically_separate": false,
+    "sealed_location_not_mounted_to_prediction_process": true,
+    "sealed_location_not_committed_to_public_repository": true,
+    "sealed_location_not_in_predictor_visible_ci_artifacts": true,
+    "secret_paths_credentials_or_keys_recorded_here": false
+  },
+  "artifacts": {
+    "blinded_manifest_sha256": null,
+    "blinded_package_sha256": null,
+    "sealed_label_manifest_sha256": null,
+    "sealed_label_package_sha256": null,
+    "custody_event_log_sha256": null,
+    "prediction_freeze_receipt_sha256": null,
+    "reveal_receipt_sha256": null,
+    "evaluation_receipt_sha256": null
+  },
+  "eligibility": {
+    "development_exposure_registry_checked": false,
+    "stage_a_b_leakage_audit_status": "NOT_EXECUTED",
+    "sample_id_overlap": null,
+    "content_hash_overlap": null,
+    "prompt_overlap_policy_applied": false,
+    "labels_unseen_by_prediction_development": false,
+    "source_selection_frozen_before_predictions": false,
+    "licensing_and_retention_verified": false
+  },
+  "events": {
+    "custody_created_at_utc": null,
+    "blinded_package_created_at_utc": null,
+    "sealed_label_package_created_at_utc": null,
+    "prediction_started_at_utc": null,
+    "predictions_frozen_at_utc": null,
+    "labels_revealed_at_utc": null,
+    "evaluation_completed_at_utc": null
+  },
+  "reveal_gate": {
+    "predictions_exist": false,
+    "predictions_sha256": null,
+    "prediction_sample_set_sha256": null,
+    "research_lock_sha256": null,
+    "prediction_freeze_receipt_verified": false,
+    "sealed_label_bytes_unchanged": null,
+    "reveal_authorised": false
+  },
+  "compromise_and_deviation": {
+    "blinding_compromised": false,
+    "protocol_deviation": false,
+    "downgraded_to_development_evidence": false,
+    "deviation_record_sha256": null,
+    "notes": []
+  },
+  "template_guards": {
+    "contains_real_stage_b_sample_ids": false,
+    "contains_real_labels": false,
+    "contains_secret_locations": false,
+    "contains_access_credentials": false,
+    "stage_b_data_created": false
+  }
+}
