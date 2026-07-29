@@ -3,7 +3,15 @@ from __future__ import annotations
 import hashlib
 import unittest
 
-from cogniprint.benchmarks.raid import RaidPilotConfig, collect_records, feature_record, is_eligible_row
+from cogniprint.benchmarks.raid import (
+    RaidPilotConfig,
+    canonical_domain,
+    canonical_model,
+    collect_records,
+    feature_record,
+    is_eligible_row,
+    validate_source_columns,
+)
 from cogniprint.fingerprint import FEATURE_NAMES, FINGERPRINT_VERSION
 
 
@@ -48,6 +56,7 @@ class RaidPilotAdapterTests(unittest.TestCase):
         self.assertEqual(record["fingerprint_version"], FINGERPRINT_VERSION)
         self.assertEqual(set(record["features_raw"]), set(FEATURE_NAMES))
         self.assertEqual(set(record["features_normalized"]), set(FEATURE_NAMES))
+        self.assertEqual(record["lineage_id"], "source_id:source-1")
 
     def test_collect_records_balances_requested_cells(self) -> None:
         rows = [
@@ -81,6 +90,16 @@ class RaidPilotAdapterTests(unittest.TestCase):
         self.assertEqual(scanned, 3)
         self.assertEqual(len(records), 2)
         self.assertEqual({record["model_family"] for record in records}, {"human", "gpt4"})
+
+    def test_explicit_domain_and_model_mappings_are_not_fuzzy(self) -> None:
+        self.assertEqual(canonical_domain("Wikipedia"), "wiki")
+        self.assertEqual(canonical_model("GPT-4"), "gpt4")
+        self.assertEqual(canonical_model("some-new-model"), "")
+
+    def test_validate_source_columns_reports_missing_fields(self) -> None:
+        missing = validate_source_columns(["id", "model", "generation"])
+        self.assertIn("prompt", missing)
+        self.assertIn("attack", missing)
 
 
 if __name__ == "__main__":

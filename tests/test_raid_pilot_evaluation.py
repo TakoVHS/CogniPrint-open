@@ -43,6 +43,24 @@ class RaidPilotEvaluationTests(unittest.TestCase):
             & {lineage_group(record) for record in left_test}
         )
 
+    def test_grouped_split_uses_prompt_hash_when_source_id_is_missing(self) -> None:
+        records = []
+        for index in range(20):
+            prompt_sha = f"prompt-{index:03d}"
+            for label, value in (("class-a", 0.0), ("class-b", 1.0)):
+                records.append(
+                    {
+                        "prompt_sha256": prompt_sha,
+                        "text_sha256": f"{index:064x}"[-64:],
+                        "model_family": label,
+                        "character_count": 400,
+                        "token_count": 80,
+                        "features_normalized": {name: value for name in FEATURE_NAMES},
+                    }
+                )
+        train, test = grouped_split(records, seed=20260725)
+        self.assertFalse({lineage_group(record) for record in train} & {lineage_group(record) for record in test})
+
     def test_12d_baseline_beats_length_only_on_separable_synthetic_features(self) -> None:
         result = evaluate_pilot(synthetic_records(), seed=20260725)
         self.assertEqual(result["chance_accuracy_reference"], 0.5)
