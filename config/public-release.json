@@ -46,6 +46,7 @@
     "scripts/check_prereg_compliance.py",
     "scripts/check_public_benchmark_v11.py",
     "scripts/check_statistical_readiness.py",
+    "scripts/check_stage_b_preregistration_package.py",
     "scripts/cogniprint_claims_guard.py",
     "scripts/decision_gate_fallback.py",
     "scripts/decision_gate_status.py",
