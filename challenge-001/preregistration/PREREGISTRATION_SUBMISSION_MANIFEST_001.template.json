@@ -1,5 +1,6 @@
 {
   "schema": "cogniprint-preregistration-submission-manifest-001",
+  "record_mode": "TEMPLATE",
   "status": "HOLD",
   "scientific_state": {
     "readiness": "descriptive_only",
