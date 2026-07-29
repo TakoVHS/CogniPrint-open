@@ -44,7 +44,9 @@ def create_input_archive(path: Path, *, traversal: bool = False) -> None:
             encoding="utf-8",
         )
         manifest = root / "EVIDENCE_SHA256SUMS.txt"
-        files = sorted(item for item in root.rglob("*") if item.is_file() and item != manifest)
+        files = sorted(
+            item for item in root.rglob("*") if item.is_file() and item != manifest
+        )
         manifest.write_text(
             "".join(
                 f"{sha256_file(item)}  {item.relative_to(root).as_posix()}\n"
@@ -74,7 +76,11 @@ def verify_manifest(root: Path) -> int:
 
 
 class EvidenceArchiveFinalizerTests(unittest.TestCase):
-    def run_finalizer(self, input_archive: Path, output_archive: Path) -> subprocess.CompletedProcess[str]:
+    def run_finalizer(
+        self,
+        input_archive: Path,
+        output_archive: Path,
+    ) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [
                 sys.executable,
@@ -108,7 +114,9 @@ class EvidenceArchiveFinalizerTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as extracted:
                 with tarfile.open(output_archive, "r:gz") as handle:
                     members = handle.getmembers()
-                    self.assertFalse(any(member.issym() or member.islnk() for member in members))
+                    self.assertFalse(
+                        any(member.issym() or member.islnk() for member in members)
+                    )
                     handle.extractall(extracted)
                 evidence_root = next(Path(extracted).iterdir())
                 status = json.loads(
@@ -131,12 +139,12 @@ class EvidenceArchiveFinalizerTests(unittest.TestCase):
                 self.assertFalse(policy["scientific_metrics_changed"])
                 self.assertGreaterEqual(verify_manifest(evidence_root), 4)
 
-    def test_output_is_deterministic(self) -> None:
+    def test_output_is_deterministic_for_stable_archive_name(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             input_archive = root / "input.tar.gz"
-            first = root / "first.tar.gz"
-            second = root / "second.tar.gz"
+            first = root / "first" / "output.tar.gz"
+            second = root / "second" / "output.tar.gz"
             create_input_archive(input_archive)
             first_result = self.run_finalizer(input_archive, first)
             second_result = self.run_finalizer(input_archive, second)
