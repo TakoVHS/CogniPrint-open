@@ -14,7 +14,6 @@
     "Dockerfile.jupyter",
     "config/public-release.json",
     ".github/workflows/public-release-ci.yml",
-    ".github/workflows/stage-a-proof.yml",
     "schemas/**",
     "src/**",
     "tests/**",
@@ -156,7 +155,6 @@
     "docs/trust.md"
   ],
   "public_safe_workflows": [
-    ".github/workflows/public-release-ci.yml",
-    ".github/workflows/stage-a-proof.yml"
+    ".github/workflows/public-release-ci.yml"
   ]
 }
