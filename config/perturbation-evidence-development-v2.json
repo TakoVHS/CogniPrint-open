@@ -1,0 +1,25 @@
+{
+  "protocol_version": "0.2.0",
+  "description": "Minimal viable protocol for deterministic perturbation testing of cognitive fingerprints. Does not claim to prove stability; only collects raw observations.",
+  "feature_version": "cogniprint-core-v0.1.0",
+  "random_seed": 20260422,
+  "source_manifest": "workspace/experiments/stability_test/source_manifest.csv",
+  "perturbation_families": [
+    {
+      "name": "synonym_replacement",
+      "description": "Replace words with synonyms from a pre-defined frozen map.",
+      "frozen_synonym_map": "workspace/experiments/stability_test/synonym_map.json",
+      "budgets": [1, 2, 3]
+    }
+  ],
+  "trials_per_budget": 5,
+  "output": {
+    "raw_trials_dir": "workspace/experiments/stability_test/raw_trials",
+    "aggregate_stats": "workspace/experiments/stability_test/aggregate_stats.json",
+    "report": {
+      "fail_closed": true,
+      "allowed_decisions": ["PASS", "MIXED", "FAIL", "INSUFFICIENT_EVIDENCE"],
+      "predeclared_rules": "workspace/experiments/stability_test/decision_rules.json"
+    }
+  }
+}
