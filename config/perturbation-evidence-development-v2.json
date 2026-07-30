@@ -68,7 +68,19 @@
         2,
         3
       ],
-      "trials_per_budget": 5
+      "trials_per_budget": 5,
+      "synonym_map_schema": "lowercase_source_to_nonempty_string_list",
+      "implementation_contract": {
+        "tokenizer": "cogniprint.fingerprint.WORD_RE.finditer",
+        "token_index_space": "all_WORD_RE_matches_zero_based",
+        "eligible_token": "token_lowercase_key_exists_in_synonym_map",
+        "effective_budget": "min(requested_budget, eligible_token_count)",
+        "selected_indices": "sorted_random_sample_without_replacement_using_trial_seed",
+        "candidate_order": "sorted_unique_unicode_codepoint_order",
+        "candidate_selection": "sha256(trial_seed|token_index|replacement)_first_8_bytes_big_endian_mod_candidate_count",
+        "case_policy": "replacement_as_declared_in_map",
+        "span_policy": "replace_selected_match_spans_right_to_left"
+      }
     }
   ],
   "trials_per_budget": 5,
