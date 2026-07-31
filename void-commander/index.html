@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#02070a">
+  <title>VOID COMMANDER // Telegram Space Sim</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main id="app" class="game-shell">
+    <canvas id="spaceCanvas" aria-label="Космический полёт"></canvas>
+    <canvas id="fxCanvas" aria-hidden="true"></canvas>
+
+    <header class="hud hud-top">
+      <div class="hud-group identity">
+        <span class="micro">COMMANDER</span>
+        <strong id="commanderName">JAMESON</strong>
+        <span id="rankText">HARMLESS</span>
+      </div>
+      <div class="hud-group center-readout">
+        <strong id="systemName">LAVE</strong>
+        <span id="modeText">DOCKED</span>
+      </div>
+      <div class="hud-group credits">
+        <span class="micro">CREDITS</span>
+        <strong id="creditsText">1,000</strong>
+        <span id="fuelText">FUEL 7.0 LY · G1</span>
+      </div>
+    </header>
+
+    <aside class="flight-bars" aria-label="Ship status">
+      <label><span>SHD</span><i><b id="shieldBar"></b></i></label>
+      <label><span>HULL</span><i><b id="hullBar"></b></i></label>
+      <label><span>LASER</span><i><b id="heatBar"></b></i></label>
+      <label><span>SPD</span><strong id="speedText">000</strong></label>
+    </aside>
+
+    <section class="message-log" id="messageLog" aria-live="polite">
+      <div>FLIGHT COMPUTER ONLINE</div>
+    </section>
+
+    <section class="touch-controls" id="touchControls" aria-label="Управление кораблём">
+      <div class="joystick" id="joystick" aria-label="Pitch and yaw control">
+        <div class="joystick-grid"></div>
+        <div class="joystick-knob" id="joystickKnob"></div>
+      </div>
+      <div class="throttle-wrap">
+        <span>MAX</span>
+        <input id="throttle" type="range" min="0" max="100" value="18" orient="vertical" aria-label="Throttle">
+        <span>STOP</span>
+      </div>
+      <div class="action-stack">
+        <button id="fireBtn" class="control-btn danger">FIRE</button>
+        <button id="missileBtn" class="control-btn danger">LOCK 3</button>
+        <button id="ecmBtn" class="control-btn">ECM</button>
+        <button id="dockBtn" class="control-btn">DOCK</button>
+        <button id="jumpBtn" class="control-btn accent">JUMP</button>
+        <button id="computerBtn" class="control-btn">COMPUTER</button>
+      </div>
+    </section>
+
+    <section id="computerPanel" class="computer-panel open" aria-label="Ship computer">
+      <div class="computer-frame">
+        <header class="computer-header">
+          <div>
+            <span class="micro">KESTREL FLIGHT COMPUTER</span>
+            <strong id="panelTitle">ORBITAL SERVICES</strong>
+          </div>
+          <button id="closeComputer" class="icon-btn" aria-label="Закрыть">×</button>
+        </header>
+        <nav class="tabs">
+          <button data-tab="station" class="active">STATION</button>
+          <button data-tab="market">MARKET</button>
+          <button data-tab="navigation">GALAXY</button>
+          <button data-tab="missions">MISSIONS</button>
+          <button data-tab="ship">SHIP</button>
+          <button data-tab="store">STORE</button>
+        </nav>
+
+        <div class="panel-content">
+          <section class="tab-panel active" data-panel="station">
+            <div class="hero-system">
+              <div class="planet-emblem" id="planetEmblem"></div>
+              <div>
+                <span class="micro">CURRENT SYSTEM</span>
+                <h1 id="stationSystem">LAVE</h1>
+                <p id="systemDescription"></p>
+              </div>
+            </div>
+            <div class="system-grid">
+              <div><span>ECONOMY</span><strong id="economyText"></strong></div>
+              <div><span>GOVERNMENT</span><strong id="governmentText"></strong></div>
+              <div><span>TECH LEVEL</span><strong id="techText"></strong></div>
+              <div><span>POPULATION</span><strong id="populationText"></strong></div>
+            </div>
+            <div class="service-actions">
+              <button id="launchBtn" class="primary-action">LAUNCH</button>
+              <button id="refuelBtn">REFUEL</button>
+              <button id="missileServiceBtn">RELOAD MISSILES</button>
+              <button id="repairBtn">REPAIR SYSTEMS</button>
+              <button id="galaxyJumpBtn">GALACTIC JUMP</button>
+              <button id="saveBtn">SAVE COMMANDER</button>
+            </div>
+          </section>
+
+          <section class="tab-panel" data-panel="market">
+            <div class="market-summary">
+              <span id="cargoText">CARGO 0 / 20</span>
+              <span id="marketCredits">1,000 CR</span>
+            </div>
+            <div class="market-table" id="marketTable"></div>
+          </section>
+
+          <section class="tab-panel" data-panel="navigation">
+            <div class="nav-summary">
+              <div><span>TARGET</span><strong id="targetName"></strong></div>
+              <div><span>DISTANCE</span><strong id="targetDistance"></strong></div>
+              <div><span>GALAXY</span><strong id="galaxyName"></strong></div>
+            </div>
+            <div class="galaxy-map" id="galaxyMap"></div>
+            <div class="system-list" id="systemList"></div>
+          </section>
+
+          <section class="tab-panel" data-panel="missions">
+            <h3>AVAILABLE CONTRACTS</h3>
+            <div class="equipment-list" id="missionBoard"></div>
+            <h3>ACTIVE CONTRACTS</h3>
+            <div class="equipment-list" id="activeMissionList"></div>
+          </section>
+
+          <section class="tab-panel" data-panel="ship">
+            <div class="ship-card">
+              <div class="ship-wireframe" aria-hidden="true">◇—◇<br>╲╱△╲╱</div>
+              <div>
+                <span class="micro">REGISTERED VESSEL</span>
+                <h2 id="shipName">KESTREL MK I</h2>
+                <p>Independent long-range trader configured for mobile command.</p>
+              </div>
+            </div>
+            <div class="system-grid ship-stats">
+              <div><span>CARGO</span><strong id="shipCargo"></strong></div>
+              <div><span>MISSILES</span><strong id="shipMissiles"></strong></div>
+              <div><span>LASER</span><strong id="shipLaser"></strong></div>
+              <div><span>LEGAL</span><strong id="legalText"></strong></div>
+              <div><span>GALAXY</span><strong id="galaxyText"></strong></div>
+              <div><span>DAMAGE</span><strong id="damageText"></strong></div>
+            </div>
+            <h3>EQUIPMENT BAY</h3>
+            <div class="equipment-list" id="equipmentList"></div>
+          </section>
+
+          <section class="tab-panel" data-panel="store">
+            <div class="store-head">
+              <div>
+                <span class="micro">TELEGRAM STARS · COSMETIC SIGNALS</span>
+                <h2>COMMANDER STORE</h2>
+                <p>Fixed-price cockpit themes and insignia. No random rewards and no combat, economy or mission advantages.</p>
+              </div>
+              <div id="storeStatus" class="store-status" data-kind="busy">SYNCING STORE</div>
+            </div>
+            <div id="themeRack" class="theme-rack" aria-label="Unlocked cockpit themes"></div>
+            <div id="storeGrid" class="store-grid">
+              <div class="store-empty">STORE TELEMETRY INITIALIZING</div>
+            </div>
+            <p class="store-note">Digital purchases are delivered only after Telegram confirms successful payment on the server.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="bootScreen" class="boot-screen">
+      <div class="boot-logo">
+        <span>CLASSIC VECTOR SPACE TRADING · TELEGRAM REMAKE</span>
+        <h1>VOID<br>COMMANDER</h1>
+        <p>Eight procedural galaxies. Trade, mine, take missions, fight and survive.</p>
+        <button id="bootBtn">ENTER COCKPIT</button>
+        <small>Mechanically faithful original reimplementation. Original code, models, UI and synthesized audio; no legacy assets bundled.</small>
+        <span id="buildChip" class="build-chip">BUILD CHECKING</span>
+      </div>
+    </section>
+  </main>
+
+<style>html,body{margin:0;background:#000;color:#67f4ff;font-family:monospace}#vc-loading{position:fixed;inset:0;display:grid;place-items:center;background:#000;z-index:99999;letter-spacing:.18em;padding:20px;text-align:center}</style>
+<div id="vc-loading">INITIALIZING VOID COMMANDER…</div>
+<script>
+window.__VOID_API_BASE__=new URLSearchParams(location.search).get('api')||location.origin;
+(async()=>{
+ const files=["payload0.txt", "payload1.txt", "payload2.txt", "payload3.txt", "payload4.txt"];
+ const encoded=(await Promise.all(files.map(async f=>{const r=await fetch(f,{cache:'no-store'});if(!r.ok)throw new Error('Payload '+f+' '+r.status);return r.text();}))).join('');
+ const bytes=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));
+ if(!('DecompressionStream' in window)) throw new Error('Modern Chromium/WebView required');
+ const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+ const pkg=JSON.parse(await new Response(stream).text());
+ const style=document.createElement('style');style.textContent=pkg.css;document.head.append(style);
+ const urls=new Map(),resolving=new Set();
+ const normalize=(base,spec)=>new URL(spec,new URL(base,'https://void.local')).pathname;
+ const resolve=path=>{if(urls.has(path))return urls.get(path);if(resolving.has(path))throw new Error('Circular module '+path);const original=pkg.modules[path];if(original==null)throw new Error('Missing module '+path);resolving.add(path);const src=original.replace(/(from\s*|import\s*)["'](\.[^"']+)["']/g,(m,prefix,spec)=>prefix+JSON.stringify(resolve(normalize(path,spec))));const url=URL.createObjectURL(new Blob([src],{type:'text/javascript'}));urls.set(path,url);resolving.delete(path);return url;};
+ await import(resolve('/static/script.js'));await import(resolve('/static/game/cinematic_fx.js'));await import(resolve('/static/game/stars_client.js'));document.getElementById('vc-loading')?.remove();
+})().catch(err=>{console.error(err);document.getElementById('vc-loading').textContent='BOOT FAILURE · '+err.message;});
+</script>
+</body>
+</html>
