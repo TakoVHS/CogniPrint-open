@@ -185,6 +185,13 @@
 <div id="vc-loading">INITIALIZING VOID COMMANDER…</div>
 <script>
 window.__VOID_API_BASE__=new URLSearchParams(location.search).get('api')||location.origin;
+const __voidNativeFetch=window.fetch.bind(window);
+window.fetch=(input,init)=>{
+ let target=input;
+ if(typeof input==='string'&&input.startsWith('/api/')) target=new URL(input,window.__VOID_API_BASE__).toString();
+ else if(input instanceof Request){const u=new URL(input.url);if(u.origin===location.origin&&u.pathname.startsWith('/api/')) target=new Request(new URL(u.pathname+u.search,window.__VOID_API_BASE__).toString(),input);}
+ return __voidNativeFetch(target,init);
+};
 (async()=>{
  const files=["payload0.txt", "payload1.txt", "payload2.txt", "payload3.txt", "payload4.txt"];
  const encoded=(await Promise.all(files.map(async f=>{const r=await fetch(f,{cache:'no-store'});if(!r.ok)throw new Error('Payload '+f+' '+r.status);return r.text();}))).join('');
