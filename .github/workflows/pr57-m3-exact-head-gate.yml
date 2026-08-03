@@ -1,0 +1,182 @@
+name: PR57 M3 exact-head gate
+
+on:
+  push:
+    branches:
+      - ci/pr57-m3-exact-head-gate-20260804
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr57-m3-exact-head-gate-7c9a00b
+  cancel-in-progress: false
+
+jobs:
+  exact-head-m3:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      EXACT_HEAD: 7c9a00bdeb11a6ccc86ca1a18b3a2e4f6be8e299
+      EXACT_TREE: 065e13434e8396dfafdd0d968eb50ec47e180eed
+      BASE_SHA: d154b8610b182fe9110bf52fcadf02914498d356
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: 7c9a00bdeb11a6ccc86ca1a18b3a2e4f6be8e299
+          fetch-depth: 0
+
+      - name: Verify exact identity and scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git rev-parse HEAD^{tree})" = "$EXACT_TREE"
+          cat > /tmp/expected-files.txt <<'EOF'
+          .dockerignore
+          Containerfile
+          compose.yaml
+          demo/cross_installation_dossier_gate.py
+          demo/evidence_dossier_quickstart.py
+          docs/evidence-dossier-m3-operator-guide.md
+          docs/evidence-dossier-v1.md
+          docs/evidence-threat-model-v1.md
+          docs/self-hosted-evidence-workstation-001.md
+          docs/self-hosted-packaging.md
+          flake.lock
+          flake.nix
+          packaging/oci-requirements.txt
+          pyproject.toml
+          schemas/cogniprint-evidence-dossier-v1.schema.json
+          scripts/check_self_hosted_packaging.py
+          src/cogniprint/__main__.py
+          src/cogniprint/dossier.py
+          src/cogniprint/dossier_security.py
+          src/cogniprint/entrypoint.py
+          tests/test_dossier_m3.py
+          tests/test_evidence_dossier.py
+          EOF
+          git diff --name-only "$BASE_SHA" "$EXACT_HEAD" | LC_ALL=C sort > /tmp/actual-files.txt
+          diff -u /tmp/expected-files.txt /tmp/actual-files.txt
+          test "$(wc -l < /tmp/actual-files.txt)" -eq 22
+          git diff --check "$BASE_SHA" "$EXACT_HEAD"
+          echo "EXACT_IDENTITY_AND_SCOPE=PASS"
+
+      - name: Install Python gate tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          python --version
+          python -m pip install --disable-pip-version-check --no-cache-dir "PyYAML==6.0.3" "ruff==0.16.1" "setuptools==83.0.0" "wheel==0.46.3"
+          ruff --version
+
+      - name: Ruff 0.16.1 and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          ruff check \
+            src/cogniprint/__main__.py \
+            src/cogniprint/dossier.py \
+            src/cogniprint/dossier_security.py \
+            src/cogniprint/entrypoint.py \
+            tests/test_evidence_dossier.py \
+            tests/test_dossier_m3.py \
+            demo/evidence_dossier_quickstart.py \
+            demo/cross_installation_dossier_gate.py \
+            scripts/check_self_hosted_packaging.py
+          python -m compileall -q src tests demo scripts/check_self_hosted_packaging.py
+          echo "RUFF_0_16_1=PASS"
+          echo "PYCOMPILE=PASS"
+
+      - name: Run 32 dossier tests
+        shell: bash
+        env:
+          PYTHONPATH: src
+        run: |
+          set -euo pipefail
+          python -m unittest -v tests.test_evidence_dossier tests.test_dossier_m3
+          echo "DOSSIER_TESTS_32=PASS"
+
+      - name: Quickstart and cross-installation
+        shell: bash
+        env:
+          PYTHONPATH: src
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/cogniprint-m3-demo
+          python demo/evidence_dossier_quickstart.py \
+            --output /tmp/cogniprint-m3-demo \
+            --software-commit "$EXACT_HEAD"
+          env -u PYTHONPATH -u PYTHONHOME python demo/cross_installation_dossier_gate.py \
+            --repo "$GITHUB_WORKSPACE" \
+            --software-commit "$EXACT_HEAD"
+          echo "QUICKSTART_AND_CROSS_INSTALLATION=PASS"
+
+      - name: Rootless OCI build and CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y podman uidmap slirp4netns fuse-overlayfs
+          test "$(id -u)" -ne 0
+          podman --version
+          podman --storage-driver=vfs info >/tmp/podman-info.txt
+          podman --storage-driver=vfs build --format docker \
+            --tag localhost/cogniprint-workstation:m3 \
+            --file Containerfile .
+          podman --storage-driver=vfs run --rm \
+            --network=none \
+            --read-only \
+            --cap-drop=all \
+            --security-opt=no-new-privileges \
+            --entrypoint python \
+            localhost/cogniprint-workstation:m3 \
+            -c 'import os; assert os.getuid() == 10001; print("OCI_UNPRIVILEGED_UID=PASS")'
+          podman --storage-driver=vfs run --rm \
+            --network=none \
+            --read-only \
+            --cap-drop=all \
+            --security-opt=no-new-privileges \
+            localhost/cogniprint-workstation:m3 \
+            dossier limits
+          echo "ROOTLESS_OCI_BUILD_AND_CLI=PASS"
+
+      - name: Nix flake package and development shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -e /nix ]; then
+            sudo mkdir -m 0755 /nix
+          fi
+          sudo chown "$USER" /nix
+          curl --fail --location --retry 3 https://nixos.org/nix/install -o /tmp/install-nix.sh
+          sh /tmp/install-nix.sh --no-daemon
+          . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          nix --version
+          export NIX_CONFIG='experimental-features = nix-command flakes'
+          nix flake check --no-write-lock-file
+          FIRST="$(nix build .# --no-link --print-out-paths)"
+          SECOND="$(nix build .# --no-link --print-out-paths)"
+          test "$FIRST" = "$SECOND"
+          nix develop --no-write-lock-file -c python -c 'import cogniprint, cogniprint.dossier_security; print("NIX_DEV_SHELL_IMPORT=PASS")'
+          nix run --no-write-lock-file . -- dossier limits
+          echo "NIX_FLAKE_PACKAGE_DEV_SHELL=PASS"
+
+      - name: Security release and clean-worktree gates
+        shell: bash
+        env:
+          PYTHONPATH: src
+        run: |
+          set -euo pipefail
+          python scripts/check_self_hosted_packaging.py
+          python scripts/secret_scan.py
+          python scripts/export_public_release.py --check-only
+          test -z "$(git status --porcelain)"
+          test "$(git rev-parse HEAD)" = "$EXACT_HEAD"
+          test "$(git rev-parse HEAD^{tree})" = "$EXACT_TREE"
+          echo "SECRET_SCAN_AND_PUBLIC_RELEASE=PASS"
+          echo "WORKTREE_CLEAN=PASS"
+          echo "EXACT_HEAD_M3_GATE=PASS"
