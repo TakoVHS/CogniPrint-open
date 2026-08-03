@@ -34,13 +34,26 @@ def binary(venv: Path, name: str) -> Path:
     return venv / directory / f"{name}{suffix}"
 
 
+def isolated_environment() -> dict[str, str]:
+    """Remove caller import paths so each virtual environment is genuinely isolated."""
+    environment = os.environ.copy()
+    environment.pop("PYTHONPATH", None)
+    environment.pop("PYTHONHOME", None)
+    return environment
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--software-commit", default=None)
     args = parser.parse_args()
     repo = args.repo.resolve()
-    commit = args.software_commit or run(["git", "rev-parse", "HEAD"], cwd=repo).stdout.strip()
+    clean_env = isolated_environment()
+    commit = args.software_commit or run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=repo,
+        env=clean_env,
+    ).stdout.strip()
 
     with tempfile.TemporaryDirectory(prefix="cogniprint-cross-install-") as temporary:
         root = Path(temporary)
@@ -57,7 +70,8 @@ def main() -> int:
                 "--wheel-dir",
                 str(wheelhouse),
                 str(repo),
-            ]
+            ],
+            env=clean_env,
         )
         wheels = list(wheelhouse.glob("cogniprint-*.whl"))
         if len(wheels) != 1:
@@ -66,7 +80,7 @@ def main() -> int:
         producer = root / "producer"
         verifier = root / "verifier"
         for environment in (producer, verifier):
-            run([sys.executable, "-m", "venv", str(environment)])
+            run([sys.executable, "-m", "venv", str(environment)], env=clean_env)
             run(
                 [
                     str(binary(environment, "python")),
@@ -75,7 +89,8 @@ def main() -> int:
                     "install",
                     "--no-deps",
                     str(wheels[0]),
-                ]
+                ],
+                env=clean_env,
             )
 
         source = root / "source.txt"
@@ -100,7 +115,8 @@ def main() -> int:
                 commit,
                 "--output",
                 str(produced),
-            ]
+            ],
+            env=clean_env,
         )
         received = root / "received"
         shutil.copytree(produced, received)
@@ -115,7 +131,7 @@ def main() -> int:
             "socket.create_connection = blocked\n",
             encoding="utf-8",
         )
-        verifier_env = os.environ.copy()
+        verifier_env = clean_env.copy()
         verifier_env["PYTHONPATH"] = str(guard)
         verified = run(
             [
@@ -132,10 +148,12 @@ def main() -> int:
             raise SystemExit(f"unexpected verifier report: {report}")
 
         producer_prefix = run(
-            [str(binary(producer, "python")), "-c", "import sys; print(sys.prefix)"]
+            [str(binary(producer, "python")), "-c", "import sys; print(sys.prefix)"],
+            env=clean_env,
         ).stdout.strip()
         verifier_prefix = run(
-            [str(binary(verifier, "python")), "-c", "import sys; print(sys.prefix)"]
+            [str(binary(verifier, "python")), "-c", "import sys; print(sys.prefix)"],
+            env=clean_env,
         ).stdout.strip()
         if producer_prefix == verifier_prefix:
             raise SystemExit("producer and verifier are not independent installations")
