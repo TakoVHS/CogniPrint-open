@@ -11,6 +11,13 @@ from typing import Any, Callable, Sequence
 from cogniprint.benchmarks.evaluation import classification_metrics
 
 
+def _require_finite_scalar(value: Any, name: str) -> float:
+    numeric = float(value)
+    if not math.isfinite(numeric):
+        raise ValueError(f"{name} must be finite")
+    return numeric
+
+
 def wilson_interval(
     successes: int,
     total: int,
@@ -84,9 +91,13 @@ def paired_group_bootstrap_delta(
     truth_list = [str(value) for value in truth]
     predictions_a_list = [str(value) for value in predictions_a]
     predictions_b_list = [str(value) for value in predictions_b]
-    point = metric_fn(truth_list, predictions_a_list) - metric_fn(
-        truth_list,
-        predictions_b_list,
+    point = _require_finite_scalar(
+        metric_fn(truth_list, predictions_a_list)
+        - metric_fn(
+            truth_list,
+            predictions_b_list,
+        ),
+        "point bootstrap delta",
     )
 
     rng = random.Random(seed)
@@ -102,8 +113,11 @@ def paired_group_bootstrap_delta(
         sampled_a = [predictions_a_list[index] for index in indices]
         sampled_b = [predictions_b_list[index] for index in indices]
         deltas.append(
-            metric_fn(sampled_truth, sampled_a)
-            - metric_fn(sampled_truth, sampled_b)
+            _require_finite_scalar(
+                metric_fn(sampled_truth, sampled_a)
+                - metric_fn(sampled_truth, sampled_b),
+                "bootstrap delta",
+            )
         )
     deltas.sort()
 
@@ -177,88 +191,164 @@ def evaluate_claim_narrowing(
     if missing:
         raise ValueError(f"claim metrics are incomplete: {missing}")
 
+    numeric_metrics = {
+        key: _require_finite_scalar(metrics[key], key)
+        for key in required
+        if key != "any_empty_primary_cell"
+    }
+    if not isinstance(metrics["any_empty_primary_cell"], bool):
+        raise ValueError("any_empty_primary_cell must be a boolean")
+
     rules = [
-        (
-            "OPEN_WORLD_FALSE_KNOWN",
-            metrics["held_out_false_known_point"] > config.false_known_point_max
-            or metrics["held_out_false_known_wilson_upper"]
-            > config.false_known_wilson_upper_max,
-            "Open-world family attribution claim remains locked.",
-        ),
-        (
-            "UNKNOWN_REJECTION",
-            metrics["held_out_unknown_rejection"]
-            < config.unknown_rejection_min,
-            "UNKNOWN/OOD effectiveness claim remains locked.",
-        ),
-        (
-            "KNOWN_COVERAGE",
-            metrics["known_coverage"] < config.known_coverage_min,
-            "No operational attribution claim; report descriptive signal and abstention burden.",
-        ),
-        (
-            "KNOWN_SIGNAL",
-            metrics["best_frozen_system_balanced_accuracy"]
-            < config.known_balanced_accuracy_min
-            or metrics["best_frozen_system_macro_f1"]
-            < config.known_macro_f1_min,
-            "No family-level discrimination claim.",
-        ),
-        (
-            "COGNIPRINT_VS_NGRAM",
-            metrics["cogniprint_vs_ngram_ci_lower"] <= 0.0
-            or metrics["cogniprint_vs_ngram_delta_macro_f1"]
-            < config.cogniprint_ngram_delta_min,
-            "No claim that CogniPrint 12D adds value beyond lexical baselines.",
-        ),
-        (
-            "PER_CLASS_COLLAPSE",
-            metrics["minimum_known_class_recall"] < config.per_class_recall_min,
-            "Result is mixed; collapsed classes must be named.",
-        ),
-        (
-            "CALIBRATION_FAILURE",
-            metrics["ece"] > config.ece_max
-            or metrics["calibrated_nll"] > metrics["uncalibrated_nll"]
-            or metrics["calibrated_brier"] > metrics["uncalibrated_brier"],
-            "Calibrated-confidence language remains locked.",
-        ),
-        (
-            "DOMAIN_COLLAPSE",
-            metrics["minimum_domain_balanced_accuracy"]
-            < config.domain_balanced_accuracy_min
-            or metrics["maximum_domain_gap"] > config.domain_gap_max,
-            "Cross-domain generalisation claim remains locked.",
-        ),
-        (
-            "STRATUM_REPLICATION",
-            bool(metrics["any_empty_primary_cell"]),
-            "Primary run is a protocol deviation.",
-        ),
-        (
-            "T1_ROBUSTNESS",
-            metrics["t1_balanced_accuracy_drop"]
-            > config.t1_balanced_accuracy_drop_max
-            or metrics["t1_false_known_increase"]
-            > config.t1_false_known_increase_max,
-            "No light-edit robustness claim.",
-        ),
-    ]
-    evaluated = [
         {
-            "id": rule_id,
-            "triggered": bool(triggered),
-            "consequence": consequence,
-        }
-        for rule_id, triggered, consequence in rules
+            "id": "OPEN_WORLD_FALSE_KNOWN",
+            "triggered": (
+                numeric_metrics["held_out_false_known_point"]
+                > config.false_known_point_max
+                or numeric_metrics["held_out_false_known_wilson_upper"]
+                > config.false_known_wilson_upper_max
+            ),
+            "observed_values": {
+                "held_out_false_known_point": numeric_metrics["held_out_false_known_point"],
+                "held_out_false_known_wilson_upper": numeric_metrics["held_out_false_known_wilson_upper"],
+            },
+            "threshold": {
+                "false_known_point_max": config.false_known_point_max,
+                "false_known_wilson_upper_max": config.false_known_wilson_upper_max,
+            },
+            "condition": "held_out_false_known_point <= max AND held_out_false_known_wilson_upper <= max",
+            "consequence": "Open-world family attribution claim remains locked.",
+        },
+        {
+            "id": "UNKNOWN_REJECTION",
+            "triggered": numeric_metrics["held_out_unknown_rejection"] < config.unknown_rejection_min,
+            "observed_values": {
+                "held_out_unknown_rejection": numeric_metrics["held_out_unknown_rejection"],
+            },
+            "threshold": {"unknown_rejection_min": config.unknown_rejection_min},
+            "condition": "held_out_unknown_rejection >= minimum",
+            "consequence": "UNKNOWN/OOD effectiveness claim remains locked.",
+        },
+        {
+            "id": "KNOWN_COVERAGE",
+            "triggered": numeric_metrics["known_coverage"] < config.known_coverage_min,
+            "observed_values": {"known_coverage": numeric_metrics["known_coverage"]},
+            "threshold": {"known_coverage_min": config.known_coverage_min},
+            "condition": "known_coverage >= minimum",
+            "consequence": "No operational attribution claim; report descriptive signal and abstention burden.",
+        },
+        {
+            "id": "KNOWN_SIGNAL",
+            "triggered": (
+                numeric_metrics["best_frozen_system_balanced_accuracy"] < config.known_balanced_accuracy_min
+                or numeric_metrics["best_frozen_system_macro_f1"] < config.known_macro_f1_min
+            ),
+            "observed_values": {
+                "best_frozen_system_balanced_accuracy": numeric_metrics["best_frozen_system_balanced_accuracy"],
+                "best_frozen_system_macro_f1": numeric_metrics["best_frozen_system_macro_f1"],
+            },
+            "threshold": {
+                "known_balanced_accuracy_min": config.known_balanced_accuracy_min,
+                "known_macro_f1_min": config.known_macro_f1_min,
+            },
+            "condition": "balanced accuracy and macro-F1 must each meet minimum",
+            "consequence": "No family-level discrimination claim.",
+        },
+        {
+            "id": "COGNIPRINT_VS_NGRAM",
+            "triggered": (
+                numeric_metrics["cogniprint_vs_ngram_ci_lower"] <= 0.0
+                or numeric_metrics["cogniprint_vs_ngram_delta_macro_f1"] < config.cogniprint_ngram_delta_min
+            ),
+            "observed_values": {
+                "cogniprint_vs_ngram_delta_macro_f1": numeric_metrics["cogniprint_vs_ngram_delta_macro_f1"],
+                "cogniprint_vs_ngram_ci_lower": numeric_metrics["cogniprint_vs_ngram_ci_lower"],
+            },
+            "threshold": {
+                "cogniprint_ngram_delta_min": config.cogniprint_ngram_delta_min,
+                "cogniprint_vs_ngram_ci_lower_min": 0.0,
+            },
+            "condition": "point delta >= minimum AND paired 95% interval lower bound > 0",
+            "consequence": "No claim that CogniPrint 12D adds value beyond lexical baselines.",
+        },
+        {
+            "id": "PER_CLASS_COLLAPSE",
+            "triggered": numeric_metrics["minimum_known_class_recall"] < config.per_class_recall_min,
+            "observed_values": {
+                "minimum_known_class_recall": numeric_metrics["minimum_known_class_recall"],
+            },
+            "threshold": {"per_class_recall_min": config.per_class_recall_min},
+            "condition": "minimum per-known-class recall >= minimum",
+            "consequence": "Result is mixed; collapsed classes must be named.",
+        },
+        {
+            "id": "CALIBRATION_FAILURE",
+            "triggered": (
+                numeric_metrics["ece"] > config.ece_max
+                or numeric_metrics["calibrated_nll"] > numeric_metrics["uncalibrated_nll"]
+                or numeric_metrics["calibrated_brier"] > numeric_metrics["uncalibrated_brier"]
+            ),
+            "observed_values": {
+                "ece": numeric_metrics["ece"],
+                "calibrated_nll": numeric_metrics["calibrated_nll"],
+                "uncalibrated_nll": numeric_metrics["uncalibrated_nll"],
+                "calibrated_brier": numeric_metrics["calibrated_brier"],
+                "uncalibrated_brier": numeric_metrics["uncalibrated_brier"],
+            },
+            "threshold": {"ece_max": config.ece_max},
+            "condition": "ECE <= max AND calibrated NLL/Brier do not exceed uncalibrated values",
+            "consequence": "Calibrated-confidence language remains locked.",
+        },
+        {
+            "id": "DOMAIN_COLLAPSE",
+            "triggered": (
+                numeric_metrics["minimum_domain_balanced_accuracy"] < config.domain_balanced_accuracy_min
+                or numeric_metrics["maximum_domain_gap"] > config.domain_gap_max
+            ),
+            "observed_values": {
+                "minimum_domain_balanced_accuracy": numeric_metrics["minimum_domain_balanced_accuracy"],
+                "maximum_domain_gap": numeric_metrics["maximum_domain_gap"],
+            },
+            "threshold": {
+                "domain_balanced_accuracy_min": config.domain_balanced_accuracy_min,
+                "domain_gap_max": config.domain_gap_max,
+            },
+            "condition": "minimum domain balanced accuracy >= minimum AND maximum domain gap <= max",
+            "consequence": "Cross-domain generalisation claim remains locked.",
+        },
+        {
+            "id": "STRATUM_REPLICATION",
+            "triggered": metrics["any_empty_primary_cell"],
+            "observed_values": {"any_empty_primary_cell": metrics["any_empty_primary_cell"]},
+            "threshold": {"any_empty_primary_cell": False},
+            "condition": "no empty primary cells are permitted",
+            "consequence": "Primary run is a protocol deviation.",
+        },
+        {
+            "id": "T1_ROBUSTNESS",
+            "triggered": (
+                numeric_metrics["t1_balanced_accuracy_drop"] > config.t1_balanced_accuracy_drop_max
+                or numeric_metrics["t1_false_known_increase"] > config.t1_false_known_increase_max
+            ),
+            "observed_values": {
+                "t1_balanced_accuracy_drop": numeric_metrics["t1_balanced_accuracy_drop"],
+                "t1_false_known_increase": numeric_metrics["t1_false_known_increase"],
+            },
+            "threshold": {
+                "t1_balanced_accuracy_drop_max": config.t1_balanced_accuracy_drop_max,
+                "t1_false_known_increase_max": config.t1_false_known_increase_max,
+            },
+            "condition": "T1 balanced-accuracy drop and false-known increase must each stay within max",
+            "consequence": "No light-edit robustness claim.",
+        },
     ]
-    triggered = [rule for rule in evaluated if rule["triggered"]]
+    triggered = [rule for rule in rules if rule["triggered"]]
     return {
         "protocol": "challenge-001-claim-narrowing-development-v1",
         "status": "DEVELOPMENT_ONLY",
         "scientific_claim_evidence": False,
         "thresholds": asdict(config),
-        "rules": evaluated,
+        "rules": rules,
         "triggered_rule_ids": [rule["id"] for rule in triggered],
         "all_claims_unlocked": not triggered,
     }

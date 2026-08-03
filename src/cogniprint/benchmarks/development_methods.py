@@ -37,6 +37,13 @@ SURFACE_FEATURE_NAMES = (
 )
 
 
+def _require_finite_vector(vector: Sequence[float]) -> list[float]:
+    values = [float(value) for value in vector]
+    if any(not math.isfinite(value) for value in values):
+        raise ValueError("feature vectors must be finite")
+    return values
+
+
 def surface_statistics(text: str) -> dict[str, float]:
     if not isinstance(text, str):
         raise TypeError("text must be a string")
@@ -94,11 +101,12 @@ def _fit_standardizer(
 ) -> tuple[list[float], list[float]]:
     if not vectors:
         raise ValueError("cannot fit standardizer on an empty vector set")
-    width = len(vectors[0])
-    if width == 0 or any(len(vector) != width for vector in vectors):
+    sanitized = [_require_finite_vector(vector) for vector in vectors]
+    width = len(sanitized[0])
+    if width == 0 or any(len(vector) != width for vector in sanitized):
         raise ValueError("inconsistent feature-vector width")
-    means = [fmean(vector[index] for vector in vectors) for index in range(width)]
-    scales = [pstdev(vector[index] for vector in vectors) for index in range(width)]
+    means = [fmean(vector[index] for vector in sanitized) for index in range(width)]
+    scales = [pstdev(vector[index] for vector in sanitized) for index in range(width)]
     return means, [scale if scale > 1e-12 else 1.0 for scale in scales]
 
 
@@ -109,9 +117,10 @@ def _standardize(
 ) -> list[float]:
     if len(vector) != len(means) or len(vector) != len(scales):
         raise ValueError("vector width does not match standardizer")
+    checked = _require_finite_vector(vector)
     return [
-        (float(value) - means[index]) / scales[index]
-        for index, value in enumerate(vector)
+        (value - means[index]) / scales[index]
+        for index, value in enumerate(checked)
     ]
 
 

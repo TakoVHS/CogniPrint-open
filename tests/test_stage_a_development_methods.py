@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import sys
 import unittest
+from pathlib import Path
 
-from cogniprint.benchmarks.development_methods import (
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / 'src'
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from cogniprint.benchmarks.development_methods import (  # noqa: E402
     ConformalModel,
     UNKNOWN_AMBIGUOUS,
     UNKNOWN_INSUFFICIENT_EVIDENCE,
@@ -13,7 +20,7 @@ from cogniprint.benchmarks.development_methods import (
     fit_temperature,
     surface_statistics,
 )
-from cogniprint.benchmarks.development_statistics import (
+from cogniprint.benchmarks.development_statistics import (  # noqa: E402
     evaluate_claim_narrowing,
     paired_group_bootstrap_delta,
     wilson_interval,
@@ -172,6 +179,12 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
         ):
             fit_class_conditional_conformal(reference, calibration, vector)
 
+    def test_conformal_rejects_non_finite_vectors(self) -> None:
+        reference, calibration = self.reference_and_calibration()
+        calibration[0]["_vector"] = [float('nan'), 0.0]
+        with self.assertRaisesRegex(ValueError, "finite"):
+            fit_class_conditional_conformal(reference, calibration, vector)
+
     def test_temperature_calibration_is_deterministic_and_improves_nll(
         self,
     ) -> None:
@@ -241,6 +254,18 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "equal length"):
             paired_group_bootstrap_delta(["a"], ["a"], [], ["g1"])
 
+    def test_bootstrap_rejects_non_finite_metric(self) -> None:
+        with self.assertRaisesRegex(ValueError, "finite"):
+            paired_group_bootstrap_delta(
+                ["a", "b"],
+                ["a", "b"],
+                ["a", "b"],
+                ["g1", "g2"],
+                metric_fn=lambda truth, predictions: float('nan'),
+                resamples=8,
+                seed=1,
+            )
+
     def test_claim_matrix_triggers_exact_failures(self) -> None:
         metrics = {
             "held_out_false_known_point": 0.12,
@@ -282,6 +307,62 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
     def test_claim_matrix_fails_closed_on_missing_metric(self) -> None:
         with self.assertRaisesRegex(ValueError, "incomplete"):
             evaluate_claim_narrowing({})
+
+    def test_claim_matrix_reports_observed_values_and_thresholds(self) -> None:
+        metrics = {
+            "held_out_false_known_point": 0.01,
+            "held_out_false_known_wilson_upper": 0.05,
+            "held_out_unknown_rejection": 0.95,
+            "known_coverage": 0.70,
+            "best_frozen_system_balanced_accuracy": 0.60,
+            "best_frozen_system_macro_f1": 0.58,
+            "cogniprint_vs_ngram_delta_macro_f1": 0.03,
+            "cogniprint_vs_ngram_ci_lower": 0.01,
+            "minimum_known_class_recall": 0.45,
+            "ece": 0.05,
+            "calibrated_nll": 0.70,
+            "uncalibrated_nll": 0.80,
+            "calibrated_brier": 0.20,
+            "uncalibrated_brier": 0.25,
+            "minimum_domain_balanced_accuracy": 0.42,
+            "maximum_domain_gap": 0.10,
+            "any_empty_primary_cell": False,
+            "t1_balanced_accuracy_drop": 0.10,
+            "t1_false_known_increase": 0.01,
+        }
+        result = evaluate_claim_narrowing(metrics)
+        self.assertTrue(result["all_claims_unlocked"])
+        self.assertEqual(len(result["rules"]), 10)
+        for rule in result["rules"]:
+            self.assertIn("observed_values", rule)
+            self.assertIn("threshold", rule)
+            self.assertIn("condition", rule)
+            self.assertIn("consequence", rule)
+
+    def test_claim_matrix_rejects_non_finite_metric(self) -> None:
+        metrics = {
+            "held_out_false_known_point": float('nan'),
+            "held_out_false_known_wilson_upper": 0.05,
+            "held_out_unknown_rejection": 0.95,
+            "known_coverage": 0.70,
+            "best_frozen_system_balanced_accuracy": 0.60,
+            "best_frozen_system_macro_f1": 0.58,
+            "cogniprint_vs_ngram_delta_macro_f1": 0.03,
+            "cogniprint_vs_ngram_ci_lower": 0.01,
+            "minimum_known_class_recall": 0.45,
+            "ece": 0.05,
+            "calibrated_nll": 0.70,
+            "uncalibrated_nll": 0.80,
+            "calibrated_brier": 0.20,
+            "uncalibrated_brier": 0.25,
+            "minimum_domain_balanced_accuracy": 0.42,
+            "maximum_domain_gap": 0.10,
+            "any_empty_primary_cell": False,
+            "t1_balanced_accuracy_drop": 0.10,
+            "t1_false_known_increase": 0.01,
+        }
+        with self.assertRaisesRegex(ValueError, "finite"):
+            evaluate_claim_narrowing(metrics)
 
 
 if __name__ == "__main__":

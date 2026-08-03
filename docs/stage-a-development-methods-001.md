@@ -157,10 +157,11 @@ prospective rule families:
 - empty primary strata;
 - T1 light-edit robustness.
 
-Missing required metrics cause a fail-closed error. Triggered rules return exact
-public consequences. `all_claims_unlocked` can be true only when no rule is
-triggered; it is still a development diagnostic and not a publication or freeze
-authorization.
+Missing required metrics cause a fail-closed error. Non-finite metric values are
+rejected. Every rule returns its stable rule id, trigger flag, observed values,
+threshold metadata, exact condition text and exact public consequence.
+`all_claims_unlocked` can be true only when no rule is triggered; it is still a
+development diagnostic and not a publication or freeze authorization.
 
 ## Validation scope
 
