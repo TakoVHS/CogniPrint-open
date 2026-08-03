@@ -1,6 +1,6 @@
 # CogniPrint Evidence Dossier v1
 
-Status: `DEVELOPMENT_ONLY`  
+Status: `DEVELOPMENT_ONLY`
 Scientific claim evidence: `false`
 
 The dossier is a portable directory bundle containing a canonical `dossier.json` manifest and an `artifacts/` directory. Verification is fully local and does not contact a CogniPrint service.
