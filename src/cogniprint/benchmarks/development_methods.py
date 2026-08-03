@@ -44,6 +44,14 @@ def _require_finite_vector(vector: Sequence[float]) -> list[float]:
     return values
 
 
+def _require_positive_int(value: Any, name: str, *, minimum: int = 1) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError(f"{name} must be an integer")
+    if value < minimum:
+        raise ValueError(f"{name} must be at least {minimum}")
+    return value
+
+
 def surface_statistics(text: str) -> dict[str, float]:
     if not isinstance(text, str):
         raise TypeError("text must be a string")
@@ -125,22 +133,38 @@ def _standardize(
 
 
 def _l2(vector: Sequence[float]) -> list[float]:
-    norm = math.sqrt(sum(float(value) ** 2 for value in vector))
+    checked = _require_finite_vector(vector)
+    norm = math.sqrt(sum(value**2 for value in checked))
     if norm <= 1e-15:
-        return [0.0 for _ in vector]
-    return [float(value) / norm for value in vector]
+        return [0.0 for _ in checked]
+    return [value / norm for value in checked]
 
 
 def _cosine(left: Sequence[float], right: Sequence[float]) -> float:
     if len(left) != len(right):
         raise ValueError("cosine vectors have different widths")
-    left_norm = math.sqrt(sum(float(value) ** 2 for value in left))
-    right_norm = math.sqrt(sum(float(value) ** 2 for value in right))
+    checked_left = _require_finite_vector(left)
+    checked_right = _require_finite_vector(right)
+    left_norm = math.sqrt(sum(value**2 for value in checked_left))
+    right_norm = math.sqrt(sum(value**2 for value in checked_right))
     if left_norm <= 1e-15 or right_norm <= 1e-15:
         return 0.0
-    return sum(float(a) * float(b) for a, b in zip(left, right)) / (
+    return sum(a * b for a, b in zip(checked_left, checked_right)) / (
         left_norm * right_norm
     )
+
+
+def _require_disjoint(partitions: dict[str, Iterable[Record]]) -> None:
+    seen: dict[str, str] = {}
+    for role, records in partitions.items():
+        for record in records:
+            group = lineage_group(record)
+            prior = seen.get(group)
+            if prior is not None and prior != role:
+                raise ValueError(
+                    f"lineage group {group!r} appears in both {prior!r} and {role!r}"
+                )
+            seen[group] = role
 
 
 @dataclass(frozen=True)
@@ -210,8 +234,9 @@ def evaluate_surface_baseline(
 ) -> dict[str, Any]:
     if not reference or not test:
         raise ValueError("reference and test must be non-empty")
+    _require_disjoint({"reference": reference, "test": test})
     model = fit_centroid_model(reference, surface_statistics_vector)
-    truth = [str(record.get("model_family") or "") for record in test]
+    truth = [str(record.get("model_family") or "").strip() for record in test]
     if any(not label for label in truth):
         raise ValueError("test record is missing model_family")
     return {
@@ -226,19 +251,6 @@ def evaluate_surface_baseline(
         ),
         "raw_text_persisted": False,
     }
-
-
-def _require_disjoint(partitions: dict[str, Iterable[Record]]) -> None:
-    seen: dict[str, str] = {}
-    for role, records in partitions.items():
-        for record in records:
-            group = lineage_group(record)
-            prior = seen.get(group)
-            if prior is not None and prior != role:
-                raise ValueError(
-                    f"lineage group {group!r} appears in both {prior!r} and {role!r}"
-                )
-            seen[group] = role
 
 
 @dataclass(frozen=True)
@@ -256,8 +268,9 @@ def fit_class_conditional_conformal(
     *,
     alpha: float = 0.05,
 ) -> ConformalModel:
-    if not 0.0 < alpha < 1.0:
-        raise ValueError("alpha must be in (0,1)")
+    alpha = float(alpha)
+    if not math.isfinite(alpha) or not 0.0 < alpha < 1.0:
+        raise ValueError("alpha must be finite and in (0,1)")
     if not reference or not calibration:
         raise ValueError("reference and conformal calibration must be non-empty")
     _require_disjoint(
@@ -284,12 +297,16 @@ def fit_class_conditional_conformal(
         )
     return ConformalModel(
         centroid_model,
-        float(alpha),
+        alpha,
         {
             label: tuple(sorted(values))
             for label, values in sorted(by_class.items())
         },
     )
+
+
+def _minimum_conformal_calibration_size(alpha: float) -> int:
+    return math.ceil((1.0 - alpha) / alpha)
 
 
 def conformal_p_values(
@@ -300,8 +317,12 @@ def conformal_p_values(
     similarities = centroid_scores(model.centroid_model, record, vector_fn)
     values: dict[str, float] = {}
     for label in model.centroid_model.labels:
+        calibration = model.calibration_scores.get(label, ())
+        if not calibration:
+            raise ValueError(f"conformal calibration scores missing for {label!r}")
+        if any(not math.isfinite(value) for value in calibration):
+            raise ValueError("conformal calibration scores must be finite")
         candidate = 1.0 - similarities[label]
-        calibration = model.calibration_scores[label]
         values[label] = (
             1.0 + sum(value >= candidate for value in calibration)
         ) / (len(calibration) + 1.0)
@@ -315,13 +336,26 @@ def conformal_decision(
     *,
     evidence_sufficient: bool = True,
 ) -> dict[str, Any]:
-    if not evidence_sufficient:
+    if not isinstance(evidence_sufficient, bool):
+        raise TypeError("evidence_sufficient must be a boolean")
+    alpha = float(model.alpha)
+    if not math.isfinite(alpha) or not 0.0 < alpha < 1.0:
+        raise ValueError("model alpha must be finite and in (0,1)")
+    minimum_size = _minimum_conformal_calibration_size(alpha)
+    undersized = sorted(
+        label
+        for label in model.centroid_model.labels
+        if len(model.calibration_scores.get(label, ())) < minimum_size
+    )
+    if not evidence_sufficient or undersized:
         return {
             "decision": UNKNOWN_INSUFFICIENT_EVIDENCE,
             "p_values": {},
             "accepted_classes": [],
-            "alpha": model.alpha,
+            "alpha": alpha,
             "calibrated_probability": False,
+            "minimum_calibration_size_per_class": minimum_size,
+            "undersized_calibration_classes": undersized,
         }
     p_values = conformal_p_values(model, record, vector_fn)
     accepted = sorted(
@@ -337,8 +371,10 @@ def conformal_decision(
         "decision": decision,
         "p_values": p_values,
         "accepted_classes": accepted,
-        "alpha": model.alpha,
+        "alpha": alpha,
         "calibrated_probability": False,
+        "minimum_calibration_size_per_class": minimum_size,
+        "undersized_calibration_classes": [],
     }
 
 
@@ -347,16 +383,22 @@ def _validate_logits(
     truth: Sequence[str],
     labels: Sequence[str],
 ) -> tuple[list[list[float]], list[str], tuple[str, ...]]:
-    labels_tuple = tuple(labels)
-    if not labels_tuple or len(set(labels_tuple)) != len(labels_tuple):
-        raise ValueError("labels must be non-empty and unique")
+    if any(not isinstance(label, str) for label in labels):
+        raise ValueError("labels must be non-empty, unique strings")
+    labels_tuple = tuple(label.strip() for label in labels)
+    if (
+        not labels_tuple
+        or any(not label for label in labels_tuple)
+        or len(set(labels_tuple)) != len(labels_tuple)
+    ):
+        raise ValueError("labels must be non-empty, unique strings")
     matrix = [[float(value) for value in row] for row in logits]
-    truth_list = [str(value) for value in truth]
+    truth_list = [str(value).strip() for value in truth]
     if not matrix or len(matrix) != len(truth_list):
         raise ValueError("logits and truth must be non-empty and have equal length")
     if any(len(row) != len(labels_tuple) for row in matrix):
         raise ValueError("logit width must match labels")
-    if any(label not in labels_tuple for label in truth_list):
+    if any(not label or label not in labels_tuple for label in truth_list):
         raise ValueError("truth contains a label absent from labels")
     if any(not math.isfinite(value) for row in matrix for value in row):
         raise ValueError("logits must be finite")
@@ -368,9 +410,15 @@ def softmax(
     *,
     temperature: float = 1.0,
 ) -> list[float]:
-    if not temperature > 0.0 or not math.isfinite(temperature):
+    temperature = float(temperature)
+    if not math.isfinite(temperature) or not temperature > 0.0:
         raise ValueError("temperature must be finite and positive")
-    scaled = [float(value) / temperature for value in logits]
+    values = _require_finite_vector(logits)
+    if not values:
+        raise ValueError("logits must be non-empty")
+    scaled = [value / temperature for value in values]
+    if any(not math.isfinite(value) for value in scaled):
+        raise ValueError("temperature-scaled logits must be finite")
     maximum = max(scaled)
     exps = [math.exp(value - maximum) for value in scaled]
     total = sum(exps)
@@ -412,11 +460,7 @@ def multiclass_brier(
         target = index[actual]
         values.append(
             sum(
-                (
-                    probability
-                    - (1.0 if position == target else 0.0)
-                )
-                ** 2
+                (probability - (1.0 if position == target else 0.0)) ** 2
                 for position, probability in enumerate(probabilities)
             )
         )
@@ -432,33 +476,51 @@ def expected_calibration_error(
     bins: int = 15,
 ) -> float:
     matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
-    if bins <= 0:
-        raise ValueError("bins must be positive")
-    observations: list[tuple[float, int]] = []
+    bins = _require_positive_int(bins, "bins")
+    confidence_groups: dict[float, list[int]] = defaultdict(list)
     for row, actual in zip(matrix, truth_list):
         probabilities = softmax(row, temperature=temperature)
         predicted = min(
             range(len(labels_tuple)),
             key=lambda index: (-probabilities[index], labels_tuple[index]),
         )
-        observations.append(
-            (
-                probabilities[predicted],
-                int(labels_tuple[predicted] == actual),
-            )
+        confidence_groups[probabilities[predicted]].append(
+            int(labels_tuple[predicted] == actual)
         )
-    observations.sort(key=lambda item: (item[0], item[1]))
-    total = len(observations)
+
+    grouped_observations = [
+        (confidence, len(outcomes), sum(outcomes))
+        for confidence, outcomes in sorted(confidence_groups.items())
+    ]
+    total = len(matrix)
+    target_size = max(1, math.ceil(total / bins))
+    buckets: list[list[tuple[float, int, int]]] = []
+    current: list[tuple[float, int, int]] = []
+    current_size = 0
+    for group in grouped_observations:
+        _, group_size, _ = group
+        if (
+            current
+            and current_size + group_size > target_size
+            and len(buckets) < bins - 1
+        ):
+            buckets.append(current)
+            current = []
+            current_size = 0
+        current.append(group)
+        current_size += group_size
+    if current:
+        buckets.append(current)
+
     ece = 0.0
-    for bin_index in range(bins):
-        start = bin_index * total // bins
-        stop = (bin_index + 1) * total // bins
-        bucket = observations[start:stop]
-        if bucket:
-            ece += len(bucket) / total * abs(
-                fmean(item[1] for item in bucket)
-                - fmean(item[0] for item in bucket)
-            )
+    for bucket in buckets:
+        bucket_size = sum(group_size for _, group_size, _ in bucket)
+        mean_confidence = sum(
+            confidence * group_size
+            for confidence, group_size, _ in bucket
+        ) / bucket_size
+        mean_accuracy = sum(correct for _, _, correct in bucket) / bucket_size
+        ece += bucket_size / total * abs(mean_accuracy - mean_confidence)
     return ece
 
 
@@ -486,11 +548,17 @@ def fit_temperature(
     iterations: int = 96,
 ) -> TemperatureCalibrationResult:
     matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    ece_bins = _require_positive_int(ece_bins, "ece_bins")
+    iterations = _require_positive_int(iterations, "iterations", minimum=16)
     lower, upper = map(float, bounds)
-    if not 0.0 < lower < upper:
-        raise ValueError("temperature bounds must satisfy 0 < lower < upper")
-    if iterations < 16:
-        raise ValueError("iterations must be at least 16")
+    if (
+        not math.isfinite(lower)
+        or not math.isfinite(upper)
+        or not 0.0 < lower < upper
+    ):
+        raise ValueError(
+            "temperature bounds must be finite and satisfy 0 < lower < upper"
+        )
     left, right = math.log(lower), math.log(upper)
     phi = (1.0 + math.sqrt(5.0)) / 2.0
 
@@ -514,7 +582,9 @@ def fit_temperature(
             left, c, fc = c, d, fd
             d = left + (right - left) / phi
             fd = objective(d)
-    candidates = [lower, upper, math.exp((left + right) / 2.0), 1.0]
+    candidates = [lower, upper, math.exp((left + right) / 2.0)]
+    if lower <= 1.0 <= upper:
+        candidates.append(1.0)
     temperature = min(
         candidates,
         key=lambda value: (
