@@ -69,7 +69,7 @@ model fitting or evaluation.
 
 ## 2. Conformal UNKNOWN
 
-The implementation uses class-conditional split conformal prediction with
+The implementation uses class-conditional split-conformal prediction with
 cosine nonconformity:
 
 ```text
@@ -95,7 +95,9 @@ Conformal p-values are not class probabilities. The output explicitly records
 
 The fitter rejects lineage overlap between the reference and conformal
 calibration roles, missing calibration classes and non-finite vectors. The
-decision layer also fails closed when a class has too few calibration examples
+decision layer also rejects any evaluation record whose lineage appears in the
+reference or conformal-calibration partition, and fails closed when a class has
+too few calibration examples
 to attain a p-value at or below alpha. The minimum per-class size is:
 
 ```text
@@ -159,7 +161,9 @@ and returns the point delta, percentile interval, group count and resampling
 metadata.
 
 Rows are never resampled independently when they share a lineage group.
-Malformed controls and non-finite metric outputs fail closed.
+Labels and group IDs must be non-empty strings, and at least two distinct
+lineage groups are required before an interval can be estimated. Malformed
+controls and non-finite metric outputs fail closed.
 
 ### Claim-narrowing evaluator
 
@@ -178,7 +182,9 @@ prospective rule families:
 - T1 light-edit robustness.
 
 Missing required metrics, non-finite values, out-of-domain rates/deltas,
-incoherent Wilson upper bounds and malformed custom thresholds fail closed.
+incoherent Wilson upper bounds, inconsistent false-known/UNKNOWN complements,
+impossible CI lower bounds and malformed or internally inconsistent custom
+thresholds fail closed.
 Every rule returns its stable rule id, trigger flag, observed values, threshold
 metadata, exact condition text and exact public consequence.
 `all_claims_unlocked` can be true only when no rule is triggered and all inputs
