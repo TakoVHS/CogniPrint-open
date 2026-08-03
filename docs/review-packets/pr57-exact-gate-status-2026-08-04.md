@@ -9,31 +9,60 @@
 - base: `d154b8610b182fe9110bf52fcadf02914498d356`
 - changed files: `22`
 
-## Rerun result
+## Hosted execution evidence
 
-The prepared clean-checkout runner used:
+Deployment `dpl_2HvcX2jUduxtJLh1CABgKt8PT4Uw` used a clean clone of the immutable review-runner commit and checked out the exact PR head above.
 
+Passed in the same hosted run:
+
+- exact head/tree identity, 22-file scope and clean checkout;
 - Ruff `0.16.1` with `E4,E7,E9,F`;
-- two executions of all 32 dossier tests with semantic output comparison;
-- quickstart and independent producer/verifier installations;
+- `py_compile`;
+- all 32 dossier tests twice with semantic output comparison;
+- quickstart export/verification and mutation rejection;
+- independent producer/verifier wheel installations;
 - socket-blocked verification;
-- main CLI and safe purge;
-- packaging contract, secret scan and sanitized public-release check;
-- Buildah under separate unprivileged UID `10002`, VFS storage and chroot isolation;
-- Nix flake/package/dev-shell checks;
-- final exact head/tree/scope/worktree checks.
+- main CLI export/verify/limits/purge;
+- safe temporary-data purge;
+- packaging contract;
+- tracked-tree secret scan;
+- sanitized public-release check (`575` selected, `25` excluded);
+- rootless Buildah build under separate UID `10002` with VFS storage and chroot isolation;
+- image runtime identity `10001:10001`;
+- OCI CLI execution.
 
-No deployment was created. The Vercel connector rejected the large inline runner at its transport safety layer, and the endpoint did not accept local file references as an alternative.
+Observed marker:
 
-This is an infrastructure/tooling blocker before execution, not a repository test failure. It does not produce new PASS evidence.
+```text
+ROOTLESS_OCI_M3=PASS
+```
+
+## Remaining Nix blocker
+
+The same run downloaded Nix `2.35.1`, but the single-user root installation stopped because the build group `nixbld` did not exist:
+
+```text
+error: the group 'nixbld' specified in 'build-users-group' does not exist
+```
+
+The next runner creates a dedicated `nixbld` group and ten build users, disables the Nix sandbox only inside the restricted Vercel build environment, and then performs:
+
+- `nix flake check --no-write-lock-file`;
+- two package builds with identical output path;
+- packaged CLI execution;
+- `nix develop` CLI execution;
+- final scientific-boundary, exact head/tree and clean-worktree checks.
+
+Vercel's Free API deployment quota is now exhausted. The API reports the next slot at **5 August 2026, 03:56 Asia/Ho_Chi_Minh**.
 
 ## Current status
 
 ```text
+EXACT_HEAD_APPLICATION_GATES=PASS
+ROOTLESS_OCI_M3=PASS
+NIX_M3=PENDING_RERUN
 EXACT_HEAD_M3_GATE=NOT_PASSED
-ROOTLESS_OCI_M3=NOT_EXECUTED_IN_RERUN
-NIX_M3=NOT_EXECUTED_IN_RERUN
 GITHUB_ACTIONS=NOT_EXECUTED
 ```
 
-Earlier hosted evidence for the same content tree remains limited to application-layer gates through secret scan and sanitized public-release check. PR #57 must remain Draft. No merge, Ready transition, Stage B authorization, freeze, Research Lock, external registration or expanded scientific claim is authorized.
+PR #57 remains Draft. No merge, Ready transition, Stage B authorization, freeze, Research Lock, external registration or expanded scientific claim is authorized.
