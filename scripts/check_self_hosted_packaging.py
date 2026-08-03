@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fail-closed validation for the initial self-hosted packaging contract."""
 from __future__ import annotations
 
