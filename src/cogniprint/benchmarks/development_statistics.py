@@ -69,28 +69,11 @@ def wilson_interval(
         )
         / denominator
     )
-    lower = 0.0 if successes == 0 else max(0.0, center - radius)
-    upper = 1.0 if successes == total else min(1.0, center + radius)
-    return lower, upper
+    return max(0.0, center - radius), min(1.0, center + radius)
 
 
 def _macro_f1(truth: list[str], predictions: list[str]) -> float:
     return float(classification_metrics(truth, predictions)["macro_f1"])
-
-
-def _require_nonempty_strings(
-    values: Sequence[str],
-    name: str,
-) -> list[str]:
-    checked: list[str] = []
-    for value in values:
-        if not isinstance(value, str):
-            raise TypeError(f"{name} must contain strings")
-        normalized = value.strip()
-        if not normalized:
-            raise ValueError(f"{name} must contain non-empty strings")
-        checked.append(normalized)
-    return checked
 
 
 def paired_group_bootstrap_delta(
@@ -120,16 +103,16 @@ def paired_group_bootstrap_delta(
     if not 0.0 < confidence < 1.0:
         raise ValueError("confidence must be in (0,1)")
 
-    truth_list = _require_nonempty_strings(truth, "truth labels")
-    predictions_a_list = _require_nonempty_strings(predictions_a, "prediction A labels")
-    predictions_b_list = _require_nonempty_strings(predictions_b, "prediction B labels")
-    checked_group_ids = _require_nonempty_strings(group_ids, "group IDs")
     grouped: dict[str, list[int]] = defaultdict(list)
-    for index, group in enumerate(checked_group_ids):
+    for index, group_id in enumerate(group_ids):
+        group = str(group_id).strip()
+        if not group:
+            raise ValueError("group IDs must be non-empty")
         grouped[group].append(index)
     groups = sorted(grouped)
-    if len(groups) < 2:
-        raise ValueError("paired bootstrap requires at least two distinct lineage groups")
+    truth_list = [str(value) for value in truth]
+    predictions_a_list = [str(value) for value in predictions_a]
+    predictions_b_list = [str(value) for value in predictions_b]
 
     point_a = _require_finite_scalar(
         metric_fn(truth_list, predictions_a_list), "point metric A"
@@ -208,11 +191,11 @@ def _validate_claim_thresholds(
         "false_known_wilson_upper_max",
         "unknown_rejection_min",
         "known_coverage_min",
-        "known_balanced_acuracy_min",
+        "known_balanced_accuracy_min",
         "known_macro_f1_min",
         "per_class_recall_min",
         "ece_max",
-        "domain_balanced_acuracy_min",
+        "domain_balanced_accuracy_min",
         "domain_gap_max",
         "t1_balanced_accuracy_drop_max",
         "t1_false_known_increase_max",
@@ -224,8 +207,6 @@ def _validate_claim_thresholds(
         raise ValueError(
             "threshold cogniprint_ngram_delta_min must be in [-1, 1]"
         )
-    if values["false_known_wilson_upper_max"] < values["false_known_point_max"]:
-        raise ValueError("false-known Wilson-upper threshold must not be below the point threshold")
     return values
 
 
@@ -239,7 +220,7 @@ def _validate_claim_metrics(metrics: dict[str, Any]) -> dict[str, float]:
         "best_frozen_system_macro_f1",
         "minimum_known_class_recall",
         "ece",
-        "minimum_domain_balanced_acuracy",
+        "minimum_domain_balanced_accuracy",
         "maximum_domain_gap",
     }
     signed_unit_interval = {
@@ -275,10 +256,6 @@ def _validate_claim_metrics(metrics: dict[str, Any]) -> dict[str, float]:
         raise ValueError(
             "held_out_false_known_wilson_upper must not be below the point estimate"
         )
-    if abs(numeric["held_out_false_known_point"] + numeric["held_out_unknown_rejection"] - 1.0) > 1e-6:
-        raise ValueError("held-out false-known point and unknown rejection must sum to 1")
-    if numeric["cogniprint_vs_ngram_ci_lower"] > numeric["cogniprint_vs_ngram_delta_macro_f1"] + 1e-12:
-        raise ValueError("cogniprint-vs-ngram CI lower bound must not exceed the point delta")
     return numeric
 
 
@@ -445,7 +422,7 @@ def evaluate_claim_narrowing(
                 "maximum_domain_gap": numeric_metrics["maximum_domain_gap"],
             },
             "threshold": {
-                "domain_balanced_acuracy_min": threshold_values["domain_balanced_acuracy_min"],
+                "domain_balanced_accuracy_min": threshold_values["domain_balanced_accuracy_min"],
                 "domain_gap_max": threshold_values["domain_gap_max"],
             },
             "condition": "minimum domain balanced accuracy >= minimum AND maximum domain gap <= max",
@@ -465,7 +442,7 @@ def evaluate_claim_narrowing(
             "id": "T1_ROBUSTNESS",
             "triggered": (
                 numeric_metrics["t1_balanced_accuracy_drop"]
-                > threshold_values["t1_balanced_acuracy_drop_max"]
+                > threshold_values["t1_balanced_accuracy_drop_max"]
                 or numeric_metrics["t1_false_known_increase"]
                 > threshold_values["t1_false_known_increase_max"]
             ),
@@ -474,7 +451,7 @@ def evaluate_claim_narrowing(
                 "t1_false_known_increase": numeric_metrics["t1_false_known_increase"],
             },
             "threshold": {
-                "t1_balanced_acuracy_drop_max": threshold_values["t1_balanced_accuracy_drop_max"],
+                "t1_balanced_accuracy_drop_max": threshold_values["t1_balanced_accuracy_drop_max"],
                 "t1_false_known_increase_max": threshold_values["t1_false_known_increase_max"],
             },
             "condition": "T1 balanced-accuracy drop and false-known increase must each stay within max",

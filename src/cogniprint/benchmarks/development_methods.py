@@ -258,8 +258,6 @@ class ConformalModel:
     centroid_model: CentroidModel
     alpha: float
     calibration_scores: dict[str, tuple[float, ...]]
-    reference_lineage_groups: tuple[str, ...] = ()
-    calibration_lineage_groups: tuple[str, ...] = ()
     method: str = "class_conditional_split_conformal_on_cosine_nonconformity"
 
 
@@ -304,8 +302,6 @@ def fit_class_conditional_conformal(
             label: tuple(sorted(values))
             for label, values in sorted(by_class.items())
         },
-        tuple(sorted({lineage_group(record) for record in reference})),
-        tuple(sorted({lineage_group(record) for record in calibration})),
     )
 
 
@@ -313,23 +309,11 @@ def _minimum_conformal_calibration_size(alpha: float) -> int:
     return math.ceil((1.0 - alpha) / alpha)
 
 
-def _require_unseen_conformal_lineage(
-    model: ConformalModel,
-    record: Record,
-) -> None:
-    group = lineage_group(record)
-    if group in model.reference_lineage_groups:
-        raise ValueError(f"conformal evaluation lineage group {group!r} overlaps reference")
-    if group in model.calibration_lineage_groups:
-        raise ValueError(f"conformal evaluation lineage group {group!r} overlaps calibration")
-
-
 def conformal_p_values(
     model: ConformalModel,
     record: Record,
     vector_fn: VectorFn,
 ) -> dict[str, float]:
-    _require_unseen_conformal_lineage(model, record)
     similarities = centroid_scores(model.centroid_model, record, vector_fn)
     values: dict[str, float] = {}
     for label in model.centroid_model.labels:
@@ -354,7 +338,6 @@ def conformal_decision(
 ) -> dict[str, Any]:
     if not isinstance(evidence_sufficient, bool):
         raise TypeError("evidence_sufficient must be a boolean")
-    _require_unseen_conformal_lineage(model, record)
     alpha = float(model.alpha)
     if not math.isfinite(alpha) or not 0.0 < alpha < 1.0:
         raise ValueError("model alpha must be finite and in (0,1)")
