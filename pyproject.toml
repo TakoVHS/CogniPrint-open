@@ -55,3 +55,20 @@ cogniprint = "cogniprint.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+required-version = "==0.16.1"
+
+[tool.ruff.lint]
+# Correctness baseline. Broader style rules require a separately reviewed migration.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# Intentional late sibling import after sys.path setup.
+"scripts/decision_gate_status.py" = ["E402"]
+# Historical non-blocking debt, listed explicitly instead of hidden globally.
+"scripts/generate_mathematical_evidence_v1.py" = ["F401"]
+"scripts/generate_wave005_results.py" = ["F401"]
+"scripts/materialize_wave005_public_benchmark.py" = ["F541"]
+"scripts/prepare_cross_genre_data.py" = ["F401"]
+"tests/test_post_decision_scripts.py" = ["F401"]

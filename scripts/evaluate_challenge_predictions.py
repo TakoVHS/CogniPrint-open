@@ -223,12 +223,16 @@ def evaluate(predictions: list[dict[str, Any]], labels: list[dict[str, Any]], *,
         )
 
     joined = [(pred_by_id[sample_id], label_by_id[sample_id]) for sample_id in sorted(label_by_id)]
-    known_rows = [(p, l) for p, l in joined if l["known_to_reference"]]
-    unknown_rows = [(p, l) for p, l in joined if not l["known_to_reference"]]
-    classes = sorted({l["true_class"] for _, l in known_rows})
+    known_rows = [(prediction, label) for prediction, label in joined if label["known_to_reference"]]
+    unknown_rows = [(prediction, label) for prediction, label in joined if not label["known_to_reference"]]
+    classes = sorted({label["true_class"] for _, label in known_rows})
     metrics = per_class_metrics(joined, classes)
 
-    correct_known = sum(1 for p, l in known_rows if p["decision"] == "known" and p.get("top1_candidate") == l["true_class"])
+    correct_known = sum(
+        1
+        for prediction, label in known_rows
+        if prediction["decision"] == "known" and prediction.get("top1_candidate") == label["true_class"]
+    )
     issued_known = sum(1 for p, _ in known_rows if p["decision"] == "known")
     rejected_unknown = sum(1 for p, _ in unknown_rows if p["decision"] in ABSTAIN_DECISIONS)
     macro_f1 = None if not classes else sum(float(metrics[c]["f1"]) for c in classes) / len(classes)

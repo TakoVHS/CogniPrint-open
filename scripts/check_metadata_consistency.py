@@ -4,9 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-import sys
 from pathlib import Path
-from typing import Any
 
 import yaml
 
@@ -36,7 +34,6 @@ def extract_readme_metadata(path: Path) -> dict[str, str]:
     text = path.read_text(encoding="utf-8")
     author = EXPECTED_AUTHOR if EXPECTED_AUTHOR in text else ""
     orcid = normalize_orcid(EXPECTED_ORCID if EXPECTED_ORCID in text else "")
-    title_match = re.search(r"\*\*CogniPrint\*\*.*", text)
     return {
         "author": author,
         "orcid": orcid,
