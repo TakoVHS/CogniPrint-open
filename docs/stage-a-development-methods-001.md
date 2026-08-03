@@ -64,6 +64,8 @@ L2-normalized cosine nearest-centroid model with deterministic lexical class
 tie-breaking.
 
 The standardizer and centroids are fitted on the reference partition only.
+Reference and test lineage groups must be disjoint; overlap fails closed before
+model fitting or evaluation.
 
 ## 2. Conformal UNKNOWN
 
@@ -92,7 +94,18 @@ Conformal p-values are not class probabilities. The output explicitly records
 `calibrated_probability = false`.
 
 The fitter rejects lineage overlap between the reference and conformal
-calibration roles and rejects missing calibration classes.
+calibration roles, missing calibration classes and non-finite vectors. The
+decision layer also fails closed when a class has too few calibration examples
+to attain a p-value at or below alpha. The minimum per-class size is:
+
+```text
+ceil((1 - alpha) / alpha)
+```
+
+For example, alpha `0.05` requires at least `19` calibration observations per
+known class before the open-set decision is considered sufficiently resolved.
+This is a development evidence gate, not a claim that the eventual sample size
+is scientifically adequate.
 
 ## 3. Temperature calibration
 
@@ -105,8 +118,13 @@ softmax(logits / temperature)
 
 Temperature is selected on the probability-calibration partition only by
 minimizing multiclass negative log-likelihood. The dependency-free optimizer
-performs deterministic golden-section search in log-temperature space and
-checks the configured bounds and `T = 1`.
+performs deterministic golden-section search in log-temperature space.
+
+The implementation fails closed on empty or non-finite logits, overflow after
+temperature scaling, malformed labels, invalid bin/iteration controls and
+non-finite temperature bounds. Every candidate, including `T = 1`, must lie
+inside the configured bounds; the fitted result therefore cannot escape those
+bounds.
 
 The returned development report contains:
 
@@ -117,8 +135,9 @@ The returned development report contains:
 - ECE bin count;
 - explicit probability semantics.
 
-The fitter rejects non-finite logits, inconsistent widths, unknown labels and
-invalid temperature bounds.
+Equal-frequency ECE uses tie-preserving confidence groups. Equal confidence
+values are never split according to observed correctness, so the metric is
+invariant to row permutations within a confidence tie.
 
 Calibration improvement on a synthetic fixture does not establish real-world
 calibration and does not unlock confidence wording.
@@ -135,11 +154,12 @@ UNKNOWN rejection.
 
 `paired_group_bootstrap_delta` resamples complete lineage groups with
 replacement. Both compared prediction systems receive the same resampled group
-sequence. The implementation is deterministic under the supplied seed and
-returns the point delta, percentile interval, group count and resampling
+sequence. The implementation is deterministic under the supplied integer seed
+and returns the point delta, percentile interval, group count and resampling
 metadata.
 
 Rows are never resampled independently when they share a lineage group.
+Malformed controls and non-finite metric outputs fail closed.
 
 ### Claim-narrowing evaluator
 
@@ -157,11 +177,13 @@ prospective rule families:
 - empty primary strata;
 - T1 light-edit robustness.
 
-Missing required metrics cause a fail-closed error. Non-finite metric values are
-rejected. Every rule returns its stable rule id, trigger flag, observed values,
-threshold metadata, exact condition text and exact public consequence.
-`all_claims_unlocked` can be true only when no rule is triggered; it is still a
-development diagnostic and not a publication or freeze authorization.
+Missing required metrics, non-finite values, out-of-domain rates/deltas,
+incoherent Wilson upper bounds and malformed custom thresholds fail closed.
+Every rule returns its stable rule id, trigger flag, observed values, threshold
+metadata, exact condition text and exact public consequence.
+`all_claims_unlocked` can be true only when no rule is triggered and all inputs
+pass validation; it remains a development diagnostic, not publication or freeze
+authorization.
 
 ## Validation scope
 
@@ -187,20 +209,23 @@ The synthetic suite covers:
 
 - the fixed surface feature map;
 - metadata-only aggregate output;
+- reference/test lineage leakage rejection;
 - known, OOD, ambiguous and insufficient-evidence conformal outcomes;
 - cross-partition lineage rejection;
-- missing conformal class rejection;
-- deterministic temperature fitting and NLL improvement;
-- malformed/non-finite logits;
+- missing conformal class and insufficient p-value resolution;
+- deterministic temperature fitting, NLL improvement and strict custom bounds;
+- malformed, non-finite and overflowed logits;
+- tie-preserving ECE behavior;
 - Wilson interval behavior;
-- deterministic grouped bootstrap;
-- unpaired bootstrap input rejection;
+- deterministic grouped bootstrap and malformed controls;
 - exact claim-rule triggers;
-- fail-closed incomplete claim metrics.
+- fail-closed incomplete, non-finite, out-of-range or incoherent claim inputs;
+- fail-closed malformed custom thresholds.
 
-Before this branch can be marked Ready, exact-head local validation must also
-include Ruff, `git diff --check`, sanitized public-release `--check-only` and the
-repository secret scanner.
+Before this branch can be marked Ready, exact-head validation must include the
+targeted suite twice, deterministic output comparison, lightweight regressions,
+`py_compile`, Ruff, `git diff --check`, sanitized public-release `--check-only`,
+the repository secret scanner and privacy-boundary review.
 
 ## Scientific boundary
 
