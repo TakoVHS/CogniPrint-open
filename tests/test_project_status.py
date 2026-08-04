@@ -23,7 +23,7 @@ class StatusTests(unittest.TestCase):
             "status_date": "2026-08-05",
             "canonical": {
                 "repository": "TakoVHS/CogniPrint-open",
-                "main_commit": "d" * 40,
+                "status_basis_commit": "d" * 40,
                 "release": "0.1.2",
                 "scientific_readiness": "descriptive_only",
                 "research_mode": "PROOF_MODE",
@@ -132,6 +132,12 @@ class StatusTests(unittest.TestCase):
         self.assertTrue(
             any("Zenodo" in item for item in status.document_errors(self.root, self.payload))
         )
+
+    def test_status_basis_sha_is_required(self) -> None:
+        payload = json.loads(json.dumps(self.payload))
+        payload["canonical"]["status_basis_commit"] = "main"
+        with self.assertRaisesRegex(status.StatusError, "status basis"):
+            status.validate(payload)
 
 
 if __name__ == "__main__":
