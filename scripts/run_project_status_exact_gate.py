@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Run the exact-head CogniPrint project-status gate on a clean checkout.
 
-The runner is intentionally fail-closed. It validates the current repository head,
-runs the status/release/security checks, derives statistical readiness twice in
-separate temporary locations, and accepts only byte-identical
+The runner is intentionally fail-closed. It validates repository identity and
+scope, runs status/release/security checks, derives statistical readiness twice
+in separate temporary locations, and accepts only byte-identical
 ``descriptive_only`` reports. It does not modify the checkout or authorize a
 scientific-status change.
 """
@@ -67,6 +67,28 @@ def require_identity(root: Path, expected_head: str, expected_tree: str | None) 
     return actual_head, actual_tree
 
 
+def require_scope(
+    root: Path,
+    expected_base: str | None,
+    expected_head: str,
+    expected_changed_files: int | None,
+) -> None:
+    if not expected_base:
+        run(root, "git", "diff", "--check")
+        return
+    run(root, "git", "diff", "--check", f"{expected_base}...{expected_head}")
+    names = [
+        line
+        for line in git(root, "diff", "--name-only", f"{expected_base}...{expected_head}").splitlines()
+        if line
+    ]
+    if expected_changed_files is not None and len(names) != expected_changed_files:
+        raise GateError(
+            f"changed-file scope mismatch: expected {expected_changed_files}, got {len(names)}"
+        )
+    print(f"CHANGED_FILE_SCOPE=PASS count={len(names)}")
+
+
 def compile_python(root: Path, destination: Path) -> None:
     files = sorted(
         path
@@ -118,11 +140,52 @@ def derive_readiness(root: Path, destination: Path) -> dict[str, object]:
     return payload
 
 
+def require_external_output(root: Path, output: Path | None) -> Path | None:
+    if output is None:
+        return None
+    resolved = output.resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        return resolved
+    raise GateError("readiness output must be outside the exact checkout")
+
+
+def validate_candidate(root: Path, candidate: Path) -> None:
+    run(candidate, "git", "init")
+    run(candidate, "git", "config", "user.email", "release-gate@example.invalid")
+    run(candidate, "git", "config", "user.name", "CogniPrint Exact Gate")
+    run(candidate, "git", "add", ".")
+    run(candidate, "git", "commit", "-m", "temporary public release candidate")
+    run(
+        root,
+        sys.executable,
+        str(candidate / "scripts/check_project_status.py"),
+        "--root",
+        str(candidate),
+    )
+    run(
+        root,
+        sys.executable,
+        str(candidate / "scripts/secret_scan.py"),
+        "--root",
+        str(candidate),
+        "--history",
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--expected-head", default=os.environ.get("EXPECTED_HEAD"))
     parser.add_argument("--expected-tree", default=os.environ.get("EXPECTED_TREE"))
+    parser.add_argument("--expected-base", default=os.environ.get("EXPECTED_BASE"))
+    parser.add_argument(
+        "--expected-changed-files",
+        type=int,
+        default=(int(os.environ["EXPECTED_CHANGED_FILES"]) if os.environ.get("EXPECTED_CHANGED_FILES") else None),
+    )
+    parser.add_argument("--readiness-output", type=Path, default=None)
     parser.add_argument("--ruff", default=os.environ.get("RUFF", "ruff"))
     args = parser.parse_args(argv)
 
@@ -133,10 +196,22 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     try:
+        external_output = require_external_output(root, args.readiness_output)
         require_clean(root)
         head, tree = require_identity(root, args.expected_head, args.expected_tree)
+        require_scope(root, args.expected_base, head, args.expected_changed_files)
 
-        run(root, args.ruff, "check", "src", "scripts", "tests", "--select", "E4,E7,E9,F")
+        run(
+            root,
+            args.ruff,
+            "check",
+            "src",
+            "scripts",
+            "tests",
+            "--select",
+            "E4,E7,E9,F",
+            "--no-cache",
+        )
 
         with tempfile.TemporaryDirectory(prefix="cogniprint-status-gate-") as temporary:
             temp = Path(temporary)
@@ -167,22 +242,12 @@ def main(argv: list[str] | None = None) -> int:
                 str(candidate),
                 "--clean",
             )
-            run(
-                root,
-                sys.executable,
-                str(candidate / "scripts/check_project_status.py"),
-                "--root",
-                str(candidate),
-            )
-            run(
-                root,
-                sys.executable,
-                str(candidate / "scripts/secret_scan.py"),
-                "--root",
-                str(candidate),
-            )
+            validate_candidate(root, candidate)
 
             readiness_sha256 = hashlib.sha256(bytes_first).hexdigest()
+            if external_output is not None:
+                external_output.parent.mkdir(parents=True, exist_ok=True)
+                external_output.write_bytes(bytes_first)
 
         require_clean(root)
         final_head, final_tree = require_identity(root, head, tree)
