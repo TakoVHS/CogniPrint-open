@@ -8,24 +8,38 @@ on:
       - "config/public-release.json"
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
+      - "scripts/check_project_status.py"
       - "tests/**"
       - "src/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
       - "pyproject.toml"
+      - "RESEARCH_FREEZE_001.md"
+      - "docs/current-state-summary.md"
+      - "docs/trust.md"
+      - "docs/external-review.md"
+      - "docs/evidence-project-status.json"
+      - "docs/external-review/status.json"
   pull_request:
     paths:
       - ".github/workflows/public-release-ci.yml"
       - "config/public-release.json"
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
+      - "scripts/check_project_status.py"
       - "tests/**"
       - "src/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
       - "pyproject.toml"
+      - "RESEARCH_FREEZE_001.md"
+      - "docs/current-state-summary.md"
+      - "docs/trust.md"
+      - "docs/external-review.md"
+      - "docs/evidence-project-status.json"
+      - "docs/external-review/status.json"
   workflow_dispatch:
 
 permissions:
@@ -54,13 +68,22 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .
 
-      - name: Compile release tooling
-        run: python -m py_compile scripts/secret_scan.py scripts/export_public_release.py
+      - name: Compile release and status tooling
+        run: |
+          python -m py_compile \
+            scripts/secret_scan.py \
+            scripts/export_public_release.py \
+            scripts/check_project_status.py \
+            tests/test_project_status.py
 
       - name: Run release gate unit tests
         run: |
           python -m unittest discover -s tests -p "test_public_release_export.py" -v
           python -m unittest discover -s tests -p "test_secret_scan.py" -v
+          python -m unittest discover -s tests -p "test_project_status.py" -v
+
+      - name: Validate canonical project status
+        run: python scripts/check_project_status.py
 
       - name: Scan tracked source tree
         run: python scripts/secret_scan.py
@@ -79,6 +102,7 @@ jobs:
           git config user.name "CogniPrint Public Release CI"
           git add .
           git commit -m "public release candidate"
+          python scripts/check_project_status.py
           python scripts/secret_scan.py --history
           rm -rf .git
 
