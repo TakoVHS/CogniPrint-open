@@ -73,7 +73,7 @@ def validate(status: dict[str, Any]) -> None:
         status["canonical"],
         {
             "repository",
-            "main_commit",
+            "status_basis_commit",
             "release",
             *FIXED,
             "external_methodological_reviews",
@@ -83,8 +83,8 @@ def validate(status: dict[str, Any]) -> None:
     )
     if canonical["repository"] != "TakoVHS/CogniPrint-open":
         raise StatusError("canonical repository is invalid")
-    if not re.fullmatch(r"[0-9a-f]{40}", str(canonical["main_commit"])):
-        raise StatusError("canonical main commit is invalid")
+    if not re.fullmatch(r"[0-9a-f]{40}", str(canonical["status_basis_commit"])):
+        raise StatusError("status basis commit is invalid")
     for key, expected in FIXED.items():
         if canonical[key] != expected:
             raise StatusError(f"unauthorized status escalation: {key}={canonical[key]!r}")
