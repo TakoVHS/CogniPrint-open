@@ -77,6 +77,7 @@
     "scripts/reproduce_research.sh",
     "scripts/reproducibility_check.sh",
     "scripts/require_preregistration.sh",
+    "scripts/run_project_status_exact_gate.py",
     "scripts/secret_scan.py",
     "scripts/synthesize_decision.py",
     "scripts/synthesize_feedback.py",
@@ -158,6 +159,7 @@
     "docs/evidence-project-status.json",
     "docs/external-review/status.json",
     "scripts/check_project_status.py",
+    "scripts/run_project_status_exact_gate.py",
     "docs/trust.md"
   ],
   "public_safe_workflows": [
