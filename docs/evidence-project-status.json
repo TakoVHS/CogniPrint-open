@@ -3,7 +3,7 @@
   "status_date": "2026-08-05",
   "canonical": {
     "repository": "TakoVHS/CogniPrint-open",
-    "main_commit": "71de6190d2e05bde76a4a5f73138471c1649f970",
+    "status_basis_commit": "71de6190d2e05bde76a4a5f73138471c1649f970",
     "release": "0.1.2",
     "scientific_readiness": "descriptive_only",
     "research_mode": "PROOF_MODE",
