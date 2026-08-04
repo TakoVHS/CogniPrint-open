@@ -142,7 +142,7 @@ def main(argv: list[str] | None = None) -> int:
             temp = Path(temporary)
             compile_python(root, temp / "pyc")
 
-            run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_project_status.py", "-v")
+            run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_project_status*.py", "-v")
             run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_public_release_export.py", "-v")
             run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_secret_scan.py", "-v")
             run(root, sys.executable, "scripts/check_project_status.py")
