@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import os
+import py_compile
 import subprocess
 import sys
 import tempfile
@@ -26,15 +27,18 @@ class GateError(RuntimeError):
 
 def run(root: Path, *command: str, capture: bool = False) -> str:
     print("+", " ".join(command), flush=True)
-    completed = subprocess.run(
-        command,
-        cwd=root,
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE if capture else None,
-        stderr=subprocess.STDOUT if capture else None,
-        env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=root,
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE if capture else None,
+            stderr=subprocess.STDOUT if capture else None,
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
+        )
+    except OSError as exc:
+        raise GateError(f"cannot execute {' '.join(command)}: {exc}") from exc
     if completed.returncode != 0:
         output = completed.stdout or ""
         if output:
@@ -50,7 +54,7 @@ def git(root: Path, *args: str) -> str:
 def require_clean(root: Path) -> None:
     status = git(root, "status", "--short")
     if status:
-        raise GateError(f"worktree is not clean before gate:\n{status}")
+        raise GateError(f"worktree is not clean:\n{status}")
 
 
 def require_identity(root: Path, expected_head: str, expected_tree: str | None) -> tuple[str, str]:
@@ -63,15 +67,38 @@ def require_identity(root: Path, expected_head: str, expected_tree: str | None) 
     return actual_head, actual_tree
 
 
-def compile_python(root: Path) -> None:
+def compile_python(root: Path, destination: Path) -> None:
     files = sorted(
-        str(path.relative_to(root))
+        path
         for directory in ("src", "scripts", "tests")
         for path in (root / directory).rglob("*.py")
     )
     if not files:
         raise GateError("no Python files found for compilation")
-    run(root, sys.executable, "-m", "py_compile", *files)
+    destination.mkdir(parents=True, exist_ok=True)
+    for index, path in enumerate(files):
+        try:
+            py_compile.compile(
+                str(path),
+                cfile=str(destination / f"{index:05d}.pyc"),
+                doraise=True,
+            )
+        except py_compile.PyCompileError as exc:
+            raise GateError(f"Python compilation failed for {path.relative_to(root)}: {exc.msg}") from exc
+    print(f"PY_COMPILE=PASS files={len(files)}")
+
+
+def strict_json(path: Path) -> dict[str, object]:
+    def reject_constant(token: str) -> None:
+        raise GateError(f"non-finite number in {path}: {token}")
+
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"), parse_constant=reject_constant)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise GateError(f"cannot read JSON {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise GateError(f"JSON root must be an object: {path}")
+    return payload
 
 
 def derive_readiness(root: Path, destination: Path) -> dict[str, object]:
@@ -82,10 +109,7 @@ def derive_readiness(root: Path, destination: Path) -> dict[str, object]:
         "--output",
         str(destination),
     )
-    try:
-        payload = json.loads(destination.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise GateError(f"cannot read derived readiness report: {exc}") from exc
+    payload = strict_json(destination)
     if payload.get("decision") != "descriptive_only":
         raise GateError(
             "unexpected readiness decision; independent methodological review is required before integration: "
@@ -113,17 +137,18 @@ def main(argv: list[str] | None = None) -> int:
         head, tree = require_identity(root, args.expected_head, args.expected_tree)
 
         run(root, args.ruff, "check", "src", "scripts", "tests", "--select", "E4,E7,E9,F")
-        compile_python(root)
-
-        run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_project_status.py", "-v")
-        run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_public_release_export.py", "-v")
-        run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_secret_scan.py", "-v")
-        run(root, sys.executable, "scripts/check_project_status.py")
-        run(root, sys.executable, "scripts/secret_scan.py")
-        run(root, sys.executable, "scripts/export_public_release.py", "--check-only")
 
         with tempfile.TemporaryDirectory(prefix="cogniprint-status-gate-") as temporary:
             temp = Path(temporary)
+            compile_python(root, temp / "pyc")
+
+            run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_project_status.py", "-v")
+            run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_public_release_export.py", "-v")
+            run(root, sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_secret_scan.py", "-v")
+            run(root, sys.executable, "scripts/check_project_status.py")
+            run(root, sys.executable, "scripts/secret_scan.py")
+            run(root, sys.executable, "scripts/export_public_release.py", "--check-only")
+
             first = temp / "readiness-1.json"
             second = temp / "readiness-2.json"
             payload_first = derive_readiness(root, first)
@@ -142,8 +167,20 @@ def main(argv: list[str] | None = None) -> int:
                 str(candidate),
                 "--clean",
             )
-            run(root, sys.executable, str(candidate / "scripts/check_project_status.py"), "--root", str(candidate))
-            run(root, sys.executable, str(candidate / "scripts/secret_scan.py"))
+            run(
+                root,
+                sys.executable,
+                str(candidate / "scripts/check_project_status.py"),
+                "--root",
+                str(candidate),
+            )
+            run(
+                root,
+                sys.executable,
+                str(candidate / "scripts/secret_scan.py"),
+                "--root",
+                str(candidate),
+            )
 
             readiness_sha256 = hashlib.sha256(bytes_first).hexdigest()
 
