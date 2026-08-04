@@ -1,0 +1,57 @@
+{
+  "schema": "cogniprint-project-status-v1",
+  "status_date": "2026-08-05",
+  "canonical": {
+    "repository": "TakoVHS/CogniPrint-open",
+    "status_basis_commit": "71de6190d2e05bde76a4a5f73138471c1649f970",
+    "release": "0.1.2",
+    "scientific_readiness": "descriptive_only",
+    "research_mode": "PROOF_MODE",
+    "canonical_freeze": "PRE-FREEZE",
+    "stage_b": "NOT_AUTHORISED_TO_START",
+    "github_actions": "NOT_EXECUTED",
+    "main_exact_snapshot": "NOT_EXECUTED",
+    "external_methodological_reviews": {
+      "valid": 0,
+      "required": 1
+    },
+    "doi": {
+      "reference": "10.5281/zenodo.20756421",
+      "verification": "PENDING_DIRECT_PUBLIC_VERIFICATION"
+    }
+  },
+  "development_evidence": [
+    {
+      "pull_request": 54,
+      "head": "98cf9637a4889c15b7d8ecb2082d9d9e56d672ec",
+      "tree": "4b9ca053e85c261ec1d4a2a73cf0fd8649872794",
+      "state": "DRAFT",
+      "canonical_capability_change": false,
+      "evidence": {
+        "equivalent_runner_gate": "PASS",
+        "github_actions": "NOT_EXECUTED",
+        "scientific_claim_evidence": false,
+        "human_methodological_review": "REQUIRED"
+      }
+    },
+    {
+      "pull_request": 57,
+      "head": "6832729562d4587609bb93e5af3d4f7f96911d06",
+      "tree": "6d3754f3bc695c7e482c4f307316e6da99d29589",
+      "state": "DRAFT",
+      "canonical_capability_change": false,
+      "evidence": {
+        "exact_head_application_gates": "PASS",
+        "rootless_oci_m3": "PASS",
+        "nix_m3": "PENDING_RERUN",
+        "exact_head_m3_gate": "NOT_PASSED",
+        "human_security_usability_review": "REQUIRED"
+      }
+    }
+  ],
+  "policy": {
+    "branch_evidence_changes_main_status": false,
+    "not_executed_is_failure": false,
+    "product_progress_unlocks_scientific_claims": false
+  }
+}
