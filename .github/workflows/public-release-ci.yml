@@ -9,8 +9,12 @@ on:
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
       - "scripts/check_project_status.py"
+      - "scripts/check_statistical_readiness.py"
+      - "scripts/run_project_status_exact_gate.py"
       - "tests/**"
       - "src/**"
+      - "evidence/**"
+      - "validation/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
@@ -19,6 +23,7 @@ on:
       - "docs/current-state-summary.md"
       - "docs/trust.md"
       - "docs/external-review.md"
+      - "docs/statistical-readiness-protocol.md"
       - "docs/evidence-project-status.json"
       - "docs/external-review/status.json"
   pull_request:
@@ -28,8 +33,12 @@ on:
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
       - "scripts/check_project_status.py"
+      - "scripts/check_statistical_readiness.py"
+      - "scripts/run_project_status_exact_gate.py"
       - "tests/**"
       - "src/**"
+      - "evidence/**"
+      - "validation/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
@@ -38,6 +47,7 @@ on:
       - "docs/current-state-summary.md"
       - "docs/trust.md"
       - "docs/external-review.md"
+      - "docs/statistical-readiness-protocol.md"
       - "docs/evidence-project-status.json"
       - "docs/external-review/status.json"
   workflow_dispatch:
@@ -55,18 +65,31 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      - name: Check out repository
+      - name: Check out exact source head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install package
+      - name: Install package and validation tools
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e .
+          python -m pip install .
+          python -m pip install ruff==0.16.1
+
+      - name: Record exact identity
+        run: |
+          echo "EXACT_HEAD=$(git rev-parse HEAD)"
+          echo "EXACT_TREE=$(git rev-parse 'HEAD^{tree}')"
+          test -z "$(git status --short)"
+
+      - name: Ruff correctness gate
+        run: ruff check src scripts tests --select E4,E7,E9,F --no-cache
 
       - name: Compile release and status tooling
         run: |
@@ -74,16 +97,38 @@ jobs:
             scripts/secret_scan.py \
             scripts/export_public_release.py \
             scripts/check_project_status.py \
-            tests/test_project_status.py
+            scripts/check_statistical_readiness.py \
+            scripts/run_project_status_exact_gate.py \
+            tests/test_project_status.py \
+            tests/test_project_status_exact_gate.py
 
       - name: Run release gate unit tests
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
         run: |
           python -m unittest discover -s tests -p "test_public_release_export.py" -v
           python -m unittest discover -s tests -p "test_secret_scan.py" -v
-          python -m unittest discover -s tests -p "test_project_status.py" -v
+          python -m unittest discover -s tests -p "test_project_status*.py" -v
 
       - name: Validate canonical project status
         run: python scripts/check_project_status.py
+
+      - name: Derive statistical readiness twice
+        run: |
+          python scripts/check_statistical_readiness.py --output "$RUNNER_TEMP/readiness-1.json"
+          python scripts/check_statistical_readiness.py --output "$RUNNER_TEMP/readiness-2.json"
+          cmp "$RUNNER_TEMP/readiness-1.json" "$RUNNER_TEMP/readiness-2.json"
+          python - "$RUNNER_TEMP/readiness-1.json" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          payload = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+          if payload.get("decision") != "descriptive_only":
+              raise SystemExit(f"unexpected readiness decision: {payload.get('decision')!r}")
+          print("STATISTICAL_READINESS_MATERIALIZATION_CANDIDATE=PASS")
+          print("SCIENTIFIC_READINESS=descriptive_only")
+          PY
 
       - name: Scan tracked source tree
         run: python scripts/secret_scan.py
@@ -106,6 +151,12 @@ jobs:
           python scripts/secret_scan.py --history
           rm -rf .git
 
+      - name: Confirm checkout remains exact and clean
+        run: |
+          echo "FINAL_HEAD=$(git rev-parse HEAD)"
+          echo "FINAL_TREE=$(git rev-parse 'HEAD^{tree}')"
+          test -z "$(git status --short)"
+
       - name: Upload validated sanitized candidate
         uses: actions/upload-artifact@v4
         with:
@@ -113,4 +164,12 @@ jobs:
           path: ${{ runner.temp }}/cogniprint-public
           retention-days: 3
           include-hidden-files: true
+          if-no-files-found: error
+
+      - name: Upload derived readiness candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: cogniprint-statistical-readiness-py${{ matrix.python-version }}
+          path: ${{ runner.temp }}/readiness-1.json
+          retention-days: 3
           if-no-files-found: error
