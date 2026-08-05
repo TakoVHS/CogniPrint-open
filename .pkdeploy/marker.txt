@@ -1,0 +1,1 @@
+Temporary transport for Przyjazny Kościół 3.4.2 hotfix. Delete branch after verified Netlify deployment.
