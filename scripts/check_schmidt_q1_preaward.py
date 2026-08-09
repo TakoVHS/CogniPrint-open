@@ -19,25 +19,40 @@ from cogniprint.multi_principal_evidence import (  # noqa: E402
 )
 
 
-FIXTURE = ROOT / "challenge-schmidt-q1" / "fixtures" / "synthetic-3-principal-happy-path.json"
+FIXTURE_DIR = ROOT / "challenge-schmidt-q1" / "fixtures"
+FIXTURES = [
+    FIXTURE_DIR / "synthetic-3-principal-happy-path.json",
+    FIXTURE_DIR / "synthetic-4-principal-linear.json",
+    FIXTURE_DIR / "synthetic-6-principal-linear.json",
+]
 
 
 def main() -> int:
-    bundle = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    result = verify_multi_principal_bundle(bundle)
-    if not result.get("ok"):
-        print(f"SCHMIDT_Q1_PREAWARD_VERIFY=FAIL reason={result.get('reason')}")
-        return 1
+    verified_counts: list[int] = []
+    first_bundle: dict | None = None
 
-    ablation = structural_field_ablation(bundle)
+    for fixture in FIXTURES:
+        bundle = json.loads(fixture.read_text(encoding="utf-8"))
+        if first_bundle is None:
+            first_bundle = bundle
+        result = verify_multi_principal_bundle(bundle)
+        if not result.get("ok"):
+            print(
+                "SCHMIDT_Q1_PREAWARD_VERIFY=FAIL "
+                f"fixture={fixture.name} reason={result.get('reason')}"
+            )
+            return 1
+        verified_counts.append(int(result["principal_count"]))
+
+    assert first_bundle is not None
+    ablation = structural_field_ablation(first_bundle)
     if not ablation or not all(ablation.values()):
         print(f"SCHMIDT_Q1_PREAWARD_ABLATION=FAIL outcomes={json.dumps(ablation, sort_keys=True)}")
         return 1
 
     print("SCHMIDT_Q1_PREAWARD_VERIFY=PASS")
     print("SCHMIDT_Q1_PREAWARD_STRUCTURAL_ABLATION=PASS")
-    print(f"SCHMIDT_Q1_PREAWARD_PRINCIPALS={result['principal_count']}")
-    print(f"SCHMIDT_Q1_PREAWARD_EVENTS={result['event_count']}")
+    print(f"SCHMIDT_Q1_PREAWARD_FIXTURE_COUNTS={','.join(map(str, verified_counts))}")
     print("SCHMIDT_Q1_SCIENTIFIC_MILESTONE=NOT_CLAIMED")
     print("RESEARCH_STATUS=DEVELOPMENT_ONLY_PREAWARD")
     return 0
