@@ -1,0 +1,20 @@
+{
+  "schema": "cogniprint-multi-principal-evidence-v0.1",
+  "research_status": "DEVELOPMENT_ONLY_PREAWARD",
+  "case_id": "schmidt-q1-synthetic-4p-linear-001",
+  "principals": [
+    {"principal_id": "principal-a", "role": "originating investigator"},
+    {"principal_id": "principal-b", "role": "delegated analysis principal 1"},
+    {"principal_id": "principal-c", "role": "delegated analysis principal 2"},
+    {"principal_id": "principal-d", "role": "independent verification principal"}
+  ],
+  "events": [
+    {"event_id":"e000","sequence":0,"timestamp":"2027-01-15T09:00:00Z","principal_id":"principal-a","agent_id":"agent-a1","event_type":"DELEGATION","evidence_class":"ATTESTED","parent_event_ids":[],"authorization_scope":["task.stage.1"],"target_principal_id":"principal-b","payload_commitment_sha256":"bbbd5912f694c116cb2b2d21c811db6c0a7ea8c892e8af177ace0d2dce23b559","integrity_sha256":"7f1316705fdbbdcf5461e244cae094fad32bd3048ebd9a1c814e497a5ca6f48b"},
+    {"event_id":"e001","sequence":1,"timestamp":"2027-01-15T09:01:00Z","principal_id":"principal-b","agent_id":"agent-b1","event_type":"ACTION","evidence_class":"OBSERVED","parent_event_ids":["e000"],"authorization_scope":["task.stage.1"],"payload_commitment_sha256":"7c975f36ab22204cdba33bcfde45aed95ec2bcb22547069d8a51c62bdb34d83e","integrity_sha256":"57f076ce3951ea21b7d9f22abfcfaa029f13f1b6ccc8b36d910af2028b7d2ff0"},
+    {"event_id":"e002","sequence":2,"timestamp":"2027-01-15T09:02:00Z","principal_id":"principal-b","agent_id":"agent-b1","event_type":"DELEGATION","evidence_class":"ATTESTED","parent_event_ids":["e001"],"authorization_scope":["task.stage.2"],"target_principal_id":"principal-c","payload_commitment_sha256":"0b3e5b639fc5d7009ee35fc131dcca42f977aa97752cea91bf5c2d7c8ff93b0b","integrity_sha256":"035f94317ce3da1e3c3c9ad409b5ac8d74b3e82deb7b79d5695630e8389e97ec"},
+    {"event_id":"e003","sequence":3,"timestamp":"2027-01-15T09:03:00Z","principal_id":"principal-c","agent_id":"agent-c1","event_type":"ACTION","evidence_class":"OBSERVED","parent_event_ids":["e002"],"authorization_scope":["task.stage.2"],"payload_commitment_sha256":"02640f479d7ba56d9348dc14e33401ddc4ff9e88e56b7661ce8a560c287f4c81","integrity_sha256":"87f8db2cc5952a2a27e30be5a3d915a9bcb92fa70fbdd4672098713ac9286106"},
+    {"event_id":"e004","sequence":4,"timestamp":"2027-01-15T09:04:00Z","principal_id":"principal-c","agent_id":"agent-c1","event_type":"DELEGATION","evidence_class":"ATTESTED","parent_event_ids":["e003"],"authorization_scope":["task.stage.3"],"target_principal_id":"principal-d","payload_commitment_sha256":"dc1630b0a4990b6525218dcaf9dc8568e78f2263c3c75b01d5352de8362235b8","integrity_sha256":"11d3a7d07b83033f9e4313b1601c04e30c91e76aecf8ec9c9da5e6f3f81c85df"},
+    {"event_id":"e005","sequence":5,"timestamp":"2027-01-15T09:05:00Z","principal_id":"principal-d","agent_id":"agent-d1","event_type":"ACTION","evidence_class":"OBSERVED","parent_event_ids":["e004"],"authorization_scope":["task.stage.3"],"payload_commitment_sha256":"f8232dfeb9765420c42da1023c78350ec508a301c8fed835044859974c49a6ae","integrity_sha256":"b29566d874ff4248afe2b286e65b1e461ca6a2df1934e1843a7c7f878a83726e"}
+  ],
+  "bundle_integrity_sha256": "167a44dc6d9032e48b202decd639d4626472c2ed30dbccdb95d665ea66e470fe"
+}
