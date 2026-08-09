@@ -13,22 +13,39 @@ from cogniprint.multi_principal_evidence import (
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-FIXTURE = REPO_ROOT / "challenge-schmidt-q1" / "fixtures" / "synthetic-3-principal-happy-path.json"
+FIXTURE_DIR = REPO_ROOT / "challenge-schmidt-q1" / "fixtures"
+FIXTURES = {
+    3: FIXTURE_DIR / "synthetic-3-principal-happy-path.json",
+    4: FIXTURE_DIR / "synthetic-4-principal-linear.json",
+    6: FIXTURE_DIR / "synthetic-6-principal-linear.json",
+}
 
 
 class SchmidtQ1PreawardTests(unittest.TestCase):
-    def load_fixture(self) -> dict:
-        return json.loads(FIXTURE.read_text(encoding="utf-8"))
+    def load_fixture(self, principal_count: int = 3) -> dict:
+        return json.loads(FIXTURES[principal_count].read_text(encoding="utf-8"))
 
-    def test_happy_path_verifies_and_reconstructs_delegation(self) -> None:
-        result = verify_multi_principal_bundle(self.load_fixture())
-        self.assertTrue(result["ok"], result)
-        self.assertEqual(result["principal_count"], 3)
+    def test_all_declared_principal_counts_verify(self) -> None:
+        for expected_count, path in FIXTURES.items():
+            with self.subTest(path=path.name):
+                result = verify_multi_principal_bundle(self.load_fixture(expected_count))
+                self.assertTrue(result["ok"], result)
+                self.assertEqual(result["principal_count"], expected_count)
+                self.assertEqual(result["research_status"], "DEVELOPMENT_ONLY_PREAWARD")
+
+    def test_three_principal_fixture_reconstructs_expected_delegation(self) -> None:
+        result = verify_multi_principal_bundle(self.load_fixture(3))
         self.assertEqual(
             result["delegation_edges"],
             [["principal-a", "principal-b"], ["principal-b", "principal-c"]],
         )
-        self.assertEqual(result["research_status"], "DEVELOPMENT_ONLY_PREAWARD")
+
+    def test_six_principal_fixture_has_five_delegation_edges(self) -> None:
+        result = verify_multi_principal_bundle(self.load_fixture(6))
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(len(result["delegation_edges"]), 5)
+        self.assertEqual(result["delegation_edges"][0], ["principal-a", "principal-b"])
+        self.assertEqual(result["delegation_edges"][-1], ["principal-e", "principal-f"])
 
     def test_mutated_event_fails_integrity(self) -> None:
         bundle = self.load_fixture()
@@ -42,8 +59,6 @@ class SchmidtQ1PreawardTests(unittest.TestCase):
         bundle = self.load_fixture()
         event = bundle["events"][4]
         event["parent_event_ids"] = ["missing-event"]
-        # Preserve the old event hash deliberately: either event-integrity rejection
-        # or later parent rejection is an acceptable fail-closed outcome.
         bundle = with_bundle_integrity(bundle)
         self.assertFalse(verify_multi_principal_bundle(bundle)["ok"])
 
