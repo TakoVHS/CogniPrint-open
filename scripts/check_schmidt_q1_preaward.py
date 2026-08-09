@@ -4,12 +4,21 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
-
-from cogniprint.multi_principal_evidence import structural_field_ablation, verify_multi_principal_bundle
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from cogniprint.multi_principal_evidence import (  # noqa: E402
+    structural_field_ablation,
+    verify_multi_principal_bundle,
+)
+
+
 FIXTURE = ROOT / "challenge-schmidt-q1" / "fixtures" / "synthetic-3-principal-happy-path.json"
 
 
