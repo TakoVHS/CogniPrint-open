@@ -27,9 +27,11 @@ Status: `DRAFT / NOT SUBMITTED`
 - [x] Claims firewall drafted
 - [x] Network-free deterministic anchor prototype added on isolated application branch
 - [x] Prototype unit checks written
-- [ ] XRPL Testnet transport implemented
+- [x] Independent read-only ledger receipt verifier implemented
+- [x] Validated/mutation/ambiguous-memo verifier checks implemented
+- [ ] XRPL Testnet submit transport implemented
 - [ ] XRPL Testnet transaction validated
-- [ ] Independent ledger lookup verifier implemented
+- [ ] Real transaction hash and validated receipt captured
 - [ ] End-to-end demo recorded
 
 ## Applicant facts that must be confirmed before submission
@@ -45,16 +47,19 @@ Do not commit sensitive personal records to this repository.
 - [ ] Availability for the full 9-week online program confirmed
 - [ ] English-language interview availability confirmed
 
-## Sanctions / legal eligibility gate
+## Legal / eligibility gate
 
-XRPL Commons' current public website Terms reserve the right to restrict access for sanctions targets and for persons located, organized, or resident in listed sanctioned countries/territories, including Russia. The public clause is not written as a blanket nationality-only exclusion, but sanctions screening and the later program contract may contain additional requirements.
+The current public Cohort 9 page says the online program welcomes founders from around the world, with a particular focus on EMEA. XRPL Commons' public Privacy Policy states that it may collect nationality and address and process personal data to comply with applicable legal obligations.
 
-Before submission:
+The publicly indexed pages reviewed for this application do not provide enough evidence to make a blanket nationality-based eligibility conclusion for the later contract or grant stage. Therefore eligibility must not be guessed either positively or negatively.
 
-- answer nationality/residency/location questions exactly and truthfully;
+Before relying on admission or future grant/payment eligibility:
+
+- answer nationality, residence and location questions exactly and truthfully;
 - do not imply incorporation or residence that does not exist;
-- do not submit through another person to bypass screening;
-- if the applicant has a potentially relevant citizenship/residency fact, obtain a written eligibility clarification from XRPL Commons before relying on a future grant/payment route.
+- do not submit through another person to bypass compliance screening;
+- obtain written clarification from XRPL Commons if citizenship, residence, payment route or sanctions compliance could affect contracting or grant disbursement;
+- preserve the written answer with the private application records, not in the public repository.
 
 This checklist is not legal advice and does not claim eligibility approval.
 
@@ -68,6 +73,7 @@ Prepare only evidence that is already public or can be safely shared:
 - [x] clear scientific non-claims
 - [x] XRPL integration architecture draft
 - [x] cohort milestones
+- [x] read-only independent XRPL receipt verifier
 - [ ] concise founder bio
 - [ ] team slide / team paragraph if form requests it
 - [ ] 60–90 second founder pitch
@@ -99,8 +105,10 @@ A strong interview should be able to demonstrate:
 3. mutation -> commitment mismatch;
 4. the exact small payload intended for XRPL Memo transport;
 5. why raw evidence stays off-chain;
-6. what becomes independently verifiable after ledger validation;
-7. what XRPL does *not* prove.
+6. read-only lookup of the transaction by hash;
+7. `validated=true` and `meta.TransactionResult=tesSUCCESS` as the finality gate;
+8. independent recomputation of the local manifest commitment;
+9. what XRPL does *not* prove.
 
 ## Hard submission gate
 
@@ -108,7 +116,7 @@ Do not submit until all of the following are true:
 
 - applicant identity/team fields are correct;
 - full-time-founder requirement is truthfully satisfiable;
-- sanctions/residency eligibility is not being guessed or bypassed;
+- legal/residency eligibility is not being guessed or bypassed;
 - all traction/funding statements are evidenced;
 - no future capability is presented as already deployed;
 - final form answers have been reviewed against the claims firewall.
