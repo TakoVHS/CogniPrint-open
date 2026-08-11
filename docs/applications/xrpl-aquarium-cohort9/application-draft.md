@@ -173,7 +173,6 @@ The program’s Infrastructure/Security focus is therefore a direct fit.
 Do not infer or fabricate any of the following:
 
 - founder legal name;
-- age/eligibility status;
 - current country of residence/location;
 - company/legal-entity status;
 - full-time founder commitment;
@@ -183,7 +182,7 @@ Do not infer or fabricate any of the following:
 - user/revenue/traction metrics;
 - sanctions/KYC representations.
 
-The current Aquarium public eligibility page requires at least one full-time founder and active participation throughout the 9-week program. XRPL Commons' public Privacy Policy also states that its services are not available to persons under 18. These requirements must be truthfully satisfied; they must not be bypassed through another person, company, wallet, or location.
+The current Aquarium public eligibility page requires at least one full-time founder and active participation throughout the 9-week program. Applicant-specific eligibility details should be handled privately and answered only where the live application actually asks for them.
 
 ## Legal / compliance gate
 
@@ -192,9 +191,8 @@ XRPL Commons' published Terms reserve the right to restrict access if a person i
 Before submission or reliance on a later grant/payment path:
 
 - answer nationality, location, residence, organization, and sanctions questions truthfully;
-- confirm the applicant satisfies the service age requirement;
 - obtain written clarification from XRPL Commons where citizenship/residence/payment-route facts create uncertainty;
-- do not use another person or entity to bypass compliance or age screening.
+- do not use another person or entity to bypass compliance screening.
 
 ## Links
 
