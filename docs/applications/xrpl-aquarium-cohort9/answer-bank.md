@@ -181,9 +181,9 @@ PLACEHOLDER — answer exactly and truthfully. XRPL Commons' published Terms res
 
 Do not use another person, company, wallet, or location to bypass eligibility or sanctions screening.
 
-## Age eligibility
+## General eligibility
 
-XRPL Commons' published Privacy Policy states that persons under 18 may not use XRPL Commons Services. This requirement must be satisfied directly. Do not attempt to bypass age screening through another person or account.
+PLACEHOLDER — answer only the eligibility questions actually asked in the live form and keep sensitive applicant details out of the public repository unless they are necessary for the application.
 
 ## Full-time commitment
 
