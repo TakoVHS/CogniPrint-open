@@ -1,8 +1,8 @@
 # XRPL Aquarium Cohort 9 — Answer Bank
 
-Status: `DRAFT / FORM_FIELDS_NOT_YET_MAPPED`
+Status: `STRONG_DRAFT / LIVE_FORM_MAPPING_PENDING`
 
-This answer bank is written for common accelerator/application questions. It must be mapped to the exact live form fields before submission. Applicant/team/legal/traction facts must be filled from verified records only.
+This answer bank is written for common accelerator/application questions. It must be mapped to the exact live Typeform fields before submission. Applicant/team/legal/traction facts must be filled from verified records only.
 
 ## Project name
 
@@ -14,7 +14,7 @@ Verifiable evidence infrastructure for synthetic language.
 
 ## One-sentence description
 
-CogniPrint is an open-source system for creating reproducible, privacy-aware evidence packages about synthetic and AI-mediated text, with an XRPL layer that anchors compact cryptographic commitments so third parties can independently verify evidence integrity without publishing sensitive content on-chain.
+CogniPrint is an open-source system for creating reproducible, privacy-aware evidence packages about synthetic and AI-mediated text, with a working XRPL Testnet layer that anchors compact cryptographic commitments so third parties can independently verify evidence integrity without publishing sensitive content on-chain.
 
 ## What problem are you solving?
 
@@ -24,7 +24,7 @@ Existing analysis is often trapped in screenshots, vendor dashboards, or mutable
 
 ## What is your solution?
 
-CogniPrint produces portable Evidence Capsules / dossiers containing reproducible measurements, artifact hashes, software/version references, transformation diagnostics, and explicit uncertainty boundaries. The planned XRPL integration adds a narrow public trust primitive: a deterministic cryptographic commitment to a public-safe evidence manifest is recorded in an XRPL transaction, while source text and sensitive evidence remain off-chain.
+CogniPrint produces portable Evidence Capsules / dossiers containing reproducible measurements, artifact hashes, software/version references, transformation diagnostics, and explicit uncertainty boundaries. The XRPL layer adds a narrow public trust primitive: a deterministic cryptographic commitment to a public-safe evidence manifest is recorded in an XRPL transaction while source text and sensitive evidence remain off-chain.
 
 A verifier can later recompute the commitment from the received evidence manifest and compare it with the validated ledger record. XRPL is therefore used to verify evidence-state integrity, not to decide whether content is AI-generated.
 
@@ -34,9 +34,9 @@ Synthetic content is no longer a single-model problem. Multi-model agents, human
 
 ## Why XRPL?
 
-CogniPrint needs a durable public verification layer for compact evidence commitments, not a token economy. XRPL transactions provide a low-friction way to associate a small application-level memo with an immutable transaction record and a validated ledger state. This lets CogniPrint keep evidence private/off-chain while making the integrity commitment independently checkable.
+CogniPrint needs a durable public verification layer for compact evidence commitments, not a token economy. XRPL transactions provide a low-friction way to associate a small application-level memo with a transaction record and validated-ledger state. This lets CogniPrint keep evidence private/off-chain while making the integrity commitment independently checkable.
 
-The cohort MVP deliberately starts with transaction memos and validated-ledger verification. DID/Credentials can be evaluated later for issuer identity or authorization only where they add value and without placing personal information on-chain.
+The current MVP uses transaction memos and validated-ledger verification. DID/Credentials can be evaluated later for issuer identity or authorization only where they add value and without placing personal information on-chain.
 
 ## What have you built already?
 
@@ -44,17 +44,36 @@ CogniPrint is a public open-source project with release `v0.1.2`. Existing publi
 
 The scientific system is intentionally conservative: current readiness is `descriptive_only`, and the project explicitly does not claim author identification, definitive AI origin, unique-model identification, or legal/forensic provenance.
 
-For the Aquarium application, an isolated development branch now contains a network-free XRPL evidence commitment prototype with deterministic canonicalization, SHA-256 commitments, fail-closed verification, MemoData encoding preparation, and targeted tests. No Testnet or Mainnet deployment is claimed yet.
+For the Aquarium application, an isolated branch now contains a working XRPL Testnet evidence-integrity flow with deterministic canonicalization, SHA-256 commitments, MemoData transport, validated-ledger verification, independent transaction re-fetch by hash, and fail-closed mutation detection.
+
+Real Testnet evidence from 2026-08-12:
+
+```text
+REAL_TESTNET_TX=E6E716789B416612A96221A4F51D6CA3B165E16E4777C2516D434184E9B93A21
+VALIDATED=true
+TRANSACTION_RESULT=tesSUCCESS
+INDEPENDENT_LEDGER_LOOKUP=PASS
+VALIDATED_MATCH=PASS
+MUTATION=FAIL_CLOSED_PASS
+XRPL_REAL_TESTNET_GATE=PASS
+```
+
+Manifest commitment:
+
+```text
+238b9c52793119d1e530b522ee853c23317ac2271cd9e12df9a1b98076352d03
+```
 
 ## What will you build during Aquarium?
 
-The 9-week target is an end-to-end XRPL Testnet evidence-integrity workflow:
+Because the minimal Testnet anchor is already working, the 9-week goal is to turn the proof into reusable infrastructure:
 
-1. freeze a versioned, privacy-safe evidence anchor schema and deterministic commitment format;
-2. anchor a compact commitment in an XRPL Testnet transaction and record the transaction/validated-ledger receipt;
-3. implement independent lookup and verification with explicit match, mismatch, not-found, malformed, and not-yet-validated states;
-4. integrate the flow into CogniPrint’s self-hosted Evidence Capsule workflow;
-5. publish test vectors, verifier logic, privacy/threat-model documentation, and a portable demo dossier that can be verified independently.
+1. freeze a versioned evidence-anchor schema and publish deterministic interoperability vectors;
+2. integrate anchor creation and verification into CogniPrint’s self-hosted Evidence Capsule workflow;
+3. make second-party verification portable across machines/users with explicit match, mismatch, malformed, ambiguous, unavailable, and not-yet-validated states;
+4. publish a sanitized receipt format, threat model, privacy review, and key-management boundaries;
+5. package the pattern as an open-source XRPL reference implementation for evidence-oriented systems;
+6. evaluate Mainnet readiness and DID/Credentials without requiring either for cohort success.
 
 A successful cohort result is not “we put a hash on-chain”; it is a reusable, fail-closed verification workflow that other evidence-oriented XRPL applications can adopt.
 
@@ -67,7 +86,8 @@ The XRPL anchor itself is intentionally simple. CogniPrint’s differentiation i
 - private source content stays off-chain;
 - verification distinguishes validated matches from ambiguous or unverifiable states;
 - the evidence format is designed for independent reproduction and cross-organization handoff;
-- the ledger commitment is one evidence class, not a substitute for scientific validity, identity, or lawful custody.
+- the ledger commitment is one evidence class, not a substitute for scientific validity, identity, or lawful custody;
+- the working Testnet demo already proves mutation detection against a real validated transaction.
 
 This avoids the common failure mode where blockchain notarization is presented as proof that the underlying claim is true.
 
@@ -107,18 +127,37 @@ An XRPL anchor does not prove that the underlying analysis is scientifically cor
 
 Those boundaries are a product feature: the verifier should never turn integrity evidence into a broader claim it cannot support.
 
+## Current traction / proof
+
+Use only factual engineering/project evidence unless the form explicitly asks for customer traction.
+
+Verified evidence available now:
+
+- public open-source repository;
+- release `v0.1.2`;
+- MIT-licensed Python project;
+- public website;
+- active development history and benchmark/reproducibility materials;
+- working XRPL Testnet transaction with validated-ledger verification;
+- independent commitment recomputation;
+- fail-closed mutation demo;
+- public sanitized Testnet receipt in the application branch.
+
+Do **not** claim customer adoption from repository activity. Current public GitHub metadata shows zero stars and zero forks, so those numbers should not be highlighted as traction.
+
 ## 9-week outcome metric
 
-The MVP should be considered complete only when an independent verifier can:
+The cohort MVP should be considered successful only when an independent second party can:
 
 - receive a CogniPrint public-safe evidence manifest;
 - recompute the deterministic commitment;
-- resolve the referenced XRPL Testnet transaction;
+- resolve the referenced XRPL transaction;
 - confirm that it belongs to a validated ledger;
 - decode the expected anchor payload;
 - return `VALIDATED_MATCH` for an unchanged manifest;
-- return a fail-closed mismatch/unverifiable state for any incompatible input;
-- perform the process without requiring source text or sensitive evidence on-chain.
+- return a fail-closed mismatch/unverifiable state for incompatible input;
+- perform the process without requiring source text or sensitive evidence on-chain;
+- reproduce the flow from an independently documented open-source reference implementation.
 
 ## Founder / team
 
@@ -128,27 +167,9 @@ Suggested structure once facts are verified:
 
 “[Name] is the founder/maintainer of CogniPrint and leads [engineering/research/product responsibilities]. [Relevant concise background]. [Full-time status if true]. The project currently has [verified team size / contributors].”
 
-## Traction
-
-PLACEHOLDER — use exact evidence only.
-
-Possible evidence categories if available:
-
-- public release(s);
-- repository activity/contributors/stars/forks;
-- website usage;
-- downloads/installations;
-- pilot users/interviews;
-- external reviews;
-- citations/DOI;
-- grant/accelerator applications or awards;
-- revenue.
-
-Never substitute application counts or repository development activity for customer traction unless the question explicitly asks for them.
-
 ## Legal entity / incorporation
 
-PLACEHOLDER — answer exactly as the current form requests. Do not infer a company from the project name, website, domain, grant application, or repository.
+PLACEHOLDER — answer exactly as the live form requests. Do not infer a company from the project name, website, domain, grant application, or repository.
 
 ## Funding raised
 
@@ -156,7 +177,13 @@ PLACEHOLDER — state only documented equity, debt, grants, prizes, or revenue a
 
 ## Location / residency / nationality / sanctions
 
-PLACEHOLDER — answer exactly and truthfully. Do not use another person, company, wallet, or location to bypass eligibility or sanctions screening.
+PLACEHOLDER — answer exactly and truthfully. XRPL Commons' published Terms reserve the right to restrict access for sanctions targets and for persons located, organized, or resident in listed sanctioned countries/territories, including Russia. This is not written as a blanket nationality-only rule.
+
+Do not use another person, company, wallet, or location to bypass eligibility or sanctions screening.
+
+## Age eligibility
+
+XRPL Commons' published Privacy Policy states that persons under 18 may not use XRPL Commons Services. This requirement must be satisfied directly. Do not attempt to bypass age screening through another person or account.
 
 ## Full-time commitment
 
@@ -164,4 +191,4 @@ PLACEHOLDER — the current public Cohort 9 eligibility page states that at leas
 
 ## Closing application statement
 
-CogniPrint is already building the evidence layer; Aquarium would be used to make that evidence independently verifiable through XRPL without turning the project into a token product or exposing sensitive content. The goal for the cohort is a small, rigorous, reusable trust primitive that can move from Testnet demonstration to production readiness with clear privacy and failure boundaries.
+CogniPrint is already building the evidence layer, and its XRPL Testnet integrity loop now works end to end. Aquarium would be used to turn that proof into robust, reusable infrastructure: self-hosted integration, second-party verification, interoperability vectors, threat modeling, and a production-readiness path that preserves privacy and explicit failure boundaries.
