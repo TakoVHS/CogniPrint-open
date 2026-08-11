@@ -1,6 +1,6 @@
 # XRPL Aquarium Cohort 9 — Submission Readiness Checklist
 
-Status: `DRAFT / NOT SUBMITTED`
+Status: `STRONG DRAFT / REAL TESTNET MVP / NOT SUBMITTED`
 
 ## Public program facts verified
 
@@ -29,10 +29,28 @@ Status: `DRAFT / NOT SUBMITTED`
 - [x] Prototype unit checks written
 - [x] Independent read-only ledger receipt verifier implemented
 - [x] Validated/mutation/ambiguous-memo verifier checks implemented
-- [ ] XRPL Testnet submit transport implemented
-- [ ] XRPL Testnet transaction validated
-- [ ] Real transaction hash and validated receipt captured
-- [ ] End-to-end demo recorded
+- [x] XRPL Testnet submit transport implemented
+- [x] XRPL Testnet transaction validated by the live runner
+- [x] Real transaction hash and sanitized public receipt captured
+- [x] End-to-end technical demo flow completed
+- [ ] 2–3 minute polished demo recording produced
+
+Real Testnet transaction:
+
+```text
+E6E716789B416612A96221A4F51D6CA3B165E16E4777C2516D434184E9B93A21
+```
+
+Observed acceptance sequence:
+
+```text
+VALIDATED=true
+TRANSACTION_RESULT=tesSUCCESS
+INDEPENDENT_LEDGER_LOOKUP=PASS
+VALIDATED_MATCH=PASS
+MUTATION=FAIL_CLOSED_PASS
+XRPL_REAL_TESTNET_GATE=PASS
+```
 
 ## Applicant facts that must be confirmed before submission
 
@@ -74,10 +92,13 @@ Prepare only evidence that is already public or can be safely shared:
 - [x] XRPL integration architecture draft
 - [x] cohort milestones
 - [x] read-only independent XRPL receipt verifier
+- [x] real XRPL Testnet transaction hash
+- [x] sanitized Testnet public receipt
+- [x] mutation-detection evidence
 - [ ] concise founder bio
 - [ ] team slide / team paragraph if form requests it
-- [ ] 60–90 second founder pitch
-- [ ] 2–3 minute product demo
+- [ ] 60–90 second founder pitch recording
+- [ ] 2–3 minute product demo recording
 - [ ] screenshots of Evidence Capsule / self-hosted workflow
 - [ ] exact current traction metrics, if any
 - [ ] exact prior grants/funding disclosure, if requested
@@ -98,17 +119,18 @@ Avoid leading with:
 
 ## Interview proof points
 
-A strong interview should be able to demonstrate:
+A strong interview can now demonstrate:
 
 1. a real CogniPrint Evidence Capsule or equivalent evidence manifest;
 2. deterministic local commitment generation;
-3. mutation -> commitment mismatch;
-4. the exact small payload intended for XRPL Memo transport;
-5. why raw evidence stays off-chain;
+3. actual XRPL Testnet submission;
+4. the real public transaction hash;
+5. `validated=true` and `meta.TransactionResult=tesSUCCESS` as the finality gate;
 6. read-only lookup of the transaction by hash;
-7. `validated=true` and `meta.TransactionResult=tesSUCCESS` as the finality gate;
-8. independent recomputation of the local manifest commitment;
-9. what XRPL does *not* prove.
+7. independent recomputation of the local manifest commitment;
+8. mutation -> fail-closed mismatch;
+9. why raw evidence stays off-chain;
+10. what XRPL does *not* prove.
 
 ## Hard submission gate
 
