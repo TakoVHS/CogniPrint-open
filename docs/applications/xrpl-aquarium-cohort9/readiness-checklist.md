@@ -1,6 +1,6 @@
 # XRPL Aquarium Cohort 9 — Submission Readiness Checklist
 
-Status: `STRONG DRAFT / REAL TESTNET MVP / NOT SUBMITTED`
+Status: `TECHNICALLY_READY / EXTERNAL_ELIGIBILITY_GATE_PENDING / NOT SUBMITTED`
 
 ## Public program facts verified
 
@@ -15,6 +15,7 @@ Status: `STRONG DRAFT / REAL TESTNET MVP / NOT SUBMITTED`
 - Relevant thesis areas include Infrastructure / Security and Agentic Web
 - Selected candidates proceed through interview and contract validation
 - Startups become eligible for milestone-based grants after the program; the public cohort page does not state a guaranteed grant amount
+- Program language: English
 
 ## Project fit
 
@@ -23,27 +24,25 @@ Status: `STRONG DRAFT / REAL TESTNET MVP / NOT SUBMITTED`
 - [x] Infrastructure / Security positioning
 - [x] Privacy-preserving provenance use case
 - [x] Clear reason for XRPL beyond token issuance
-- [x] 9-week technical milestone plan drafted
 - [x] Claims firewall drafted
-- [x] Network-free deterministic anchor prototype added on isolated application branch
-- [x] Prototype unit checks written
-- [x] Independent read-only ledger receipt verifier implemented
-- [x] Validated/mutation/ambiguous-memo verifier checks implemented
-- [x] XRPL Testnet submit transport implemented
-- [x] XRPL Testnet transaction validated by the live runner
-- [x] Real transaction hash and sanitized public receipt captured
-- [x] End-to-end technical demo flow completed
-- [ ] 2–3 minute polished demo recording produced
+- [x] Deterministic anchor prototype
+- [x] Independent read-only ledger receipt verifier
+- [x] Validated/mutation/ambiguous-memo verifier checks
+- [x] XRPL Testnet submit transport
+- [x] Real XRPL Testnet transaction validated
+- [x] Real transaction hash captured
+- [x] Independent ledger re-fetch by hash
+- [x] `VALIDATED_MATCH` demonstrated
+- [x] Mutation fails closed
+- [x] Sanitized public Testnet receipt committed
+- [x] Revised post-Testnet 9-week milestone plan
+- [ ] Polished 2-minute screen-recorded demo captured
 
-Real Testnet transaction:
-
-```text
-E6E716789B416612A96221A4F51D6CA3B165E16E4777C2516D434184E9B93A21
-```
-
-Observed acceptance sequence:
+## Real Testnet evidence
 
 ```text
+REAL_TESTNET_TX=E6E716789B416612A96221A4F51D6CA3B165E16E4777C2516D434184E9B93A21
+MANIFEST_COMMITMENT=238b9c52793119d1e530b522ee853c23317ac2271cd9e12df9a1b98076352d03
 VALIDATED=true
 TRANSACTION_RESULT=tesSUCCESS
 INDEPENDENT_LEDGER_LOOKUP=PASS
@@ -56,6 +55,7 @@ XRPL_REAL_TESTNET_GATE=PASS
 
 Do not commit sensitive personal records to this repository.
 
+- [ ] Applicant satisfies XRPL Commons' published 18+ service requirement
 - [ ] Legal name as used for application/contract
 - [ ] Current country of residence and current location
 - [ ] Full-time-founder requirement satisfied
@@ -67,47 +67,51 @@ Do not commit sensitive personal records to this repository.
 
 ## Legal / eligibility gate
 
-The current public Cohort 9 page says the online program welcomes founders from around the world, with a particular focus on EMEA. XRPL Commons' public Privacy Policy states that it may collect nationality and address and process personal data to comply with applicable legal obligations.
+XRPL Commons' published Terms state that access may be restricted where a person is a sanctions target or is located, organized, or resident in a listed sanctioned country/territory. The published list includes Russia. The wording is not a blanket nationality-only prohibition, so citizenship and residence must not be conflated.
 
-The publicly indexed pages reviewed for this application do not provide enough evidence to make a blanket nationality-based eligibility conclusion for the later contract or grant stage. Therefore eligibility must not be guessed either positively or negatively.
+XRPL Commons' published Privacy Policy states that persons under 18 may not use XRPL Commons Services.
 
-Before relying on admission or future grant/payment eligibility:
+Before submission or reliance on a future grant/payment route:
 
-- answer nationality, residence and location questions exactly and truthfully;
+- satisfy the published 18+ service requirement directly;
+- answer nationality, residence, location, organization and sanctions questions exactly and truthfully;
 - do not imply incorporation or residence that does not exist;
-- do not submit through another person to bypass compliance screening;
-- obtain written clarification from XRPL Commons if citizenship, residence, payment route or sanctions compliance could affect contracting or grant disbursement;
-- preserve the written answer with the private application records, not in the public repository.
+- do not submit through another person, company, wallet, or location to bypass compliance or age screening;
+- obtain written clarification from XRPL Commons if citizenship, residence, contracting, payment route, or sanctions compliance creates uncertainty;
+- preserve any written eligibility response with private application records, not in the public repository.
 
 This checklist is not legal advice and does not claim eligibility approval.
 
 ## Application evidence pack
 
-Prepare only evidence that is already public or can be safely shared:
-
 - [x] GitHub repository
 - [x] project website
 - [x] current release / README
 - [x] clear scientific non-claims
-- [x] XRPL integration architecture draft
-- [x] cohort milestones
+- [x] XRPL integration architecture
+- [x] working XRPL Testnet transaction
+- [x] public Testnet receipt
 - [x] read-only independent XRPL receipt verifier
-- [x] real XRPL Testnet transaction hash
-- [x] sanitized Testnet public receipt
-- [x] mutation-detection evidence
-- [ ] concise founder bio
-- [ ] team slide / team paragraph if form requests it
-- [ ] 60–90 second founder pitch recording
-- [ ] 2–3 minute product demo recording
-- [ ] screenshots of Evidence Capsule / self-hosted workflow
-- [ ] exact current traction metrics, if any
-- [ ] exact prior grants/funding disclosure, if requested
+- [x] mutation-detection proof
+- [x] revised cohort milestones
+- [x] answer bank updated to working-Testnet positioning
+- [ ] concise founder bio — verified applicant facts only
+- [ ] exact team paragraph — verified applicant facts only
+- [ ] exact traction/customer numbers, if any
+- [ ] exact prior funding disclosure, if requested
+- [ ] legal entity / incorporation answer
+- [ ] polished screen-recorded demo asset
+- [ ] final live-Typeform field mapping
 
 ## Recommended application framing
 
 Lead with:
 
-**“Verifiable evidence infrastructure for synthetic language, with privacy-preserving XRPL commitments.”**
+**“Verifiable evidence infrastructure for synthetic language, with a working privacy-preserving XRPL Testnet integrity layer.”**
+
+Core proof sentence:
+
+**“CogniPrint already anchors a public-safe evidence-manifest commitment to XRPL Testnet, independently re-fetches the validated transaction by hash, recomputes the local commitment, returns `VALIDATED_MATCH` for the original manifest, and fails closed after mutation.”**
 
 Avoid leading with:
 
@@ -115,30 +119,33 @@ Avoid leading with:
 - “blockchain for AI” without a concrete trust primitive;
 - tokenization;
 - legal/forensic claims;
-- unique-model or author identification.
+- unique-model or author identification;
+- unsupported customer/traction claims.
 
 ## Interview proof points
 
-A strong interview can now demonstrate:
+A strong interview/demo should demonstrate:
 
-1. a real CogniPrint Evidence Capsule or equivalent evidence manifest;
+1. a real CogniPrint public-safe evidence manifest;
 2. deterministic local commitment generation;
-3. actual XRPL Testnet submission;
-4. the real public transaction hash;
-5. `validated=true` and `meta.TransactionResult=tesSUCCESS` as the finality gate;
-6. read-only lookup of the transaction by hash;
-7. independent recomputation of the local manifest commitment;
-8. mutation -> fail-closed mismatch;
-9. why raw evidence stays off-chain;
-10. what XRPL does *not* prove.
+3. the real Testnet transaction hash;
+4. `validated=true` and `tesSUCCESS`;
+5. read-only independent lookup of the transaction by hash;
+6. independent recomputation of the local manifest commitment;
+7. `VALIDATED_MATCH`;
+8. one visible manifest mutation;
+9. `MUTATION=FAIL_CLOSED_PASS`;
+10. why raw source evidence stays off-chain;
+11. what XRPL does *not* prove.
 
 ## Hard submission gate
 
 Do not submit until all of the following are true:
 
+- applicant satisfies the published age requirement;
 - applicant identity/team fields are correct;
 - full-time-founder requirement is truthfully satisfiable;
-- legal/residency eligibility is not being guessed or bypassed;
+- legal/residency/sanctions eligibility is not being guessed or bypassed;
 - all traction/funding statements are evidenced;
 - no future capability is presented as already deployed;
-- final form answers have been reviewed against the claims firewall.
+- live Typeform answers are mapped and reviewed against the claims firewall.
