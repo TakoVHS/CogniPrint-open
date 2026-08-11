@@ -55,7 +55,6 @@ XRPL_REAL_TESTNET_GATE=PASS
 
 Do not commit sensitive personal records to this repository.
 
-- [ ] Applicant satisfies XRPL Commons' published 18+ service requirement
 - [ ] Legal name as used for application/contract
 - [ ] Current country of residence and current location
 - [ ] Full-time-founder requirement satisfied
@@ -69,14 +68,11 @@ Do not commit sensitive personal records to this repository.
 
 XRPL Commons' published Terms state that access may be restricted where a person is a sanctions target or is located, organized, or resident in a listed sanctioned country/territory. The published list includes Russia. The wording is not a blanket nationality-only prohibition, so citizenship and residence must not be conflated.
 
-XRPL Commons' published Privacy Policy states that persons under 18 may not use XRPL Commons Services.
-
 Before submission or reliance on a future grant/payment route:
 
-- satisfy the published 18+ service requirement directly;
 - answer nationality, residence, location, organization and sanctions questions exactly and truthfully;
 - do not imply incorporation or residence that does not exist;
-- do not submit through another person, company, wallet, or location to bypass compliance or age screening;
+- do not submit through another person, company, wallet, or location to bypass compliance screening;
 - obtain written clarification from XRPL Commons if citizenship, residence, contracting, payment route, or sanctions compliance creates uncertainty;
 - preserve any written eligibility response with private application records, not in the public repository.
 
@@ -142,7 +138,6 @@ A strong interview/demo should demonstrate:
 
 Do not submit until all of the following are true:
 
-- applicant satisfies the published age requirement;
 - applicant identity/team fields are correct;
 - full-time-founder requirement is truthfully satisfiable;
 - legal/residency/sanctions eligibility is not being guessed or bypassed;
