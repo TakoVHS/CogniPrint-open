@@ -1,0 +1,31 @@
+name: Bind cogniprint.org to reviewer Pages
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/bind-cogniprint-domain.yml'
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  bind-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Pages custom domain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o response.txt -w '%{http_code}' \
+            -X PUT \
+            -H 'Accept: application/vnd.github+json' \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'X-GitHub-Api-Version: 2026-03-10' \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/pages \
+            -d '{"cname":"cogniprint.org","https_enforced":true,"source":{"branch":"gh-pages","path":"/"}}')
+          cat response.txt || true
+          echo "HTTP_STATUS=${code}"
+          test "$code" = "204"
