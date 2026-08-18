@@ -87,17 +87,9 @@ The workplan is structured so each month produces a reviewable deliverable packa
 
 Payment status is determined by OTF/host under the eventual contract, not by this repository.
 
-## Contracting information confirmed by OTF correspondence
+## Private applicant-specific compliance record
 
-OTF staff stated on August 18, 2026 that if the project is selected, contracting will require:
-
-- applicant address;
-- banking details;
-- W-8 form supplied by OTF.
-
-OTF also stated that Russian citizenship by itself does not prevent ICRP funding/contracting if selected.
-
-These applicant-specific confirmations are correspondence records, not an award.
+A written applicant-specific eligibility/contracting clarification from OTF is preserved privately by the applicant. The correspondence itself and any personal compliance details are intentionally not reproduced in this public repository.
 
 ## Sensitive-data rule
 
@@ -116,8 +108,8 @@ Public readiness files may record only completion state, for example:
 ```text
 ADDRESS_READY=YES/NO
 BANKING_ROUTE_READY=YES/NO
-W8_RECEIVED_FROM_OTF=YES/NO
-W8_COMPLETED=YES/NO
+TAX_FORM_REQUEST_RECEIVED=YES/NO
+TAX_FORM_COMPLETED=YES/NO
 HOST_AGREEMENT_READY=YES/NO
 ```
 
@@ -131,6 +123,7 @@ HOST_AGREEMENT_READY=YES/NO
 - [x] Conservative optional equipment/travel envelope documented.
 - [x] Existing-vs-funded work boundary drafted.
 - [x] Sensitive-contracting-data exclusion rule established.
+- [x] Applicant-specific OTF compliance clarification preserved privately.
 - [ ] Stage 2 invitation received.
 
 ### After Stage 2 invitation, before proposal submission
@@ -146,9 +139,9 @@ HOST_AGREEMENT_READY=YES/NO
 ### If selected for legal/financial review
 
 - [ ] Receive OTF contracting instructions.
-- [ ] Provide address through OTF's authorized private channel.
-- [ ] Provide banking information through OTF's authorized private channel.
-- [ ] Receive and complete the OTF-provided W-8 form.
+- [ ] Provide requested address information through OTF's authorized private channel.
+- [ ] Provide requested banking information through OTF's authorized private channel.
+- [ ] Receive and complete any OTF-required tax/compliance forms through the appropriate private channel.
 - [ ] Complete sanctions/debarment/compliance checks requested by OTF.
 - [ ] Review host obligations and monthly oversight arrangement.
 - [ ] Review contract scope, deliverables, reporting and payment terms.
