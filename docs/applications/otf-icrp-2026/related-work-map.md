@@ -30,7 +30,7 @@ X-Guard focuses on multilingual safety moderation and highlights the limitations
 
 Reference: https://aclanthology.org/2025.llmsec-1.6/
 
-### Fatehkia, Altinisik & Sencar (EACL 2026) — FanarGuard
+### Fatehkia, Altinisik & Sencar (EACL 2026) — FanarGuard: A Culturally-Aware Moderation Filter for Arabic Language Models
 
 FanarGuard evaluates safety and cultural alignment in Arabic/English and demonstrates that moderation evaluation can require culturally grounded benchmarks rather than generic English-centric safety criteria.
 
@@ -40,7 +40,7 @@ FanarGuard evaluates safety and cultural alignment in Arabic/English and demonst
 
 Reference: https://aclanthology.org/2026.eacl-long.368/
 
-### Tasawong et al. (Findings of ACL 2026) — SEA-SafeguardBench
+### Tasawong et al. (Findings of ACL 2026) — SEA-SafeguardBench: Culturally Grounded Safety Benchmark for Southeast Asian Languages
 
 SEA-SafeguardBench introduces a human-verified safety benchmark for Southeast Asian languages and reports that even strong models/guardrails remain challenged by locally grounded safety scenarios.
 
@@ -52,7 +52,7 @@ Reference: https://aclanthology.org/2026.findings-acl.194/
 
 ## B. Political behavior and language dependence in LLMs
 
-### Lim & Röttger (Findings of EACL 2026) — Bias in the East, Bias in the West
+### Lim & Röttger (Findings of EACL 2026) — Bias in the East, Bias in the West: A Bilingual Analysis of LLM Political Bias on U.S.- and China-Related Issues
 
 This bilingual study measures political bias on U.S.- and China-related issues and finds that prompt language and model origin systematically affect outputs, with strong language effects in some China-related topics.
 
@@ -62,7 +62,7 @@ This bilingual study measures political bias on U.S.- and China-related issues a
 
 Reference: https://aclanthology.org/2026.findings-eacl.122/
 
-### Helwe, Balalau & Ceolin (Findings of ACL 2025) — Navigating the Political Compass
+### Helwe, Balalau & Ceolin (Findings of ACL 2025) — Navigating the Political Compass: Evaluating Multilingual LLMs across Languages and Nationalities
 
 This work evaluates multilingual LLM political bias across languages/nationalities and reports that prompt language can materially influence displayed political orientation.
 
@@ -70,7 +70,7 @@ This work evaluates multilingual LLM political bias across languages/nationaliti
 
 Reference: https://aclanthology.org/2025.findings-acl.883/
 
-### Gurgurov et al. (Findings of IJCNLP-AACL 2025) — Multilingual Political Views of Large Language Models
+### Gurgurov et al. (Findings of IJCNLP-AACL 2025) — Multilingual Political Views of Large Language Models: Identification and Steering
 
 This work studies political orientation across multiple languages and model families, including paraphrase robustness and steering.
 
@@ -82,7 +82,7 @@ Reference: https://aclanthology.org/2025.findings-ijcnlp.17/
 
 ## C. Summarization and representation effects
 
-### Huang, Maab & Yamagishi (ACL 2026) — When Bigger Isn't Better: Political Bias in Multi-News Summarisation
+### Huang, Maab & Yamagishi (ACL 2026) — When Bigger Isn’t Better: A Comprehensive Fairness Evaluation of Political Bias in Multi-News Summarisation
 
 This study evaluates fairness and political representation in multi-document news summarization across multiple models and metrics.
 
@@ -94,7 +94,7 @@ Reference: https://aclanthology.org/2026.acl-long.894/
 
 ## D. Directly related censorship/refusal research
 
-### Noels et al. (2025 preprint) — What Large Language Models Do Not Talk About
+### Noels et al. (2025 preprint) — What Large Language Models Do Not Talk About: An Empirical Study of Moderation and Censorship Practices
 
 This empirical preprint distinguishes hard censorship (refusal/denial) from soft censorship (selective omission/downplaying) across political topics, models from multiple regions, and six UN languages.
 
