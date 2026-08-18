@@ -34,11 +34,9 @@ Primary sources:
 - https://docs.opentech.fund/otf-application-guidebook/our-funds-and-fellowships/information-controls-fellowship-program-icfp
 - https://docs.opentech.fund/otf-application-guidebook/appendix-iii-evaluation-worksheet
 
-## Applicant-specific eligibility clarification already received
+## Applicant-specific compliance record
 
-OTF staff correspondence on August 18, 2026 clarified that Russian citizenship by itself does not prevent the applicant from receiving ICRP funding or entering the applicable contracting arrangement if selected. OTF also stated that monthly stipends are paid subject to satisfactory progress, and that address, banking details, and an OTF-provided W-8 form would be required at contracting rather than during the application stage.
-
-Sensitive contracting information must **not** be stored in this public repository.
+A written applicant-specific eligibility/contracting clarification from OTF is preserved privately by the applicant. It is intentionally **not reproduced in this public repository**. Sensitive identity, residency, banking, tax and contracting records must remain in private channels and may be provided to OTF only when formally requested.
 
 ## Stage 2 package state
 
