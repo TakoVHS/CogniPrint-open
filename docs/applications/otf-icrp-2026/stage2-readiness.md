@@ -59,7 +59,25 @@ The readiness package consists of:
 4. `risk-ethics-security.md` — human-rights, privacy, dual-use, data-security and claim-safety controls;
 5. `host-organization-shortlist.md` — candidate-host assessment with no implied affiliation;
 6. `budget-and-contracting.md` — stipend, optional direct-cost envelope and contracting checklist;
-7. `prior-vs-funded-work.md` — strict separation between existing CogniPrint assets and proposed funded work.
+7. `prior-vs-funded-work.md` — strict separation between existing CogniPrint assets and proposed funded work;
+8. `proposal-answer-bank.md` — pre-drafted responses mapped to OTF's published Applied Research proposal criteria, pending exact Stage 2 portal fields/limits;
+9. `host-outreach-draft.md` — host-fit email and call packet, explicitly disabled from automatic sending;
+10. `related-work-map.md` — literature and internet-freedom measurement map defining the project's bounded research gap without first-of-kind claims.
+
+## Readiness dimensions covered
+
+The package now covers:
+
+- research problem, beneficiaries and internet-freedom relevance;
+- methodology and baseline-first empirical design;
+- 12-month full-time activity/deliverable plan;
+- measurable monitoring, evaluation and learning criteria;
+- ethics, privacy, security and dual-use controls;
+- host requirements, candidate-fit reasoning and outreach preparation;
+- budget narrative and private contracting-data boundary;
+- prior-work/additionality and overlapping-funding controls;
+- proposal answer bank for rapid portal adaptation;
+- related-work awareness and explicit differentiation from prior multilingual moderation/bias/censorship measurement research.
 
 ## Budget position preserved from the prepared application package
 
@@ -98,6 +116,7 @@ A Stage 2 submission must not be sent until all of the following are true:
 - OTF has actually invited application `#22901` to proposal;
 - the exact current portal questions and field limits have been captured;
 - reviewer feedback from the determination, if any, has been incorporated explicitly;
+- the related-work map has been re-checked close to submission and any host/reviewer-recommended literature incorporated;
 - a proposed host and named adviser have either confirmed willingness or are accurately described as pending, according to OTF instructions;
 - every budget line maps to a stated activity or deliverable;
 - the month-by-month workplan remains feasible as full-time work;
