@@ -1,0 +1,12 @@
+{
+  "schema": "cogniprint-evidence-manifest-v0.1",
+  "artifact_id": "xrpl-aquarium-demo-001",
+  "artifact_kind": "public-demo-evidence-capsule",
+  "purpose": "Demonstrate privacy-preserving XRPL integrity anchoring for a CogniPrint evidence manifest.",
+  "privacy_boundary": "raw_text_and_sensitive_evidence_remain_off_chain",
+  "claim_boundary": "integrity_and_timestamp_anchor_only",
+  "evidence_state": {
+    "scientific_readiness": "unchanged",
+    "legal_forensic_provenance_claim": false
+  }
+}
