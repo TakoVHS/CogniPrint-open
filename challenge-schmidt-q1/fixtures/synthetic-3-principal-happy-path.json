@@ -1,0 +1,89 @@
+{
+  "schema": "cogniprint-multi-principal-evidence-v0.1",
+  "research_status": "DEVELOPMENT_ONLY_PREAWARD",
+  "case_id": "schmidt-q1-synthetic-3p-001",
+  "principals": [
+    {
+      "principal_id": "principal-a",
+      "role": "originating investigator"
+    },
+    {
+      "principal_id": "principal-b",
+      "role": "analysis principal"
+    },
+    {
+      "principal_id": "principal-c",
+      "role": "independent verification principal"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "e000",
+      "sequence": 0,
+      "timestamp": "2027-01-15T09:00:00Z",
+      "principal_id": "principal-a",
+      "agent_id": "agent-a1",
+      "event_type": "DELEGATION",
+      "evidence_class": "ATTESTED",
+      "parent_event_ids": [],
+      "authorization_scope": ["research.summary"],
+      "target_principal_id": "principal-b",
+      "payload_commitment_sha256": "8bce4fd3e431dec577eae13d8a6ae3ff0d47f23851a0da5e3ae042668f02c8ba",
+      "integrity_sha256": "cdeac372c5372accd8f2d971307c26a7e6fe286bdbbd7c9784a7a71f9de22881"
+    },
+    {
+      "event_id": "e001",
+      "sequence": 1,
+      "timestamp": "2027-01-15T09:01:00Z",
+      "principal_id": "principal-b",
+      "agent_id": "agent-b1",
+      "event_type": "ACTION",
+      "evidence_class": "OBSERVED",
+      "parent_event_ids": ["e000"],
+      "authorization_scope": ["research.summary"],
+      "payload_commitment_sha256": "317573eadc2f7d32344f720f3352f3ad4caa428bcccc1dc58f4ec39f7938e520",
+      "integrity_sha256": "48b05f4d514bf20bd3c4cc089ea52d2836da3090aa91ac9cb69766e7ab8557fd"
+    },
+    {
+      "event_id": "e002",
+      "sequence": 2,
+      "timestamp": "2027-01-15T09:02:00Z",
+      "principal_id": "principal-b",
+      "agent_id": "agent-b1",
+      "event_type": "DELEGATION",
+      "evidence_class": "ATTESTED",
+      "parent_event_ids": ["e001"],
+      "authorization_scope": ["research.verify"],
+      "target_principal_id": "principal-c",
+      "payload_commitment_sha256": "ab0a006804cea77849ece2d87b77adb51d4de0dff87df6c9235d150bf4e24ca7",
+      "integrity_sha256": "a3ef486f77e1f63ab53c7ec62598a3ece424f4830bb935afce6d22246b6bde06"
+    },
+    {
+      "event_id": "e003",
+      "sequence": 3,
+      "timestamp": "2027-01-15T09:03:00Z",
+      "principal_id": "principal-c",
+      "agent_id": "agent-c1",
+      "event_type": "TOOL_CALL",
+      "evidence_class": "OBSERVED",
+      "parent_event_ids": ["e002"],
+      "authorization_scope": ["research.verify"],
+      "payload_commitment_sha256": "51a1997e019ace62da9f02b55033a165fb73bc1df4b2a6167bdb6660d3567789",
+      "integrity_sha256": "f9ad18b40555751c9043b4bdd4a179af6940d9dd814da5a86189ebe9720b7617"
+    },
+    {
+      "event_id": "e004",
+      "sequence": 4,
+      "timestamp": "2027-01-15T09:04:00Z",
+      "principal_id": "principal-c",
+      "agent_id": "agent-c1",
+      "event_type": "MESSAGE",
+      "evidence_class": "OBSERVED",
+      "parent_event_ids": ["e003"],
+      "authorization_scope": ["research.verify"],
+      "payload_commitment_sha256": "64c35f21cd3032282446fc57772da5a6854b065908544e494fab10f36c517874",
+      "integrity_sha256": "6534fb8e7a0d50d4d736ce064fa67332275a4554f360e5e82567c6d83ffe4f6e"
+    }
+  ],
+  "bundle_integrity_sha256": "0febe36bf356e97f54e2b1496e5e83951d0a7da9da21303e888187c1acc1e917"
+}
