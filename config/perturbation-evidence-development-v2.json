@@ -1,0 +1,123 @@
+{
+  "protocol_version": "0.2.0",
+  "description": "Minimal viable protocol for deterministic perturbation testing of cognitive fingerprints. Does not claim to prove stability; only collects raw observations.",
+  "feature_version": "cognitive-fingerprint-v2.0",
+  "feature_contract": {
+    "module": "cogniprint.fingerprint",
+    "version_constant": "FINGERPRINT_VERSION",
+    "feature_order_constant": "FEATURE_NAMES",
+    "feature_names": [
+      "mean_word_length",
+      "type_token_ratio",
+      "char_entropy",
+      "word_entropy",
+      "punctuation_ratio",
+      "uppercase_ratio",
+      "mean_syllables_per_word",
+      "char_bigram_uniqueness",
+      "simpson_diversity",
+      "digit_token_ratio",
+      "mean_sentence_length_words",
+      "flesch_reading_ease"
+    ],
+    "stored_fingerprint_space": "raw_feature_dict",
+    "comparison_vector_space": "normalized_feature_dict_fixed_bounds_v2",
+    "distance_metrics": [
+      "cosine_similarity",
+      "euclidean_distance"
+    ]
+  },
+  "random_seed": 20260422,
+  "source_manifest": "workspace/experiments/stability_test/source_manifest.csv",
+  "source_manifest_schema": {
+    "required_columns": [
+      "sample_id",
+      "lineage_group",
+      "language",
+      "domain",
+      "task",
+      "text"
+    ],
+    "sample_id_unique": true,
+    "raw_text_location": "workspace_only_not_trial_artifacts",
+    "text_hash_contract": {
+      "algorithm": "sha256",
+      "input": "manifest_text_after_csv_parse",
+      "encoding": "utf-8",
+      "newline_normalization": "LF",
+      "unicode_normalization": "none"
+    }
+  },
+  "perturbation_families": [
+    {
+      "name": "identity",
+      "description": "Unchanged-source control for exact pipeline identity checks.",
+      "control": true,
+      "budgets": [
+        0
+      ],
+      "required_per_sample": true,
+      "trials_per_budget": 1
+    },
+    {
+      "name": "synonym_replacement",
+      "description": "Replace words with synonyms from a pre-defined frozen map.",
+      "frozen_synonym_map": "workspace/experiments/stability_test/synonym_map.json",
+      "budgets": [
+        1,
+        2,
+        3
+      ],
+      "trials_per_budget": 5,
+      "synonym_map_schema": "lowercase_source_to_nonempty_string_list",
+      "implementation_contract": {
+        "tokenizer": "cogniprint.fingerprint.WORD_RE.finditer",
+        "token_index_space": "all_WORD_RE_matches_zero_based",
+        "eligible_token": "token_lowercase_key_exists_in_synonym_map",
+        "effective_budget": "min(requested_budget, eligible_token_count)",
+        "selected_indices": "sorted_random_sample_without_replacement_using_trial_seed",
+        "candidate_order": "sorted_unique_unicode_codepoint_order",
+        "candidate_selection": "sha256(trial_seed|token_index|replacement)_first_8_bytes_big_endian_mod_candidate_count",
+        "case_policy": "replacement_as_declared_in_map",
+        "span_policy": "replace_selected_match_spans_right_to_left"
+      }
+    }
+  ],
+  "trials_per_budget": 5,
+  "trial_artifact_contract": {
+    "canonical_filename": "{sample_id}__{family-hyphen}__b{budget:02d}__t{trial_index:03d}.json",
+    "raw_text_forbidden": true,
+    "required_recomputations": [
+      "delta_fingerprint",
+      "cosine_similarity",
+      "euclidean_distance",
+      "trial_seed"
+    ],
+    "complete_matrix_required": true,
+    "seed_derivation": {
+      "algorithm": "sha256",
+      "material": "{global_seed}|{sample_id}|{family}|{budget}|{trial_index}",
+      "integer": "first_8_digest_bytes_big_endian_mod_2**31"
+    },
+    "numeric_tolerances": {
+      "delta_absolute": 1e-06,
+      "cosine_absolute": 1e-06,
+      "euclidean_absolute": 1e-06,
+      "identity_exact": true
+    }
+  },
+  "output": {
+    "raw_trials_dir": "workspace/experiments/stability_test/raw_trials",
+    "aggregate_stats": "workspace/experiments/stability_test/aggregate_stats.json",
+    "report": {
+      "fail_closed": true,
+      "allowed_decisions": [
+        "PASS",
+        "MIXED",
+        "FAIL",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "predeclared_rules": "workspace/experiments/stability_test/decision_rules.json"
+    }
+  }
+}
