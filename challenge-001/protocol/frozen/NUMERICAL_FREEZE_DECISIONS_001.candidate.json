@@ -1,0 +1,345 @@
+{
+  "schema": "cogniprint-challenge-001-freeze-candidate-001",
+  "status": "CANDIDATE_HOLD",
+  "challenge_id": "challenge-001",
+  "canonical_research_freeze_unchanged": true,
+  "scientific_state": {
+    "readiness": "descriptive_only",
+    "research_mode": "PROOF_MODE",
+    "research_freeze": "PRE-FREEZE",
+    "external_registration": "NOT_SUBMITTED",
+    "stage_b_status": "NOT_AUTHORISED_TO_START",
+    "scientific_claim_evidence": false
+  },
+  "evidence_basis": {
+    "repository_base_commit": "d154b8610b182fe9110bf52fcadf02914498d356",
+    "stage_a_source_sha256": "c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4",
+    "stage_a_selection_manifest_sha256": "30685ed738c3f1f1074a1f89a67a504f0c9d0607b958894e385172623591f6cb",
+    "stage_a_selected_features_sha256": "13faba4a3efaa1c7f88761722f146b7eb654fd08e4b833f2d7768a0ff45646ca",
+    "stage_a_records": 500,
+    "stage_a_train_test_records": [351, 149],
+    "stage_a_train_test_lineage_groups": [336, 145],
+    "stage_a_lineage_overlap": 0,
+    "stage_a_metrics": {
+      "chance_accuracy": 0.2,
+      "majority": {"accuracy": 0.161074, "balanced_accuracy": 0.2, "macro_f1": 0.055491},
+      "length_only": {"accuracy": 0.295302, "balanced_accuracy": 0.302231, "macro_f1": 0.247431},
+      "cogniprint_12d": {"accuracy": 0.536913, "balanced_accuracy": 0.542001, "macro_f1": 0.535883},
+      "character_3_5": {"accuracy": 0.583893, "balanced_accuracy": 0.590475, "macro_f1": 0.578782},
+      "word_1_2": {"accuracy": 0.597315, "balanced_accuracy": 0.601996, "macro_f1": 0.59522}
+    },
+    "stage_a_interpretation": "Both fixed conventional n-gram baselines outperformed CogniPrint 12D on Pilot A; the Stage B hypothesis must allow a negative 12D result."
+  },
+  "scope": {
+    "basis": "POLICY_NARROWED_BY_STAGE_A",
+    "language": ["en"],
+    "domains": ["abstracts", "news", "reviews", "encyclopedic_expository"],
+    "task_strata": [
+      "factual_expository",
+      "analytical_argumentative",
+      "summarisation",
+      "instructional",
+      "creative_non_poetic_prose",
+      "dialogue_assistant_response"
+    ],
+    "length_strata_words": {
+      "short": [128, 255],
+      "medium": [256, 511],
+      "long": [512, 900]
+    },
+    "primary_transformation_track": "T0_CLEAN",
+    "secondary_transformation_track": "T1_LIGHT_HUMAN_EDIT",
+    "out_of_scope_tracks": ["T2_SUBSTANTIAL_HUMAN_REWRITE", "T3_AI_PARAPHRASE", "T4_TRANSLATION_ROUND_TRIP", "T5_CROSS_MODEL_REWRITE", "T6_MIXED_CHAIN"]
+  },
+  "source_registry_candidate": {
+    "basis": "IMMUTABLE_OPEN_WEIGHT_REVISIONS_PLUS_VERIFIED_HUMAN_CONTROL",
+    "known_classes": [
+      {
+        "class_id": "human_pre2020_verified",
+        "type": "human_control",
+        "definition": "English prose first published from 2010-01-01 through 2019-12-31, with documented human authorship/provenance, one document-author lineage per sample, and no known machine-generation exposure.",
+        "exact_source_manifest": null,
+        "verification_status": "UNRESOLVED_BLOCKER"
+      },
+      {
+        "class_id": "llama_3_1_family",
+        "type": "model_family",
+        "repository": "meta-llama/Llama-3.1-8B-Instruct",
+        "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+        "license": "llama3.1",
+        "access": "gated_manual_acceptance",
+        "verification_status": "CANDIDATE_REVISION_REQUIRES_LOCAL_ACCESS_CHECK"
+      },
+      {
+        "class_id": "mistral_7b_family",
+        "type": "model_family",
+        "repository": "mistralai/Mistral-7B-Instruct-v0.3",
+        "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+        "license": "apache-2.0",
+        "access": "public",
+        "verification_status": "CANDIDATE_REVISION_REQUIRES_LOCAL_RESOLVE"
+      },
+      {
+        "class_id": "qwen_2_5_family",
+        "type": "model_family",
+        "repository": "Qwen/Qwen2.5-7B-Instruct",
+        "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+        "license": "apache-2.0",
+        "access": "public",
+        "verification_status": "CANDIDATE_REVISION_REQUIRES_LOCAL_RESOLVE"
+      }
+    ],
+    "held_out_unknown_classes": [
+      {
+        "class_id": "falcon_3_family_unknown",
+        "type": "model_family",
+        "repository": "tiiuae/Falcon3-7B-Instruct",
+        "revision": "bed191412b3197aeb74587298fc351739ca10210",
+        "license": "other",
+        "access": "public",
+        "verification_status": "CANDIDATE_REVISION_REQUIRES_LOCAL_RESOLVE_AND_LICENSE_REVIEW"
+      }
+    ],
+    "rule": "No class may be replaced because of candidate or sealed performance. An unavailable or legally unusable candidate blocks freeze and requires a timestamped pre-Stage-B candidate revision, not silent substitution."
+  },
+  "generation_protocol": {
+    "basis": "POLICY",
+    "execution": "local_transformers_from_exact_revision",
+    "quantization": "NONE",
+    "precision": "BF16_IF_SUPPORTED_ELSE_FP16_RECORDED",
+    "chat_template": "repository_pinned_official_chat_template",
+    "system_prompt": null,
+    "regimes": {
+      "deterministic": {
+        "do_sample": false,
+        "num_beams": 1
+      },
+      "sampled": {
+        "do_sample": true,
+        "temperature": 0.8,
+        "top_p": 0.95,
+        "top_k": 50
+      }
+    },
+    "sample_seed_rule": "uint32(first_8_bytes(sha256(challenge_id|prompt_id|source_class|regime|replicate_id)))",
+    "max_attempts_per_lineage": 3,
+    "raw_output_retention": "custodian_only_until_retention_review",
+    "predictor_visible_output": "blinded_text_plus_non_label_metadata_only"
+  },
+  "sample_design": {
+    "basis": "POLICY_WITH_BINOMIAL_PRECISION_JUSTIFICATION",
+    "cell_definition": "domain x task_stratum x length_stratum",
+    "domain_count": 4,
+    "task_count": 6,
+    "length_count": 3,
+    "cell_count": 72,
+    "known_classes": 4,
+    "held_out_unknown_classes": 1,
+    "known_lineages_per_cell_per_class": 6,
+    "unknown_lineages_per_cell": 3,
+    "known_partition_per_cell_per_class": {
+      "reference": 3,
+      "probability_calibration": 1,
+      "conformal_calibration": 1,
+      "sealed_test": 1
+    },
+    "counts": {
+      "per_known_class_total": 432,
+      "per_known_class_reference": 216,
+      "per_known_class_probability_calibration": 72,
+      "per_known_class_conformal_calibration": 72,
+      "per_known_class_sealed_test": 72,
+      "all_known_total": 1728,
+      "held_out_unknown_sealed_test": 216,
+      "clean_total": 1944,
+      "sealed_clean_total": 504
+    },
+    "precision_note": "With 216 held-out unknown samples, a false-known rate near 0.10 has an approximate two-sided 95% Wilson half-width near 0.04. Each known class has 72 sealed samples, making per-class estimates intentionally coarse and requiring explicit uncertainty intervals.",
+    "partition_seed": 20260730,
+    "partition_unit": "strongest_available_lineage_id",
+    "partition_algorithm": "Within each frozen cell and source class, order lineages by sha256('cogniprint-challenge-001|' + lineage_id + '|20260730'); assign the first 3 to reference, next 1 to probability calibration, next 1 to conformal calibration, and next 1 to sealed test.",
+    "prompt_overlap_rule": "A prompt_id and every derived parent/child lineage must remain within one partition role. Prompt templates may be shared across source classes only when their prompt_id partition role is identical.",
+    "secondary_t1_count": 120,
+    "secondary_t1_selection": "For every domain x task pair and each of the five source classes, select the medium-length sealed T0 lineage with the smallest sha256(sample_id) and create exactly one T1 derivative.",
+    "secondary_t1_protocol": "Human editor may correct punctuation/typos and replace at most 10% of word tokens without sentence reordering, sentence addition/removal, or meaning change; edit log and parent hash are preserved."
+  },
+  "minimum_evidence": {
+    "basis": "CONSERVATIVE_POLICY_NOT_STAGE_B_TUNED",
+    "normalization": "NFKC; Unicode whitespace collapsed; words counted by Unicode letter/digit token runs",
+    "minimum_words": 128,
+    "minimum_unicode_letters": 600,
+    "maximum_words_for_primary_scope": 900,
+    "failure_outcome": "UNKNOWN_INSUFFICIENT_EVIDENCE",
+    "metric_rule": "Insufficient samples remain in coverage/insufficient-evidence denominators and are never silently excluded."
+  },
+  "ood_unknown": {
+    "basis": "POLICY_SELECTED_BEFORE_STAGE_B",
+    "method": "class_conditional_split_conformal_on_cosine_nonconformity",
+    "nonconformity_score": "1 - cosine_similarity(sample_representation, known_class_centroid)",
+    "calibration_partition": "conformal_calibration_only",
+    "alpha": 0.05,
+    "finite_sample_p_value": "(1 + count(calibration_score >= candidate_score)) / (n_class + 1)",
+    "known_decision_rule": "Assign a known class only when minimum evidence passes and exactly one known class has conformal_p_value > 0.05; otherwise return UNKNOWN.",
+    "multiple_class_rule": "UNKNOWN_AMBIGUOUS",
+    "no_class_rule": "UNKNOWN_OOD",
+    "held_out_unknown_rule": "Any known-family assignment is a false-known event.",
+    "threshold_tuning_on_stage_b": false
+  },
+  "probability_calibration": {
+    "basis": "POLICY_SELECTED_BEFORE_STAGE_B",
+    "method": "single_temperature_softmax_over_frozen_class_scores",
+    "fit_partition": "probability_calibration_only",
+    "temperature_bounds": [0.05, 20.0],
+    "objective": "multiclass_negative_log_likelihood",
+    "ece_bins": 15,
+    "ece_binning": "equal_frequency",
+    "acceptance": {
+      "ece_max": 0.1,
+      "calibrated_nll_must_not_exceed_uncalibrated": true,
+      "calibrated_brier_must_not_exceed_uncalibrated": true,
+      "minimum_calibration_samples_per_known_class": 50
+    },
+    "failure_consequence": "Probability-like wording remains locked; expose only uncalibrated score and conformal decision metadata."
+  },
+  "baseline_protocol": {
+    "chance": "uniform known-class expectation = 0.25",
+    "majority": "majority known class estimated from reference partition only",
+    "length_only": "standardized word count with cosine nearest-centroid classifier",
+    "surface_statistics": {
+      "classifier": "standardized cosine nearest centroid",
+      "features": [
+        "word_count", "unicode_letter_count", "sentence_count", "mean_word_length",
+        "type_token_ratio", "digit_ratio", "uppercase_ratio", "newline_ratio",
+        "period_ratio", "comma_ratio", "question_exclamation_ratio", "colon_semicolon_ratio"
+      ]
+    },
+    "cogniprint_12d": "current frozen 12D extractor plus cosine nearest centroid",
+    "character_ngram": "NFKC+casefold+collapsed whitespace; char 3-5; SHA-256 hashing to 262144 bins; log-TF; training-only IDF; L2; cosine nearest centroid",
+    "word_ngram": "same protocol; word 1-2; SHA-256 hashing to 131072 bins",
+    "classifier_tie_break": "lexicographic class_id",
+    "no_primary_baseline_may_be_added_after_prediction_freeze": true
+  },
+  "metrics": {
+    "basis": "POLICY",
+    "primary_closed_set": [
+      "top1_accuracy_with_unknown_counted_incorrect",
+      "balanced_accuracy_with_unknown_counted_incorrect",
+      "macro_f1_zero_division_0_with_unknown_counted_as_false_negative",
+      "per_class_precision_recall_f1",
+      "confusion_matrix_including_unknown_prediction_column"
+    ],
+    "primary_open_world": [
+      "known_coverage",
+      "selective_accuracy",
+      "selective_risk",
+      "held_out_unknown_rejection_rate",
+      "held_out_unknown_false_known_rate",
+      "insufficient_evidence_rate"
+    ],
+    "calibration_if_accepted": ["multiclass_brier", "negative_log_likelihood", "ece_15_equal_frequency", "reliability_table"],
+    "uncertainty": "two-sided 95% Wilson intervals for proportions; lineage-group paired bootstrap with 10000 deterministic resamples for metric differences",
+    "bootstrap_seed": 20260730,
+    "multiplicity": "All frozen strata are reported; no best-stratum selection replaces the overall primary result."
+  },
+  "exclusions_and_replacements": {
+    "basis": "POLICY",
+    "allowed_pre_prediction_exclusions": [
+      "artifact_unreadable_or_hash_mismatch",
+      "license_or_consent_failure",
+      "exact_duplicate_content_hash",
+      "near_duplicate_minhash_jaccard_at_least_0_90_within_or_across_partitions",
+      "label_or_source_identity_leak_in_predictor_visible_metadata",
+      "lineage_or_prompt_partition_violation"
+    ],
+    "not_exclusions": [
+      "model_refusal",
+      "low_quality_style",
+      "difficult_sample",
+      "unexpected_prediction",
+      "unfavourable_class_balance_after_frozen_selection"
+    ],
+    "short_or_truncated_output_rule": "Not excluded; after at most 3 frozen generation attempts it remains UNKNOWN_INSUFFICIENT_EVIDENCE if below threshold.",
+    "replacement_rule": "Before prediction start only, use the next item from a precommitted reserve list ordered by the same partition hash. After prediction start, no replacement is permitted.",
+    "post_reveal_rule": "No exclusion may replace the primary result; any sensitivity analysis is secondary and accompanied by the unchanged primary result."
+  },
+  "stop_and_claim_narrowing": {
+    "basis": "PROSPECTIVE_POLICY",
+    "rules": [
+      {
+        "id": "OPEN_WORLD_FALSE_KNOWN",
+        "condition": "held_out_false_known_point > 0.10 OR wilson95_upper > 0.15",
+        "consequence": "Open-world family attribution claim remains locked."
+      },
+      {
+        "id": "UNKNOWN_REJECTION",
+        "condition": "held_out_unknown_rejection < 0.90",
+        "consequence": "UNKNOWN/OOD effectiveness claim remains locked."
+      },
+      {
+        "id": "KNOWN_COVERAGE",
+        "condition": "known_coverage < 0.60",
+        "consequence": "No operational attribution claim; report only descriptive signal and abstention burden."
+      },
+      {
+        "id": "KNOWN_SIGNAL",
+        "condition": "best_frozen_system_balanced_accuracy < 0.50 OR best_frozen_system_macro_f1 < 0.50",
+        "consequence": "No family-level discrimination claim for Challenge 001."
+      },
+      {
+        "id": "COGNIPRINT_VS_NGRAM",
+        "condition": "paired_bootstrap_95ci_delta_macro_f1(cogniprint_12d - best_ngram) includes_or_below_0 OR point_delta < 0.02",
+        "consequence": "No claim that CogniPrint 12D adds value beyond transparent lexical baselines; publish the negative comparison."
+      },
+      {
+        "id": "PER_CLASS_COLLAPSE",
+        "condition": "any_known_class_recall < 0.40",
+        "consequence": "Result is mixed; no uniform known-family claim and collapsed classes must be named."
+      },
+      {
+        "id": "CALIBRATION_FAILURE",
+        "condition": "ECE > 0.10 OR calibrated_NLL > uncalibrated_NLL OR calibrated_Brier > uncalibrated_Brier",
+        "consequence": "Calibrated-confidence language remains locked."
+      },
+      {
+        "id": "DOMAIN_COLLAPSE",
+        "condition": "any_domain_balanced_accuracy < 0.40 OR any_domain_is_more_than_0.15_below_overall",
+        "consequence": "Cross-domain generalisation claim remains locked; domain results remain separately reported."
+      },
+      {
+        "id": "STRATUM_REPLICATION",
+        "condition": "any_frozen_sealed_cell_has_no_eligible_primary_sample",
+        "consequence": "Primary run is a protocol deviation and cannot be presented as the complete preregistered result."
+      },
+      {
+        "id": "T1_ROBUSTNESS",
+        "condition": "T1_balanced_accuracy_drop > 0.15 OR T1_false_known_increase > 0.05",
+        "consequence": "No light-edit robustness claim; clean T0 result remains separately interpretable."
+      }
+    ]
+  },
+  "custody_boundary": {
+    "candidate_only": true,
+    "stage_b_artifacts_created": false,
+    "sealed_labels_created": false,
+    "predictor_label_access": false,
+    "external_registration_submitted": false,
+    "required_before_ready": [
+      "named opaque role IDs",
+      "logically separate blinded and sealed storage",
+      "candidate manifest hashes",
+      "real Stage A/B leakage audit with sample_id_overlap=0 and content_hash_overlap=0",
+      "verified Research Lock",
+      "executed runner record or formally accepted equivalent"
+    ]
+  },
+  "unresolved_blockers": [
+    "Materialize and independently review the exact human-control source registry.",
+    "Resolve every candidate Hugging Face revision locally and archive config/tokenizer/generation hashes.",
+    "Review all model licenses and record permission to generate and retain research outputs.",
+    "Implement and development-test the surface baseline, conformal UNKNOWN, temperature calibration, intervals and claim matrix without Stage B access.",
+    "Obtain independent methodological review of counts, thresholds and source design.",
+    "Resolve issue #30 or formally accept an equivalent reproducible runner record.",
+    "Construct candidate blinded/sealed manifests under custody and pass the real zero-overlap leakage audit.",
+    "Generate final Research Lock and external timestamped registration only after all gates pass."
+  ]
+}
