@@ -1,23 +1,21 @@
 name: Bind cogniprint.org once
 
 on:
-  issues:
-    types: [opened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
   pages: write
-  issues: write
 
 jobs:
   bind-pages-domain:
-    if: github.event.issue.title == 'OPS_TRIGGER_PAGES_BIND_20260824'
+    if: github.event.pull_request.title == 'OPS_TRIGGER_PAGES_BIND_PR_20260824'
     runs-on: ubuntu-latest
     steps:
       - name: Probe and bind Pages custom domain
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           set -uo pipefail
           api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
@@ -42,7 +40,7 @@ jobs:
             -H 'X-GitHub-Api-Version: 2026-03-10' \
             "$api" || true)
 
-          python3 - <<'PY' > /tmp/result.md
+          BEFORE_CODE="$before_code" PUT_CODE="$put_code" AFTER_CODE="$after_code" python3 - <<'PY'
           import json, os
           from pathlib import Path
           def read_payload(path):
@@ -50,42 +48,14 @@ jobs:
               if not p.exists(): return None
               raw = p.read_text(encoding='utf-8', errors='replace')
               try: return json.loads(raw)
-              except Exception: return raw[:2000]
-          before = read_payload('/tmp/pages-before.json')
-          put = read_payload('/tmp/pages-put.json')
-          after = read_payload('/tmp/pages-after.json')
-          def compact(x):
-              return json.dumps(x, ensure_ascii=False, sort_keys=True) if x is not None else 'null'
-          print('PAGES_BIND_PROBE_20260824')
-          print(f"before_status={os.environ.get('BEFORE_CODE','')}")
-          print(f"put_status={os.environ.get('PUT_CODE','')}")
-          print(f"after_status={os.environ.get('AFTER_CODE','')}")
-          print('before=' + compact(before))
-          print('put=' + compact(put))
-          print('after=' + compact(after))
+              except Exception: return raw[:4000]
+          out = {
+              'before_status': os.environ.get('BEFORE_CODE'),
+              'before': read_payload('/tmp/pages-before.json'),
+              'put_status': os.environ.get('PUT_CODE'),
+              'put': read_payload('/tmp/pages-put.json'),
+              'after_status': os.environ.get('AFTER_CODE'),
+              'after': read_payload('/tmp/pages-after.json'),
+          }
+          print('PAGES_BIND_PROBE_20260824=' + json.dumps(out, ensure_ascii=False, sort_keys=True))
           PY
-
-          BEFORE_CODE="$before_code" PUT_CODE="$put_code" AFTER_CODE="$after_code" python3 - <<'PY' > /tmp/result.md
-          import json, os
-          from pathlib import Path
-          def read_payload(path):
-              p = Path(path)
-              if not p.exists(): return None
-              raw = p.read_text(encoding='utf-8', errors='replace')
-              try: return json.loads(raw)
-              except Exception: return raw[:2000]
-          before = read_payload('/tmp/pages-before.json')
-          put = read_payload('/tmp/pages-put.json')
-          after = read_payload('/tmp/pages-after.json')
-          def compact(x):
-              return json.dumps(x, ensure_ascii=False, sort_keys=True) if x is not None else 'null'
-          print('PAGES_BIND_PROBE_20260824')
-          print(f"before_status={os.environ.get('BEFORE_CODE')}")
-          print(f"put_status={os.environ.get('PUT_CODE')}")
-          print(f"after_status={os.environ.get('AFTER_CODE')}")
-          print('before=' + compact(before))
-          print('put=' + compact(put))
-          print('after=' + compact(after))
-          PY
-
-          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/result.md
