@@ -1,0 +1,52 @@
+name: Live root network probe 2026-08-24
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  probe-live-root:
+    if: github.event.pull_request.title == 'OPS_LIVE_ROOT_PROBE_20260824'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe DNS and live HTTP
+        shell: bash
+        run: |
+          set -u
+          echo '=== DNS A cogniprint.org ==='
+          curl -sS 'https://dns.google/resolve?name=cogniprint.org&type=A' || true
+          echo
+          echo '=== DNS AAAA cogniprint.org ==='
+          curl -sS 'https://dns.google/resolve?name=cogniprint.org&type=AAAA' || true
+          echo
+          echo '=== DNS NS cogniprint.org ==='
+          curl -sS 'https://dns.google/resolve?name=cogniprint.org&type=NS' || true
+          echo
+          echo '=== DNS MX cogniprint.org ==='
+          curl -sS 'https://dns.google/resolve?name=cogniprint.org&type=MX' || true
+          echo
+          echo '=== DNS CNAME www.cogniprint.org ==='
+          curl -sS 'https://dns.google/resolve?name=www.cogniprint.org&type=CNAME' || true
+          echo
+
+          probe_url() {
+            label="$1"; url="$2"; out="$3"
+            echo "=== HTTP ${label} ${url} ==="
+            code=$(curl -L -sS --connect-timeout 15 --max-time 30 -D "${out}.headers" -o "$out" -w '%{http_code}' "$url" || true)
+            echo "HTTP_CODE=${code}"
+            echo '-- headers --'
+            sed -n '1,80p' "${out}.headers" 2>/dev/null || true
+            echo '-- sha256 --'
+            sha256sum "$out" 2>/dev/null || true
+            echo '-- title / fingerprints --'
+            grep -Eio '<title>[^<]*</title>|CogniPrint Research Initiative|когнитивный профиль текста|Independent Researcher-Engineer|descriptive_only|readiness' "$out" 2>/dev/null | head -30 || true
+            echo
+          }
+
+          probe_url 'canonical-root' 'https://cogniprint.org/' /tmp/root.html
+          probe_url 'researcher-route' 'https://cogniprint.org/roman-adriashkin/' /tmp/researcher.html
+          probe_url 'native-user-pages' 'https://takovhs.github.io/' /tmp/userpages.html
+          probe_url 'netlify-reviewer' 'https://cogniprint-reviewer.netlify.app/' /tmp/netlify.html
