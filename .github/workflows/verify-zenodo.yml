@@ -10,88 +10,122 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+
       - name: Verify DOI resolver and Zenodo record
         shell: bash
         run: |
-          set -euo pipefail
+          set -u
           DOI='10.5281/zenodo.20756421'
           RECORD='20756421'
-          mkdir -p zenodo-verification
+          OUT='audit/zenodo-verification-latest.txt'
+          TMP='zenodo-verification'
+          mkdir -p "$TMP"
 
-          echo "doi=$DOI" | tee zenodo-verification/report.txt
-          echo "checked_at=$(date -u +%FT%TZ)" | tee -a zenodo-verification/report.txt
+          {
+            echo "doi=$DOI"
+            echo "checked_at=$(date -u +%FT%TZ)"
+          } > "$OUT"
 
-          DOI_FINAL=$(curl --fail-with-body --silent --show-error --location \
+          DOI_FINAL=$(curl --silent --show-error --location \
             --output /dev/null --write-out '%{url_effective}' \
-            "https://doi.org/$DOI")
-          echo "doi_final_url=$DOI_FINAL" | tee -a zenodo-verification/report.txt
+            "https://doi.org/$DOI" 2>"$TMP/doi-error.txt")
+          DOI_EXIT=$?
+          echo "doi_curl_exit=$DOI_EXIT" >> "$OUT"
+          echo "doi_final_url=$DOI_FINAL" >> "$OUT"
 
           ZENODO_HTTP=$(curl --silent --show-error \
-            --output zenodo-verification/record.json \
+            --output "$TMP/record.json" \
             --write-out '%{http_code}' \
-            "https://zenodo.org/api/records/$RECORD")
-          echo "zenodo_http=$ZENODO_HTTP" | tee -a zenodo-verification/report.txt
+            "https://zenodo.org/api/records/$RECORD" 2>"$TMP/zenodo-error.txt")
+          ZENODO_EXIT=$?
+          echo "zenodo_curl_exit=$ZENODO_EXIT" >> "$OUT"
+          echo "zenodo_http=$ZENODO_HTTP" >> "$OUT"
 
-          export DOI ZENODO_HTTP
-          python - <<'PY' | tee -a zenodo-verification/report.txt
-          import json, os, sys
+          export DOI ZENODO_HTTP ZENODO_EXIT
+          python - <<'PY' >> "$OUT"
+          import json, os
           from pathlib import Path
 
           expected_doi = os.environ['DOI']
-          http = os.environ['ZENODO_HTTP']
+          http = os.environ.get('ZENODO_HTTP', '')
+          curl_exit = os.environ.get('ZENODO_EXIT', '')
           path = Path('zenodo-verification/record.json')
-          if http != '200':
-              print('record_public=false')
-              print(f'failure=zenodo_http_{http}')
-              sys.exit(1)
-
-          try:
-              data = json.loads(path.read_text())
-          except Exception as exc:
-              print('record_public=false')
-              print(f'failure=invalid_json:{exc}')
-              sys.exit(1)
-
-          metadata = data.get('metadata') or {}
-          title = metadata.get('title') or ''
-          version = metadata.get('version') or ''
-          creators = metadata.get('creators') or []
-          creator_names = [str(c.get('person_or_org', {}).get('name') or c.get('name') or '') for c in creators]
-          pids = data.get('pids') or {}
-          doi_obj = pids.get('doi') or {}
-          record_doi = doi_obj.get('identifier') or metadata.get('doi') or ''
-
-          print('record_public=true')
-          print(f'record_doi={record_doi}')
-          print(f'title={title}')
-          print(f'version={version}')
-          print('creators=' + '; '.join(creator_names))
 
           checks = {
-              'doi_match': record_doi.lower() == expected_doi.lower(),
-              'title_match': 'cogniprint' in title.lower(),
-              'creator_match': any('adriashkin' in n.lower() for n in creator_names),
-              'version_match': (not version) or version.lstrip('v') == '0.1.2',
+              'record_public': False,
+              'doi_match': False,
+              'title_match': False,
+              'creator_match': False,
+              'version_match': False,
           }
+
+          if curl_exit == '0' and http == '200' and path.exists():
+              try:
+                  data = json.loads(path.read_text())
+                  metadata = data.get('metadata') or {}
+                  title = metadata.get('title') or ''
+                  version = metadata.get('version') or ''
+                  creators = metadata.get('creators') or []
+                  creator_names = [str(c.get('person_or_org', {}).get('name') or c.get('name') or '') for c in creators]
+                  pids = data.get('pids') or {}
+                  doi_obj = pids.get('doi') or {}
+                  record_doi = doi_obj.get('identifier') or metadata.get('doi') or ''
+
+                  checks['record_public'] = True
+                  checks['doi_match'] = record_doi.lower() == expected_doi.lower()
+                  checks['title_match'] = 'cogniprint' in title.lower()
+                  checks['creator_match'] = any('adriashkin' in n.lower() for n in creator_names)
+                  checks['version_match'] = (not version) or version.lstrip('v') == '0.1.2'
+
+                  print(f'record_doi={record_doi}')
+                  print(f'title={title}')
+                  print(f'version={version}')
+                  print('creators=' + '; '.join(creator_names))
+              except Exception as exc:
+                  print(f'parse_error={exc}')
+          else:
+              print('record_doi=')
+              print('title=')
+              print('version=')
+              print('creators=')
+
           for key, value in checks.items():
               print(f'{key}={str(value).lower()}')
-          if not all(checks.values()):
-              print('verification=FAIL')
-              sys.exit(1)
-          print('verification=PASS')
+          print('verification=' + ('PASS' if all(checks.values()) else 'FAIL'))
           PY
 
-      - name: Upload verification evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: zenodo-verification
-          path: zenodo-verification/
-          if-no-files-found: warn
+          if [ -s "$TMP/doi-error.txt" ]; then
+            echo "doi_error=$(tr '\n' ' ' < "$TMP/doi-error.txt" | head -c 500)" >> "$OUT"
+          fi
+          if [ -s "$TMP/zenodo-error.txt" ]; then
+            echo "zenodo_error=$(tr '\n' ' ' < "$TMP/zenodo-error.txt" | head -c 500)" >> "$OUT"
+          fi
+
+          cat "$OUT"
+
+      - name: Persist latest verification result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add audit/zenodo-verification-latest.txt
+          if git diff --cached --quiet; then
+            echo 'No verification result change.'
+          else
+            git commit -m 'chore(audit): persist latest Zenodo verification result'
+            git push
+          fi
+
+      - name: Enforce verification gate
+        shell: bash
+        run: |
+          grep -q '^verification=PASS$' audit/zenodo-verification-latest.txt
