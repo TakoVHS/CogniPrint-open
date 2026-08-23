@@ -1,0 +1,1 @@
+Temporary trigger file for observable GitHub Pages binding workflow on 2026-08-24.
