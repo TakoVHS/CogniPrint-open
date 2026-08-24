@@ -7,46 +7,54 @@ on:
       - .github/workflows/pages-admin-cutover.yml
 
 permissions:
-  contents: read
+  contents: write
   pages: write
 
 jobs:
   cutover:
     runs-on: ubuntu-latest
     steps:
-      - name: Read current Pages metadata
+      - uses: actions/checkout@v4
+      - name: Attempt Pages custom-domain cutover and persist evidence
         env:
           GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          set -euo pipefail
-          curl -fsSL \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-            | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({"status":d.get("status"),"cname":d.get("cname"),"html_url":d.get("html_url"),"source":d.get("source"),"build_type":d.get("build_type"),"https_enforced":d.get("https_enforced")}, sort_keys=True))'
-      - name: Assign cogniprint.org
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          code=$(curl -sS -o /tmp/pages-put.json -w '%{http_code}' \
-            -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-            -d '{"cname":"cogniprint.org"}')
-          echo "PAGES_PUT_HTTP=${code}"
-          if [ "$code" != "204" ]; then cat /tmp/pages-put.json; exit 1; fi
-      - name: Verify Pages metadata
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          curl -fsSL \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-            | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({"status":d.get("status"),"cname":d.get("cname"),"html_url":d.get("html_url"),"source":d.get("source"),"build_type":d.get("build_type"),"https_enforced":d.get("https_enforced")}, sort_keys=True)); assert d.get("cname")=="cogniprint.org"'
+          set -u
+          mkdir -p audit
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          headers=(-H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${GH_TOKEN}" -H "X-GitHub-Api-Version: 2026-03-10")
+
+          before_http=$(curl -sS -o /tmp/before.json -w '%{http_code}' "${headers[@]}" "$api" || true)
+          put_http=$(curl -sS -o /tmp/put.json -w '%{http_code}' -X PUT "${headers[@]}" "$api" -d '{"cname":"cogniprint.org"}' || true)
+          after_http=$(curl -sS -o /tmp/after.json -w '%{http_code}' "${headers[@]}" "$api" || true)
+
+          python3 - "$before_http" "$put_http" "$after_http" <<'PY'
+          import json, pathlib, sys
+          def load(path):
+              try:
+                  return json.loads(pathlib.Path(path).read_text())
+              except Exception:
+                  return {}
+          def slim(d):
+              if not isinstance(d, dict):
+                  return {}
+              return {k:d.get(k) for k in ("status","cname","html_url","source","build_type","https_enforced","message") if k in d}
+          out = {
+              "repository": "TakoVHS/CogniPrint-open",
+              "requested_cname": "cogniprint.org",
+              "before_http": sys.argv[1],
+              "put_http": sys.argv[2],
+              "after_http": sys.argv[3],
+              "before": slim(load('/tmp/before.json')),
+              "put_response": slim(load('/tmp/put.json')),
+              "after": slim(load('/tmp/after.json')),
+          }
+          pathlib.Path('audit/pages-admin-cutover-result.json').write_text(json.dumps(out, indent=2, sort_keys=True)+"\n")
+          PY
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add audit/pages-admin-cutover-result.json
+          git commit -m "chore(pages): persist custom-domain cutover result" || true
+          git push || true
