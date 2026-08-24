@@ -1,0 +1,8 @@
+{
+  "schema": "cogniprint-external-review-status-v1",
+  "status_date": "2026-08-05",
+  "valid_review_count": 0,
+  "minimum_required_valid_reviews": 1,
+  "independent_external_review_present": false,
+  "qualifying_evidence": []
+}
