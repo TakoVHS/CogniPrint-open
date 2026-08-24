@@ -8,6 +8,7 @@ authors:
     affiliation: "CogniPrint Research Initiative"
 version: "0.1.2"
 date-released: 2026-06-18
+doi: "10.5281/zenodo.20756421"
 url: "https://cogniprint.org"
 repository-code: "https://github.com/TakoVHS/CogniPrint-open"
 license: MIT
