@@ -11,10 +11,12 @@ The purpose of this reviewer bundle is to support a real external methodological
 ## Current public baseline
 
 - Release: `v0.1.2`
-- DOI reference: `10.5281/zenodo.20756421` — **pending direct public Zenodo verification; do not treat as independently verified**
+- DOI: `10.5281/zenodo.20756421`
 - Repository: `https://github.com/TakoVHS/CogniPrint-open`
 - Scientific readiness: `descriptive_only`
 - External methodological reviews: `0/1`
+
+The DOI is citation/administrative metadata only. Its public availability does not change scientific readiness or validate any stronger research claim.
 
 ## What CogniPrint currently claims
 
@@ -59,6 +61,7 @@ Endorsement is not requested. A negative or mixed assessment is useful evidence.
 
 - Public repository: `https://github.com/TakoVHS/CogniPrint-open`
 - Release: `https://github.com/TakoVHS/CogniPrint-open/releases/tag/v0.1.2`
+- DOI: `https://doi.org/10.5281/zenodo.20756421`
 - Current state: `docs/current-state-summary.md`
 - Research vision: `docs/research-vision.md`
 - Model-fingerprint protocol: `docs/model-fingerprint-benchmark-v0.1.md`
@@ -66,5 +69,3 @@ Endorsement is not requested. A negative or mixed assessment is useful evidence.
 - Reviewer response template: `docs/reviewer-response-template.md`
 - Manuscript source: `paper/main.tex`
 - Evidence dossier: `docs/evidence-dossier.md`
-
-The DOI should be added to reviewer-facing citation instructions only after the public Zenodo record is directly verified.
