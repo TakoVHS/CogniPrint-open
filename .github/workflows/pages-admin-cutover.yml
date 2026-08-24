@@ -1,0 +1,52 @@
+name: Pages admin cutover
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/pages-admin-cutover.yml
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read current Pages metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({"status":d.get("status"),"cname":d.get("cname"),"html_url":d.get("html_url"),"source":d.get("source"),"build_type":d.get("build_type"),"https_enforced":d.get("https_enforced")}, sort_keys=True))'
+      - name: Assign cogniprint.org
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o /tmp/pages-put.json -w '%{http_code}' \
+            -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            -d '{"cname":"cogniprint.org"}')
+          echo "PAGES_PUT_HTTP=${code}"
+          if [ "$code" != "204" ]; then cat /tmp/pages-put.json; exit 1; fi
+      - name: Verify Pages metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({"status":d.get("status"),"cname":d.get("cname"),"html_url":d.get("html_url"),"source":d.get("source"),"build_type":d.get("build_type"),"https_enforced":d.get("https_enforced")}, sort_keys=True)); assert d.get("cname")=="cogniprint.org"'
