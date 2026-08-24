@@ -11,8 +11,10 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 - Local exact-snapshot execution: `NOT_EXECUTED`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
-- DOI: pending direct public Zenodo verification
+- DOI: `10.5281/zenodo.20756421`
 - Repository: https://github.com/TakoVHS/CogniPrint-open
+
+The DOI is citation/administrative metadata only and does not change scientific readiness or validate any stronger claim.
 
 The current public release supports reproducible **measurement and evidence structuring**, not validated source attribution.
 
@@ -214,7 +216,6 @@ Content-derived signals can support bounded hypotheses. Claims about actors, too
 ## Open gates
 
 - external methodological review: `0/1`;
-- DOI reference not directly publicly verified;
 - CI execution: `NOT_EXECUTED` — issue #30;
 - local exact-snapshot execution: `NOT_EXECUTED` in the current environment;
 - real Stage A manifest/calibration outputs: not yet executed;
