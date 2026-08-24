@@ -95,7 +95,7 @@ Prefer applications that fund a bounded package:
 
 1. Keep scientific readiness at `descriptive_only` until evidence justifies a change.
 2. Obtain at least one substantive independent methodological review; automated replies and funding correspondence do not count.
-3. Resolve or replace the unverified Zenodo DOI reference before presenting a DOI as publicly verified.
+3. Treat DOI `10.5281/zenodo.20756421` as citation/administrative metadata only; public DOI availability does not validate stronger scientific claims.
 4. Execute Attribution Challenge 001 or clearly label it as an unexecuted protocol.
 5. Re-run public reproduction and secret-scan commands on the exact release candidate used for an application.
 6. Re-check official programme scope, eligibility and deadline immediately before submission.
@@ -118,7 +118,6 @@ Where actor/workflow information is discussed, state that it requires independen
 ## Current blockers
 
 - External methodological reviews: `0/1`.
-- DOI `10.5281/zenodo.20756421` is not yet directly verified through a public Zenodo record.
 - GitHub Actions/Pages runner allocation is still blocking live-site deployment of the current narrative.
 - Attribution Challenge 001 is specified but not yet executed.
 - QVAC runtime gate is not closed.
