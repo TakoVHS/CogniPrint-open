@@ -175,9 +175,11 @@ These boundaries are part of the design. A provenance system becomes more credib
 - Readiness: `descriptive_only`
 - External methodological reviews: `0/1`
 - Release: `v0.1.2`
-- DOI: pending direct public Zenodo verification
+- DOI: `10.5281/zenodo.20756421`
 - Repository: https://github.com/TakoVHS/CogniPrint-open
 - Project website: https://cogniprint.org
+
+The DOI is citation/administrative metadata only and does not change scientific readiness or validate any stronger claim.
 
 ## Reviewer entry points
 
