@@ -8,8 +8,10 @@ on:
       - "config/public-release.json"
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
+      - "scripts/check_reviewer_web_contract.py"
       - "tests/**"
       - "src/**"
+      - "web/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
@@ -20,8 +22,10 @@ on:
       - "config/public-release.json"
       - "scripts/secret_scan.py"
       - "scripts/export_public_release.py"
+      - "scripts/check_reviewer_web_contract.py"
       - "tests/**"
       - "src/**"
+      - "web/**"
       - "README.md"
       - "DATA_LICENSE.md"
       - "CITATION.cff"
@@ -55,7 +59,10 @@ jobs:
           python -m pip install -e .
 
       - name: Compile release tooling
-        run: python -m py_compile scripts/secret_scan.py scripts/export_public_release.py
+        run: python -m py_compile scripts/secret_scan.py scripts/export_public_release.py scripts/check_reviewer_web_contract.py
+
+      - name: Validate reviewer-facing research story
+        run: python scripts/check_reviewer_web_contract.py
 
       - name: Run release gate unit tests
         run: |
