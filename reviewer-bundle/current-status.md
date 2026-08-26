@@ -68,4 +68,4 @@ Scientific readiness may change only after dedicated empirical evidence, calibra
 5. Add real detached `.cogcase` signatures only after cryptographic verification is implemented (issue #27).
 6. Obtain one real external methodological critique.
 7. Keep the DOI as citation metadata only; it does not alter scientific readiness.
-8. Keep QVAC/Auto Drive grant tracks on their current evidence gates until their runtime/practitioner prerequisites close.
+8. Keep QVAC/Auto Drive/OTF grant tracks on their current evidence gates until their runtime/practitioner prerequisites close.
