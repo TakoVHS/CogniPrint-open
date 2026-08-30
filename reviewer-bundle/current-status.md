@@ -4,7 +4,7 @@
 
 ```text
 Release: v0.1.2
-DOI reference: 10.5281/zenodo.20756421 (pending direct public verification)
+DOI: 10.5281/zenodo.20756421
 Repository: https://github.com/TakoVHS/CogniPrint-open
 Scientific readiness: descriptive_only
 External methodological reviews: 0/1
@@ -14,9 +14,7 @@ External methodological reviews: 0/1
 
 The public source release, README, citation metadata, current-state summary, GitHub release, evidence ontology, Claim Firewall, evaluation contracts and reproducibility artifacts are available for inspection.
 
-The DOI verification gate is **not closed**. The repository records DOI reference `10.5281/zenodo.20756421`, but it must not be presented as independently verified until the corresponding public Zenodo record is directly reachable and checked.
-
-This administrative DOI issue does not change scientific readiness.
+The Zenodo DOI `10.5281/zenodo.20756421` is now treated as a public citation identifier. This is an administrative/citation-metadata update only and does not change scientific readiness, validation state, or any research claim.
 
 ## Review state
 
@@ -69,5 +67,5 @@ Scientific readiness may change only after dedicated empirical evidence, calibra
 4. Implement/validate the real C2PA bridge with fixtures and trust configuration (issue #26).
 5. Add real detached `.cogcase` signatures only after cryptographic verification is implemented (issue #27).
 6. Obtain one real external methodological critique.
-7. Resolve or replace the unverified Zenodo DOI reference.
+7. Keep the DOI as citation metadata only; it does not alter scientific readiness.
 8. Keep QVAC/Auto Drive/OTF grant tracks on their current evidence gates until their runtime/practitioner prerequisites close.
