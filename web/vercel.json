@@ -1,0 +1,4 @@
+{
+  "buildCommand": "bash ./bootstrap.sh",
+  "outputDirectory": "runner-out"
+}
