@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cogniprint.org/schemas/cogniprint-multi-principal-evidence-v0.1.schema.json",
+  "title": "CogniPrint Multi-Principal Evidence v0.1 — Pre-Award Development",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "research_status",
+    "case_id",
+    "principals",
+    "events",
+    "bundle_integrity_sha256"
+  ],
+  "properties": {
+    "schema": {"const": "cogniprint-multi-principal-evidence-v0.1"},
+    "research_status": {"const": "DEVELOPMENT_ONLY_PREAWARD"},
+    "case_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "principals": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principal_id", "role"],
+        "properties": {
+          "principal_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "role": {"type": "string", "minLength": 1, "maxLength": 128}
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/event"}
+    },
+    "bundle_integrity_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "sequence",
+        "timestamp",
+        "principal_id",
+        "agent_id",
+        "event_type",
+        "evidence_class",
+        "parent_event_ids",
+        "authorization_scope",
+        "payload_commitment_sha256",
+        "integrity_sha256"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "sequence": {"type": "integer", "minimum": 0},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "principal_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "agent_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "event_type": {
+          "enum": [
+            "DELEGATION",
+            "ACTION",
+            "TOOL_CALL",
+            "MESSAGE",
+            "AUTHORIZATION_CHANGE",
+            "REVOCATION",
+            "CLONE",
+            "FORK",
+            "UPDATE"
+          ]
+        },
+        "evidence_class": {"enum": ["OBSERVED", "ATTESTED", "INFERRED", "UNKNOWN"]},
+        "parent_event_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 128}
+        },
+        "authorization_scope": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 128}
+        },
+        "target_principal_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "payload_commitment_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "integrity_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"event_type": {"const": "DELEGATION"}}},
+          "then": {"required": ["target_principal_id"]}
+        }
+      ]
+    }
+  }
+}
