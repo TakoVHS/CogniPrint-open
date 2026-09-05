@@ -1,0 +1,19 @@
+{
+  "evidence_class": "USER_EXECUTED_REAL_TESTNET_EVIDENCE",
+  "network": "XRPL Testnet",
+  "date": "2026-08-12",
+  "transaction_hash": "E6E716789B416612A96221A4F51D6CA3B165E16E4777C2516D434184E9B93A21",
+  "sender": "rU7BYRVE2RTh2JpZ8jg3g7sMtyYygVh74w",
+  "destination": "raM3FGkkp3wMoaSvKq6ZPJRJMdPWjoLKBj",
+  "manifest_commitment": "238b9c52793119d1e530b522ee853c23317ac2271cd9e12df9a1b98076352d03",
+  "validated": true,
+  "transaction_result": "tesSUCCESS",
+  "independent_ledger_lookup": "PASS",
+  "validated_match": "PASS",
+  "mutation_probe": "FAIL_CLOSED_PASS",
+  "xrpl_real_testnet_gate": "PASS",
+  "seeds_logged": false,
+  "secrets_persisted_in_this_record": false,
+  "mainnet_used": false,
+  "claim_boundary": "Ledger anchoring demonstrates commitment integrity/finality only; it does not establish authorship, model identity, scientific correctness, lawful collection, or legal chain of custody."
+}
