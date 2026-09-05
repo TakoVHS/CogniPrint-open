@@ -7,7 +7,9 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 - Scientific readiness: `descriptive_only`
 - Research mode: `PROOF_MODE`
 - Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`
-- CI evidence status: `NOT_EXECUTED`
+- GitHub-hosted current-main execution: `NOT_VERIFIED`
+- Equivalent complete-checkout runner evidence (PR #54 head): `PASS`
+- Current-main full-suite execution: `NOT_YET_VERIFIED`
 - Local exact-snapshot execution: `NOT_EXECUTED`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
@@ -86,15 +88,23 @@ The pre-freeze contract is `RESEARCH_FREEZE_001.md`. It is intentionally marked 
 
 ## CI / execution evidence status
 
-GitHub Actions CI: **`NOT_EXECUTED`**.
+Three execution states must be kept separate.
 
-A minimal Runner Canary with no checkout, dependencies, cache, matrix or secrets was created specifically to isolate runner startup. Its job was created, but GitHub reported `steps: []`; neither the shell canary nor `python --version` executed. A control rerun after GitHub reported Actions operational produced the same `steps: []` result.
+**GitHub-hosted execution for the current `main` snapshot:** `NOT_VERIFIED`.
 
-Therefore this is not evidence that tests passed or failed.
+The historical Runner Canary isolated a GitHub-hosted runner startup problem: the job was created with `steps: []`, so neither a shell canary nor `python --version` executed. That evidence is an infrastructure non-execution state, not a code PASS or FAIL. A newly added full quality workflow must itself execute successfully on the exact current snapshot before this state can be upgraded.
+
+**Equivalent complete-checkout execution for PR #54 head `98cf9637...`: `PASS`.**
+
+A Vercel-hosted equivalent runner previously executed a complete checkout for that PR head and preserved evidence for Python 3.12.13, Ruff, Python compilation, targeted tests, RAID n-gram regressions, RAID pilot verification, sanitized export, and secret scanning. That is valid evidence for the tested PR #54 snapshot only; it must not be relabelled as evidence for current `main`.
+
+**Current-main full-suite execution:** `NOT_YET_VERIFIED`.
+
+The repository now defines full unit-test discovery through `make test` and a Python 3.10/3.11/3.12 `Quality CI` workflow. Until that workflow (or an equivalent complete-checkout runner) actually executes on the exact candidate SHA, no exact current-main test count, coverage claim, or zero-vulnerability claim should be published.
 
 Correct public wording:
 
-> CI execution: NOT_EXECUTED — GitHub-hosted runner did not reach the first executable step.
+> Current-main full-suite execution: NOT_YET_VERIFIED. Historical equivalent-runner evidence exists for PR #54 but is snapshot-scoped and does not establish current-main PASS.
 
 Local exact-snapshot execution is also **`NOT_EXECUTED`** in the current execution environment because that environment could not resolve/fetch `github.com`; it therefore could not obtain an exact repository snapshot for the requested Python 3.10/3.11/3.12 matrix.
 
@@ -215,8 +225,11 @@ Content-derived signals can support bounded hypotheses. Claims about actors, too
 
 - external methodological review: `0/1`;
 - DOI reference not directly publicly verified;
-- CI execution: `NOT_EXECUTED` — issue #30;
+- GitHub-hosted current-main execution: `NOT_VERIFIED` — issue #30 remains open until real execution evidence is preserved;
+- current-main full-suite: `NOT_YET_VERIFIED`;
 - local exact-snapshot execution: `NOT_EXECUTED` in the current environment;
+- exact reproducibility lock/constraints artifact: not yet generated from a validated environment;
+- production site artifact/domain synchronization: not yet verified against one canonical `main:web/` SHA;
 - real Stage A manifest/calibration outputs: not yet executed;
 - real A/B leakage audit: not yet executed;
 - Challenge 001 research freeze: `PRE-FREEZE`;
