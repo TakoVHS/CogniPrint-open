@@ -1,5 +1,6 @@
 name: Runner Canary
 
+# Diagnostic retrigger: 2026-09-09. No test or runner logic changed.
 on:
   workflow_dispatch:
   pull_request:
