@@ -1,14 +1,27 @@
 # CogniPrint — JOSS readiness checklist
 
-Status date: 2026-09-06
+Status date: 2026-09-09
 
 Target: Journal of Open Source Software (JOSS)
 
-Submission state: **NOT SUBMITTED**
+Submission state: **NOT SUBMITTED / HARD HOLD**
 
 Scientific state: **`descriptive_only`**
 
 This checklist separates software-publication readiness from stronger scientific validation. A JOSS acceptance would validate that the software meets JOSS review criteria; it would not validate model attribution, AI-origin detection, authorship inference, or forensic provenance claims.
+
+## 0. JOSS pre-review hard gates
+
+Current JOSS editorial guidance requires all pre-review screening gates to pass before review begins.
+
+| Gate | Status | Evidence / action |
+|---|---|---|
+| Public development history ≥ 6 months | **HARD HOLD** | `TakoVHS/CogniPrint-open` was created 2026-06-18. Earliest safe submission window is after 2026-12-18, provided development remains active and distributed across the period. |
+| Demonstrated research impact | **HOLD** | Future use is not sufficient. Build evidence of research enabled by CogniPrint, public reproductions, external use/integration, citations, or documented adoption. |
+| Open-source practices | PARTIAL PASS | Public MIT repo, tagged release, tests/workflows/docs, Code of Conduct; contribution guide is prepared on this branch. CI runner execution is currently blocked above repository code by issue #30. |
+| Iterative public development | IN PROGRESS | Continue public releases/issues/PRs and visible refinement through the six-month window. Avoid a one-time publication dump. |
+
+**Do not submit to JOSS before every hard gate above is PASS.** Merely reaching six months of repository age is insufficient without credible research impact and continuing open development.
 
 ## 1. Scope and eligibility
 
@@ -25,7 +38,7 @@ This checklist separates software-publication readiness from stronger scientific
 
 ## 2. JOSS paper-format gates
 
-Current JOSS requirements checked 2026-09-06 require Markdown + YAML metadata, a non-specialist opening, research applications, approximately 750–1750 words, and sections covering Summary, Statement of need, State of the field, Software design, Research impact statement, AI usage disclosure, Acknowledgements, and References.
+Current JOSS paper guidance requires Markdown + YAML metadata, a non-specialist opening, research applications, approximately 750–1750 words, and sections covering Summary, Statement of need, State of the field, Software design, Research impact statement, AI usage disclosure, Acknowledgements, and References.
 
 | Gate | Status | Evidence / action |
 |---|---|---|
@@ -33,13 +46,13 @@ Current JOSS requirements checked 2026-09-06 require Markdown + YAML metadata, a
 | YAML metadata | PASS DRAFT | Title, tags, author, ORCID and affiliation included. |
 | Non-specialist summary | PASS DRAFT | Opens with purpose/functionality and current boundary. |
 | Statement of need | PASS DRAFT | Explains evidence-oriented use case. |
-| State of the field | PASS DRAFT | Stylometry/vector-space context and public benchmarks. |
-| Software design | PASS DRAFT | Describes package, CLI, profile and validation architecture. |
-| Research impact statement | PASS DRAFT | Describes current and planned research use without claiming validation. |
-| AI usage disclosure | PASS DRAFT | Explicitly discloses generative-AI assistance and verification responsibility. |
+| State of the field | NEEDS STRENGTHENING | Must explicitly compare CogniPrint with commonly used related software/packages and provide a clear build-vs-contribute justification. |
+| Software design | PASS DRAFT | Describes package, CLI, profile and validation architecture; final paper should retain explicit design trade-offs. |
+| Research impact statement | HOLD | Must be evidence-led and specific. Replace aspirational language with realized research use, reproducible materials, external adoption/integration or other credible signals available at submission time. |
+| AI usage disclosure | NEEDS FINAL AUDIT | Must name the AI tooling actually used, describe the tasks it assisted with, and explain how retained AI-assisted material was reviewed/tested/verified. |
 | Acknowledgements | PASS DRAFT | No unsupported funding/endorsement claim. |
-| Bibliography | PASS DRAFT | `joss/paper.bib` created from existing project references. |
-| Word-count check | TODO | Run exact Pandoc/JOSS word count before submission; target 750–1750. |
+| Bibliography | PASS DRAFT | `joss/paper.bib` created from existing project references; add key related software references as needed. |
+| Word-count check | TODO | Run exact JOSS/Pandoc word count before submission; target 750–1750. |
 | JOSS PDF build | TODO | Build with the current JOSS toolchain and fix metadata/citation issues. |
 
 ## 3. Reviewer execution path
@@ -61,6 +74,17 @@ python scripts/secret_scan.py
 ```
 
 Then at least one documented research workflow must be runnable from a single command/Make target and produce inspectable artifacts.
+
+### Current CI execution blocker
+
+Fresh diagnostic on 2026-09-09:
+
+- draft diagnostic PR #78, closed without merge;
+- branch commit `52817d0c6084663fac00ee7528ffc5caf8610b36` changed only a workflow comment;
+- Runner Canary run `34323256267` concluded `failure`;
+- job `102374520180` returned `logs_url=null` and `steps=null`.
+
+Therefore `CI_EXECUTION=NOT_EXECUTED`; no repository Python/test failure is established by that run. Issue #30 remains the canonical blocker until a fresh canary produces actual logs containing both `RUNNER_EXECUTED` and `PYTHON_EXECUTED`.
 
 ### Remaining reviewer-path gates
 
@@ -119,24 +143,29 @@ These are not all JOSS editorial requirements, but they protect CogniPrint from 
 
 **DO NOT SUBMIT TO JOSS** if any of the following are true:
 
-1. clean install/test fails at candidate SHA;
-2. paper references a capability not present in that release;
-3. DOI/archive metadata points at a different software state;
-4. required public data cannot be legally/reproducibly accessed;
-5. paper implies validated attribution/AI detection beyond `descriptive_only`;
-6. AI usage disclosure is incomplete;
-7. repository documentation requires maintainer-only knowledge to reproduce the central workflow.
+1. public development history is under six months or development is concentrated in a short window;
+2. demonstrated research impact is not yet credible and specific;
+3. clean install/test is not proven PASS at the exact candidate SHA;
+4. paper references a capability not present in that release;
+5. DOI/archive metadata points at a different software state;
+6. required public data cannot be legally/reproducibly accessed;
+7. paper implies validated attribution/AI detection beyond `descriptive_only`;
+8. AI usage disclosure is incomplete;
+9. repository documentation requires maintainer-only knowledge to reproduce the central workflow.
 
 ## 8. Ready-to-submit definition
 
 `JOSS_READY=PASS` only when:
 
+- JOSS six-month public-development and demonstrated-impact hard gates PASS;
 - candidate release SHA is frozen;
 - clean-room install + tests PASS;
 - one end-to-end reviewer workflow PASSes;
 - JOSS paper builds cleanly and is within word limit;
 - archive/DOI are verified and version-aligned;
 - docs/license/community files are complete;
+- state-of-field comparison and build-vs-contribute justification are defensible;
+- AI usage disclosure is complete and specific;
 - claim scan finds no unsupported capability;
 - owner explicitly approves external submission.
 
