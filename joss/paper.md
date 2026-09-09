@@ -14,7 +14,7 @@ authors:
 affiliations:
   - name: CogniPrint Research Initiative, Independent Research
     index: 1
-date: 06 September 2026
+date: 09 September 2026
 bibliography: paper.bib
 ---
 
@@ -36,7 +36,9 @@ The software is useful for experiments in stylometry, robustness analysis, synth
 
 # State of the field
 
-Quantitative style analysis has a long history, from early composition curves [@Mendenhall1887] to modern stylometry [@Holmes1998; @EderEtAl2016]. Vector-space representations and distance-based comparison are also standard tools in information retrieval and language analysis [@ManningEtAl2008]. CogniPrint does not replace these traditions. Instead, it packages a deliberately compact and interpretable profile representation together with perturbation diagnostics, explicit evidence classes, reproducibility artifacts, and conservative abstention boundaries.
+Quantitative style analysis has a long history, from early composition curves [@Mendenhall1887] to modern stylometry [@Holmes1998]. The `stylo` package provides mature computational-stylometry workflows in R [@EderEtAl2016], and standard vector-space and n-gram methods remain strong transparent baselines in language analysis [@ManningEtAl2008]. CogniPrint does not aim to replace these tools or claim a generally superior classifier.
+
+Its build-vs-contribute justification is narrower: CogniPrint couples a compact interpretable profile with controlled perturbation measurements, explicit evidence classes (`OBSERVED`, `INFERRED`, `ATTESTED`, `UNKNOWN`), versioned evidence artifacts, failure-first reporting, and research-governance gates that keep software maturity separate from stronger provenance or attribution claims. Conventional stylometric and n-gram methods remain comparison baselines rather than targets for replacement.
 
 The current public diagnostics use established public resources, including PAWS [@ZhangEtAl2019PAWS], Russian paraphrase datasets, and PAN15 authorship-verification material [@StamatatosEtAl2015PAN]. These datasets are used to test whether the implemented geometry can be reproduced and stress-tested under documented conditions; they are not treated as proof of universal attribution capability.
 
@@ -60,15 +62,17 @@ The project is distributed under the MIT License and supports Python 3.10–3.12
 
 # Research impact statement
 
-CogniPrint is designed as research infrastructure rather than a finished high-stakes classifier. Its immediate research value is to make profile construction, profile comparison, perturbation experiments, baseline checks, and failure reporting easier to reproduce and audit.
+CogniPrint is designed as research infrastructure rather than a finished high-stakes classifier. Its current realized use is within the public CogniPrint research programme: the package and scripts generate and audit statistical profiles, controlled comparisons, public-data diagnostics, and benchmark artifacts used to test the framework itself.
 
-The public repository already contains reproducibility scripts, benchmark material, a mathematical manuscript, controlled public-data diagnostics, an attribution-challenge protocol, a fingerprint-registry specification, and an explicit failure charter. This makes it possible for external researchers to inspect not only successful measurements but also the conditions under which stronger interpretation must stop.
+A concrete public result is the fixed Stage A descriptive pilot, where simple hashed TF-IDF baselines outperform the current 12D nearest-centroid representation. That negative result is retained because it constrains the software’s present role rather than being hidden.
 
-A central planned use is Attribution Challenge 001, a blind, preregistration-oriented experiment designed to test or falsify model-family fingerprint hypotheses under balanced source families, unseen-family evaluation, paraphrase, translation, human editing, and AI-to-AI rewriting. Importantly, this future research programme is not presented as a validated feature of the current release.
+External adoption remains an open gate rather than an asserted success. Before JOSS submission the project will document any external reproductions, integrations, citations, or research use that actually occurs. Attribution Challenge 001 is a planned blind preregistered experiment and is not presented as a validated feature of the current release.
 
 # AI usage disclosure
 
-Generative AI tools have been used as development assistants for portions of code review, refactoring, documentation drafting, research-operations planning, and manuscript editing. Retained changes remain the responsibility of the project maintainer and are subject to repository review, tests, reproducibility checks, and explicit scientific-claim boundaries. AI-generated text or code is not treated as independent scientific validation, methodological review, or evidence of correctness.
+Generative-AI assistants, including ChatGPT and coding-assistant tooling, have been used during parts of CogniPrint development and publication preparation. They have assisted with code review and refactoring suggestions, documentation drafting, research-operations checklists, manuscript editing, and inspection of repository or deployment state.
+
+Retained AI-assisted material remains the responsibility of the maintainer. Code changes are reviewed against the intended repository contract and are accepted only after available tests or reproducibility checks. Scientific statements are checked against versioned repository evidence, explicit evidence classes, failure/non-claim rules, and cited external sources where applicable. AI output is not treated as independent authorship, peer review, methodological validation, or evidence of correctness. The disclosure will be re-audited against the actual tools used through the final candidate release date.
 
 # Acknowledgements
 
