@@ -1,0 +1,17 @@
+# Default ownership for repository-wide changes
+* @TakoVHS
+
+# Research protocols, evidence schemas, and claim boundaries
+/challenge-001/ @TakoVHS
+/docs/ @TakoVHS
+/schemas/ @TakoVHS
+/reviewer-bundle/ @TakoVHS
+
+# Runtime, release, and security-sensitive paths
+/src/ @TakoVHS
+/scripts/ @TakoVHS
+/.github/ @TakoVHS
+/config/ @TakoVHS
+/integrations/ @TakoVHS
+SECURITY.md @TakoVHS
+pyproject.toml @TakoVHS
