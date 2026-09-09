@@ -51,7 +51,7 @@ Repository = "https://github.com/TakoVHS/CogniPrint-open"
 Research = "https://github.com/TakoVHS/CogniPrint-open/blob/main/docs/research-vision.md"
 
 [project.scripts]
-cogniprint = "cogniprint.cli:main"
+cogniprint = "cogniprint.entrypoint:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
