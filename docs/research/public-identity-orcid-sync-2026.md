@@ -46,7 +46,7 @@ Check the ORCID record first; do not create duplicates. Make only researcher-app
 Sign in at https://orcid.org/my-orcid → edit Biography → Keywords → Websites & social links. Check the current record before adding duplicates, select appropriate visibility and verify the resulting public page. For Works, import verified work metadata or add manually only after confirming release/identifier and the supported ORCID work type.
 
 Supporting evidence:
-- [Claim Firewall](../src/cogniprint/evidence_policy.py)
-- [Pilot M1](../docs/raid-ngram-baselines-m1.md)
-- [Trust boundaries](../docs/trust.md)
+- [Claim Firewall](../../src/cogniprint/evidence_policy.py)
+- [Pilot M1](../raid-ngram-baselines-m1.md)
+- [Trust boundaries](../trust.md)
 - [Oversight proposal](evidence-gated-oversight-protocol-2026.md)
