@@ -135,6 +135,7 @@ Specification: [`docs/fingerprint-registry-v0.1.md`](docs/fingerprint-registry-v
 
 CogniPrint's typed evidence states and Claim Firewall offer a small, inspectable engineering testbed for asking whether **AI auditing agents can reduce unsupported conclusions under incomplete, conflicting or out-of-distribution evidence** without losing useful coverage. This is a **proposal**, not a validated monitoring capability or a result of Challenge 001.
 
+- [Reviewer-facing research portfolio with links to code and negative results](docs/research/reviewer-portfolio-2026.md)
 - [Research question, falsification criteria and proposed evaluation protocol](docs/research/evidence-gated-oversight-protocol-2026.md)
 - [Claim-to-code traceability and public wording boundaries](docs/research/claim-traceability-register-2026.md)
 
