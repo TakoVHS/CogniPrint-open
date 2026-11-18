@@ -1,0 +1,115 @@
+name: quality-gate
+
+# Generic gate: detects the stack and runs whatever lint / typecheck / test / build scripts the repo defines.
+# Optional repository variables: NODE_VERSION, PNPM_VERSION, PYTHON_VERSION.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Detect Node project and package manager
+        id: pm
+        env:
+          PNPM_VERSION_VAR: ${{ vars.PNPM_VERSION || 'latest' }}
+        run: |
+          if [ ! -f package.json ]; then echo "present=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "present=true" >> "$GITHUB_OUTPUT"
+          if [ -f pnpm-lock.yaml ]; then pm=pnpm
+          elif [ -f yarn.lock ]; then pm=yarn
+          else pm=npm; fi
+          echo "pm=$pm" >> "$GITHUB_OUTPUT"
+          # pnpm/action-setup reads "packageManager" from package.json; only pass a version when it is absent.
+          if [ "$pm" = pnpm ] && ! grep -q '"packageManager"' package.json; then
+            echo "pnpm_version=$PNPM_VERSION_VAR" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.pm.outputs.pm == 'pnpm'
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: ${{ steps.pm.outputs.pnpm_version }}
+
+      - if: steps.pm.outputs.present == 'true'
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ vars.NODE_VERSION || 'lts/*' }}
+          cache: ${{ steps.pm.outputs.pm }}
+
+      - name: Install (frozen lockfile)
+        if: steps.pm.outputs.present == 'true'
+        env:
+          PM: ${{ steps.pm.outputs.pm }}
+        run: |
+          case "$PM" in
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile || yarn install --immutable ;;
+            npm)  if [ -f package-lock.json ]; then npm ci; else npm install --no-audit --no-fund; fi ;;
+          esac
+
+      - name: Lint, typecheck, test, build (scripts that exist)
+        if: steps.pm.outputs.present == 'true'
+        env:
+          CI: "true"
+          PM: ${{ steps.pm.outputs.pm }}
+        run: |
+          has() { node -e "const s=require('./package.json').scripts||{};process.exit(s[process.argv[1]]?0:1)" "$1"; }
+          ran=0
+          for s in lint typecheck type-check test build; do
+            if has "$s"; then echo "::group::$s"; "$PM" run "$s"; echo "::endgroup::"; ran=1; fi
+          done
+          [ "$ran" = 1 ] || echo "::warning::No lint/typecheck/test/build scripts in package.json"
+
+  python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Detect Python project
+        id: py
+        run: |
+          if [ -f pyproject.toml ] || [ -f requirements.txt ]; then echo "present=true"; else echo "present=false"; fi >> "$GITHUB_OUTPUT"
+
+      - if: steps.py.outputs.present == 'true'
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          python-version: ${{ vars.PYTHON_VERSION || '' }}
+
+      - name: Install
+        if: steps.py.outputs.present == 'true'
+        run: |
+          if [ -f uv.lock ]; then uv sync --frozen --all-extras --dev
+          elif [ -f pyproject.toml ]; then uv venv && (uv pip install -e ".[dev]" || uv pip install -e .)
+          else uv venv && uv pip install -r requirements.txt; fi
+
+      - name: Lint (ruff)
+        if: steps.py.outputs.present == 'true'
+        run: uvx ruff check .
+
+      - name: Tests (pytest, if a tests folder exists)
+        if: steps.py.outputs.present == 'true'
+        run: |
+          if [ -d tests ] || [ -d test ]; then
+            if [ -f uv.lock ]; then uv run --with pytest pytest -q; else uv run --no-project --with pytest pytest -q; fi
+          else
+            echo "::warning::No tests/ folder"
+          fi
