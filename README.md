@@ -10,6 +10,9 @@ CogniPrint starts from a deliberately narrow mathematical core: interpretable te
 
 Current scientific readiness remains **`descriptive_only`**.
 
+> **Independent review, November 2026:** [Start here — code, fixed negative result, scientific boundaries and reproducibility gates](docs/research/start-here-reviewer-2026-11-23.md). The recorded five-class Stage A RAID pilot used 500 selected records (351/149 grouped split): CogniPrint 12D macro-F1 **0.535883**, word 1–2 hashed TF-IDF **0.595220**. The lexical baseline **won**. This is development evidence, not a sealed blind validation. See the [exact protocol](docs/raid-ngram-baselines-m1.md).
+
+
 ## Why this matters
 
 A digital artifact may pass through several models, human editors, translation systems, agents, and publishing tools before it reaches a user.
@@ -130,6 +133,16 @@ CogniPrint therefore defines a research registry keyed conceptually by:
 The registry is for observed benchmark distributions, not immutable model identities.
 
 Specification: [`docs/fingerprint-registry-v0.1.md`](docs/fingerprint-registry-v0.1.md)
+
+## Evidence-gated oversight — proposed research direction
+
+CogniPrint's typed evidence states and Claim Firewall offer a small, inspectable engineering testbed for asking whether **AI auditing agents can reduce unsupported conclusions under incomplete, conflicting or out-of-distribution evidence** without losing useful coverage. This is a **proposal**, not a validated monitoring capability or a result of Challenge 001.
+
+- [Reviewer-facing research portfolio with links to code and negative results](docs/research/reviewer-portfolio-2026.md)
+- [Research question, falsification criteria and proposed evaluation protocol](docs/research/evidence-gated-oversight-protocol-2026.md)
+- [Claim-to-code traceability and public wording boundaries](docs/research/claim-traceability-register-2026.md)
+
+The current scope remains `descriptive_only`: the completed fixed Stage A RAID comparison reports CogniPrint 12D Macro-F1 **0.535883** versus word hashed TF-IDF **0.595220**. See [fixed baseline report](docs/raid-ngram-baselines-m1.md).
 
 ## Where CogniPrint fails
 
