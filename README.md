@@ -10,6 +10,9 @@ CogniPrint starts from a deliberately narrow mathematical core: interpretable te
 
 Current scientific readiness remains **`descriptive_only`**.
 
+> **Independent review, November 2026:** [Start here — code, fixed negative result, scientific boundaries and reproducibility gates](docs/research/start-here-reviewer-2026-11-23.md). The recorded five-class Stage A RAID pilot used 500 selected records (351/149 grouped split): CogniPrint 12D macro-F1 **0.535883**, word 1–2 hashed TF-IDF **0.595220**. The lexical baseline **won**. This is development evidence, not a sealed blind validation. See the [exact protocol](docs/raid-ngram-baselines-m1.md).
+
+
 ## Why this matters
 
 A digital artifact may pass through several models, human editors, translation systems, agents, and publishing tools before it reaches a user.
