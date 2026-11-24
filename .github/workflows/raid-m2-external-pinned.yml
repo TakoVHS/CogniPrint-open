@@ -1,17 +1,6 @@
 name: RAID M2 External Pinned Evidence
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/raid-m2-external-pinned.yml"
-      - "scripts/prepare_raid_pilot.py"
-      - "scripts/analyze_raid_calibration_m2.py"
-      - "scripts/run_raid_m2_stage_a.py"
-      - "src/cogniprint/benchmarks/raid_m2.py"
-      - "src/cogniprint/benchmarks/ngram.py"
-      - "src/cogniprint/benchmarks/development_methods.py"
-      - "src/cogniprint/benchmarks/development_statistics.py"
-      - "docs/raid-calibration-m2-development.md"
   workflow_dispatch:
 
 permissions:
