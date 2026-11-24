@@ -168,28 +168,58 @@ This proposition is a soundness rule for the proposed interface. Its proof is a
 direct consequence of frequentist coverage plus target equality. It is **not
 claimed as a new statistical theorem**.
 
-## 4. Target mismatch and explicit warrants
+## 4. Target mismatch and quantitative warrants
 
 Direct equality of targets is intentionally strict.
 
-For a mismatched certificate/claim pair, promotion requires an explicit warrant
+For mismatched certificate/claim targets, a bare statement such as
+\(\tau_\kappa\models\tau_c\) is not enough: the soundness proof needs an
+explicit numerical map from certified risk bounds to a bound on claim risk.
+
+For certificates \(\kappa_1,\ldots,\kappa_m\), define a quantitative warrant
 
 \[
-T:
-\left[
-\rho_\kappa(D)\le b
-\right]
-\Longrightarrow
-\left[
-\rho_c(D)\le\delta_c
-\right]
+T=(\mathcal W_T,g_T),
 \]
 
-for every \(D\) in the claim world class covered by the certificate.
+where \(g_T:[0,1]^m\to[0,1]\) is coordinatewise nondecreasing and
+
+\[
+\forall D\in\mathcal W_T:
+\qquad
+\rho_c(D)
+\le
+g_T\!\left(\rho_1(D),\ldots,\rho_m(D)\right).
+\]
+
+Hence, whenever \(\rho_i(D)\le b_i\) for all \(i\),
+
+\[
+\rho_c(D)
+\le
+g_T(b_1,\ldots,b_m).
+\]
+
+The static scope condition is
+
+\[
+\mathcal W_c
+\subseteq
+\mathcal W_T
+\cap
+\bigcap_i \mathcal W_{\kappa_i}^A.
+\]
+
+If the certificate and claim concern different populations, that transport step
+must itself be justified by a warrant; confidence level alone cannot repair a
+scope mismatch.
+
+Direct same-target promotion is the special case \(m=1\) with
+\(g_T(x)=x\).
 
 A warrant can come from:
 
-- logical implication;
+- logical implication with an explicit quantitative transformer;
 - an identification result;
 - a transport theorem;
 - a validated auxiliary evidence channel;
@@ -331,45 +361,53 @@ validated fusion procedure.
 Therefore the proposed generic Composition Bound with an automatic
 \(n^{-1/2}\) gain is **rejected**.
 
-## 8. Proposition — Warranted Heterogeneous Composition Soundness
+## 8. Proposition — Quantitatively Warranted Heterogeneous Promotion
 
 Let \(\kappa_1,\dots,\kappa_m\) certify possibly different targets
 \(\rho_1,\dots,\rho_m\), with failure budgets
 \(\alpha_1,\dots,\alpha_m\).
 
-Suppose the common claim scope is covered by every certificate, and for the
-realized bounds \(b_1,\dots,b_m\) there is an explicit warrant satisfying
+Assume a quantitative warrant \(T=(\mathcal W_T,g_T)\) as defined above, the
+static scope condition, and realized bounds \(b_i=B_i(z)\). Promotion is
+allowed only when
 
 \[
-\forall D\in\mathcal W_c:
-\left[
-\bigwedge_{i=1}^{m}\rho_i(D)\le b_i
-\right]
-\Longrightarrow
-\rho_c(D)\le\delta_c.
+g_T(b_1,\ldots,b_m)\le\delta_c.
 \]
 
-Then promoting claim \(c\) on the basis of that warrant has unsafe-promotion
-probability at most
+Then for every unsafe claim world \(D\in\mathcal W_c\) with
+\(\rho_c(D)>\delta_c\),
 
 \[
 \boxed{
-\sum_{i=1}^{m}\alpha_i
+\Pr_D(\mathrm{PROMOTE})
+\le
+\sum_{i=1}^{m}\alpha_i.
 }
 \]
 
-for every \(D\in\mathcal W_c\).
+### Proof
 
-### Proof sketch
+Let \(G_i=\{\rho_i(D)\le B_i(Z)\}\). On \(\bigcap_i G_i\), the
+coordinatewise monotonicity of \(g_T\) and the warrant give
 
-Whenever all certificate-validity events hold, the warrant implies the claim
-risk is within tolerance. Therefore an unsafe promotion requires at least one
-certificate-validity event to fail. Apply the union bound. \(\square\)
+\[
+\rho_c(D)
+\le
+g_T(\rho_1(D),\ldots,\rho_m(D))
+\le
+g_T(B_1(Z),\ldots,B_m(Z))
+\le
+\delta_c.
+\]
 
-This is the confidence-budget bookkeeping rule needed by the candidate type
-interface. The probability algebra is standard; the candidate research object
-is the explicit typing of targets, scopes, warrants, and downstream semantic
-claims.
+Thus unsafe promotion implies \(\bigcup_iG_i^c\). The union bound yields the
+displayed failure budget. No independence assumption is required. \(\square\)
+
+This is the confidence-budget bookkeeping rule needed by the candidate
+interface. The probability algebra is standard. The research object is the
+explicit scope/target/warrant boundary between statistical certificates and
+downstream semantic claims.
 
 ## 9. Certificate Scope Judgment
 
@@ -378,7 +416,7 @@ Working notation:
 \[
 \boxed{
 \kappa_1,\dots,\kappa_m
-\vdash_T
+\vdash_T^{\alpha}
 c
 }
 \]
@@ -387,17 +425,23 @@ means that:
 
 1. population/world scopes are compatible;
 2. every certificate statistical validity statement is well typed;
-3. the confidence budget is accounted for;
-4. an explicit warrant \(T\) maps the certified target statements to the claim
-   target;
-5. no unresolved counterworld witness exists within the declared world class.
+3. the composed failure budget \(\alpha\) is accounted for;
+4. an explicit quantitative warrant \(T\) maps the certified targets to an
+   upper bound on the claim target;
+5. the realized transformed bound discharges the claim tolerance;
+6. no known compatible counterworld refutes the promotion.
 
 Possible outputs are:
 
-- DIRECT: same target and scope; direct soundness rule applies;
-- WARRANTED: target mismatch bridged by an explicit verified warrant;
+- DIRECT: same target and scope; identity warrant applies;
+- WARRANTED: target mismatch bridged by an explicit verified quantitative warrant;
 - REJECT_WITH_WITNESS: a compatible unsafe world is available;
-- UNRESOLVED: neither a warrant nor a witness has been established.
+- UNRESOLVED: neither a valid warrant nor a witness has been established.
+
+At this stage CSJ is best described as an **effect-style indexed judgment**,
+not yet a full type-and-effect system. A full type-system claim is deferred
+until a term calculus and preservation/progress-style or equivalent semantic
+metatheory are specified.
 
 ## 10. Novelty boundary after prior-art review
 
