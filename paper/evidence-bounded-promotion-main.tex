@@ -23,8 +23,8 @@
 \newcommand{\BT}{\mathcal B_T}
 \newcommand{\riskc}{\rho_c}
 
-\title{When Statistical Certificates Cannot Justify Claims:\\
-Evidence-Bounded Promotion for AI Attribution}
+\title{From Statistical Certificates to Deployment Claims:\\
+A Fail-Closed Interface for AI Attribution}
 \author{Anonymous draft}
 \date{}
 
@@ -557,6 +557,22 @@ attribution performance.  A real promotion would require an additional
 validated evidence channel, transport result, or identification argument that
 actually constrains the downstream risk.
 
+
+\paragraph{Development-only empirical anchor.}
+To connect this formal failure mode to an executed ML workflow, we also ran a
+fixed descriptive pilot on RAID \citep{DuganEtAl2024RAID}.  The pilot contained
+500 records across five source classes and four domains, with lineage-grouped
+training and test partitions.  On the fixed test split, the current CogniPrint
+12-dimensional nearest-centroid representation achieved balanced accuracy
+\(0.542001\), while character 3--5 hashed TF--IDF and word 1--2 hashed TF--IDF
+baselines achieved \(0.590475\) and \(0.601996\), respectively.  These outputs
+are uncalibrated closed-set labels, not confidence certificates, and the pilot
+is development-only rather than a confirmatory Stage B result.  We include it
+only as an empirical motivation for the claim boundary: a benchmark score can
+be informative while still being insufficient for an open-world membership or
+provenance claim, and a weaker-than-baseline representation is a reason to
+narrow claims rather than expand them.
+
 The operational lesson is that numerical confidence and semantic permission
 must be separated.  A small bound on a known-family error rate cannot be
 silently upcast into a claim about known membership or provenance.  When a
@@ -603,23 +619,35 @@ systems are direct prior art against a generic claim of inventing
 machine-checkable evidence-to-claim reasoning.
 
 \paragraph{Proxy evidence, envelopes, and counterworlds.}
-A particularly close 2026 preprint by \citet{Zhu2026} publicly describes
-proxy-evidence certificates in terms of worlds compatible with declared
-evidence, sharp target images or envelopes, refinements or audits, and
-executable counterworlds.  Because this is a close conceptual collision, we
-treat the compatible-world, sharp-envelope, and counterworld components as
-prior art rather than presenting them as unique to CogniPrint.
+A particularly close 2026 preprint by \citet{Zhu2026} formulates proxy
+validation as a target-relative evidence-fiber problem.  Its full public
+source gives a no-promotion rule for target directions not controlled by the
+declared evidence, sharp target images and exact envelopes, minimal
+audit/refinement repairs, and executable counterworlds.  Its theorem package
+also gives a random interval certificate with \(1-\alpha\) coverage in two
+indistinguishable worlds and obtains a \(1-2\alpha\) joint-coverage conclusion
+by the union bound.  We therefore treat compatible-world semantics,
+target-mismatch no-promotion reasoning, sharp envelopes, audit/refinement,
+counterworld witnesses, and this basic frequentist union-bound reasoning as
+prior art rather than contributions of the present paper.
 
 \paragraph{Position of this paper.}
-The remaining contribution is deliberately narrower.  We assemble these ideas
-into a fail-closed certificate-to-claim methodology in which a frequentist
-certificate names its validated world class and exact risk target, a downstream
-semantic claim names a potentially different target and deployment scope, and
-promotion is allowed only after the corresponding sharp or conservative claim
-risk has been bounded.  The AI-attribution example makes the practical
-consequence explicit.  We present this as a methodological formalization and
-application, not as a new general probability theory, partial-identification
-theory, or type system.
+The remaining contribution is deliberately operational and application-driven.
+We organize multiple statistical certificates as explicitly typed obligations:
+each certificate names a validity world class and certified target, the
+downstream claim names its own target and deployment scope, conjunctive
+deployment coverage is checked before numerical feasibility, and the sharp
+claim-risk envelope is numeric only on the nonempty feasible-bound domain.
+The runtime interface then distinguishes \textsc{Promote},
+\textsc{Abstain}, and \textsc{Unresolved} and carries diagnostic reasons for
+scope, feasibility, or computation failures, while marginal certificate
+failure budgets yield a conservative false-promotion budget.  The reviewed
+Zhu source does not formulate these elements as this same multi-certificate
+runtime interface; we use that observation only to delimit the present
+methodological organization, not as a priority claim.  The AI-attribution
+application and development pilot make the ML consequence concrete.  We do not
+present this work as a new probability theory, a new theory of partial
+identification, or a new type system.
 
 \section{Limitations and Honest Boundaries}
 
