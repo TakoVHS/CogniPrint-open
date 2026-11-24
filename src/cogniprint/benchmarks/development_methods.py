@@ -378,6 +378,120 @@ def conformal_decision(
     }
 
 
+def evaluate_class_conditional_conformal(
+    reference: list[Record],
+    calibration: list[Record],
+    evaluation: list[Record],
+    vector_fn: VectorFn,
+    *,
+    alpha: float = 0.05,
+) -> dict[str, Any]:
+    """Fit and evaluate class-conditional conformal sets on a disjoint partition.
+
+    The finite-sample prediction-set coverage statement applies only to known
+    classes under the relevant within-class exchangeability assumptions. It does
+    not guarantee singleton correctness or rejection of genuinely unseen/OOD
+    classes.
+    """
+    if not reference or not calibration or not evaluation:
+        raise ValueError(
+            "reference, conformal calibration and evaluation must be non-empty"
+        )
+    _require_disjoint(
+        {
+            "reference": reference,
+            "conformal_calibration": calibration,
+            "evaluation": evaluation,
+        }
+    )
+    model = fit_class_conditional_conformal(
+        reference,
+        calibration,
+        vector_fn,
+        alpha=alpha,
+    )
+    known_labels = set(model.centroid_model.labels)
+
+    known_total = 0
+    known_set_covered = 0
+    known_singleton = 0
+    known_singleton_correct = 0
+    known_empty = 0
+    known_ambiguous = 0
+    unknown_total = 0
+    unknown_false_known = 0
+    unknown_rejected = 0
+    decision_counts: dict[str, int] = defaultdict(int)
+
+    for record in evaluation:
+        actual = str(record.get("model_family") or "").strip()
+        if not actual:
+            raise ValueError("evaluation record is missing model_family")
+        result = conformal_decision(model, record, vector_fn)
+        decision = str(result["decision"])
+        accepted = set(result["accepted_classes"])
+        decision_counts[decision] += 1
+
+        if actual in known_labels:
+            known_total += 1
+            if actual in accepted:
+                known_set_covered += 1
+            if decision in known_labels:
+                known_singleton += 1
+                if decision == actual:
+                    known_singleton_correct += 1
+            elif decision == UNKNOWN_OOD:
+                known_empty += 1
+            else:
+                known_ambiguous += 1
+        else:
+            unknown_total += 1
+            if decision in known_labels:
+                unknown_false_known += 1
+            else:
+                unknown_rejected += 1
+
+    return {
+        "protocol": "challenge-001-stage-a-class-conditional-conformal-eval-v1",
+        "status": "DEVELOPMENT_ONLY",
+        "scientific_claim_evidence": False,
+        "alpha": model.alpha,
+        "known_labels": sorted(known_labels),
+        "known_total": known_total,
+        "known_prediction_set_coverage": (
+            known_set_covered / known_total if known_total else None
+        ),
+        "known_singleton_rate": (
+            known_singleton / known_total if known_total else None
+        ),
+        "known_singleton_accuracy": (
+            known_singleton_correct / known_singleton
+            if known_singleton
+            else None
+        ),
+        "known_empty_set_rate": (
+            known_empty / known_total if known_total else None
+        ),
+        "known_ambiguous_set_rate": (
+            known_ambiguous / known_total if known_total else None
+        ),
+        "unknown_total": unknown_total,
+        "unknown_false_known_rate": (
+            unknown_false_known / unknown_total if unknown_total else None
+        ),
+        "unknown_rejection_rate": (
+            unknown_rejected / unknown_total if unknown_total else None
+        ),
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "coverage_guarantee_scope": (
+            "known-class prediction-set coverage under within-class "
+            "exchangeability; not a singleton-accuracy or OOD-rejection guarantee"
+        ),
+        "singleton_claim_guarantee": False,
+        "ood_rejection_guarantee": False,
+    }
+
+
 def _validate_logits(
     logits: Sequence[Sequence[float]],
     truth: Sequence[str],
