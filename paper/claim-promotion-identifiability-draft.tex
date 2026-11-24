@@ -379,32 +379,55 @@ does their minimum. The union bound controls the complement.
 There is no generic additional $n^{-1/2}$ improvement and no guarantee of
 strict tightening. Stronger fusion requires extra statistical structure.
 
-For heterogeneous targets, a promotion must instead carry an explicit warrant
-$T$ such that, throughout the claim scope,
+For heterogeneous targets, a bare target-name implication is insufficient.
+A promotion must carry an explicit \emph{quantitative warrant}
+$T=(\mathcal W_T,g_T)$, where $g_T:[0,1]^m\to[0,1]$ is coordinatewise
+nondecreasing and
 \[
-\bigwedge_i \{\rho_i(D)\le b_i\}
-\Longrightarrow
-\rho_c(D)\le\delta_c.
+\rho_c(D)
+\le
+g_T\!\left(\rho_1(D),\ldots,\rho_m(D)\right)
 \]
-When the certificate failure budgets are $\alpha_i$, this warranted
-composition has unsafe-promotion probability at most $\sum_i\alpha_i$ by
-the same union-bound argument.
+throughout the warrant scope.  The claim scope must be contained in the
+warrant scope and in every certificate-valid world class.  For realized
+bounds $b_i$, promotion requires
+\[
+g_T(b_1,\ldots,b_m)\le\delta_c.
+\]
+On the intersection of the certificate-validity events, monotonicity then
+implies $\rho_c(D)\le\delta_c$.  Hence an unsafe promotion requires at
+least one certificate-validity failure and has probability at most
+$\sum_i\alpha_i$ by the union bound.  No independence assumption is needed.
 
 \subsection{Difference from assurance and statistical-program verification}
 
 Assurance 2.0, SACM, and machine-checked assurance languages already distinguish
 claims, evidence, assumptions, inferential links, and defeaters; Belief Hoare
 Logic and StatWhy already formalize requirements and interpretations of
-statistical procedures and verify their correct use. We therefore do not claim
-novelty for evidence-to-claim warrants, statistical preconditions, or
-machine-checked argument structure. The narrower object investigated here is a
-certificate-scope judgement in which a realized frequentist certificate carries
-an explicit risk functional, validation/deployment world class, evidence scope,
-and confidence budget, while a downstream semantic claim carries its own target
-risk and tolerance. Promotion across mismatched targets is blocked unless a
-separate identification or transport warrant is supplied, and failure can be
-represented by a compatible partial-identification counterworld. Whether this
-specific combination is new remains under external review.
+statistical procedures and verify their correct use. Approximate Hoare Logic
+also already indexes formal judgements by probabilistic failure budgets and
+composes them via union bounds, while later systems such as Eris provide richer
+first-class error accounting. We therefore do not claim novelty for
+evidence-to-claim warrants, statistical preconditions, machine-checked argument
+structure, or additive confidence/error budgeting.
+
+A further high-risk collision is the 2026 preprint \emph{Proxy Evidence
+Certificates and World-Model Validation: Evidence Fibers, Sharp Envelopes, and
+Counterworld Realization}. Its public record describes certification over
+worlds compatible with proxy evidence, sharp target images of evidence fibers,
+and executable counterworlds for residual uncertainty. We treat that work as
+prior art for novelty purposes, while not treating a preprint as peer-reviewed
+validation.
+
+The narrower object investigated here is a certificate-scope judgement in
+which a realized frequentist certificate carries an explicit risk functional,
+validation/deployment world class, evidence scope, and confidence budget, while
+a downstream semantic claim carries its own target risk and tolerance.
+Promotion across mismatched targets is blocked unless a separate quantitative
+identification or transport warrant is supplied. At this stage this is best
+described as an \emph{effect-style indexed judgement}, not yet as a new
+type-and-effect system. Whether this specific combination is distinct remains
+under external review.
 
 \section{Conditional-Kernel Representation of Evidence Composition}
 \label{sec:composition}
