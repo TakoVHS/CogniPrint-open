@@ -70,17 +70,24 @@ The manuscript must not say:
 
 Output: theory note v0.2.
 
-### Days 15–30 — finite-sample statistics
+### Days 15–30 — finite-sample baseline + novelty separation
 
-Study how to replace the unknown population quantity epsilon with an
-independent-sample confidence bound. Candidate tools:
+The first finite-sample baseline is now implemented:
 
-- binomial confidence bounds on accepted risk;
-- DKW-style uniform empirical-process bounds where applicable;
-- calibration confidence bands;
-- risk-controlling prediction-set / selective-classification results.
+- exact one-sided binomial upper confidence bound for a fixed threshold;
+- Bonferroni simultaneous validity over a predeclared finite threshold grid;
+- post-calibration threshold selection from that fixed grid;
+- explicit refusal to replace pointwise calibration defect with ECE.
 
-Output: theorem or proposition with an explicit finite-sample confidence level.
+This is **not** a novelty claim. RCPS, Learn-then-Test, Conformal Risk Control,
+Selective Conformal Risk Control, LEC (ICML 2026), and related work already
+occupy finite-sample held-out risk-control territory.
+
+The research task for this phase is therefore to identify a genuinely distinct
+claim-admissibility result above the risk-control baseline.
+
+Output: literature collision map + candidate theorem that is not a restatement
+of existing selective-risk control.
 
 ### Days 31–45 — manuscript alpha
 
@@ -91,11 +98,12 @@ Target structure:
 1. Introduction
 2. Related work
 3. Formal setup
-4. Main results
-5. Counterexamples / impossibility
-6. Synthetic verification
-7. CogniPrint Stage A motivation
-8. Limitations
+4. Known finite-sample risk-control baseline
+5. Candidate claim-admissibility result
+6. Counterexamples / impossibility
+7. Synthetic verification
+8. CogniPrint Stage A motivation
+9. Limitations and novelty audit
 
 Output: private PDF alpha.
 
