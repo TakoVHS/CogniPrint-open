@@ -136,7 +136,7 @@ No protocol language presupposes that the 12D curve lies below an n-gram curve.
 
 ## 9. Open-world evaluation and false-known behavior
 
-A held-out source family that was unavailable to the known-class classifier is used to evaluate open-world failure.
+Open-world failure is evaluated with four predeclared leave-one-machine-family-out Stage A development folds. Human remains a known control, while `chatgpt`, `gpt4`, `llama-chat`, and `mistral-chat` are each held out in turn from classifier fitting and calibration within their fold.
 
 For a pre-frozen acceptance threshold, the development evaluator reports:
 
@@ -151,13 +151,25 @@ A maximum-softmax threshold is retained only as a transparent baseline. Threshol
 
 ## 10. Conformal prediction sets
 
-CogniPrint currently implements class-conditional split conformal prediction using cosine nonconformity:
+The executed M2 study uses a representation-agnostic class-conditional split-conformal layer on separately temperature-scaled probability vectors.
+
+For a calibration example `(x_i, y_i)`:
 
 ```text
-score(x,y) = 1 - cosine_similarity(x, centroid_y)
+score_i = 1 - p(y_i | x_i)
 ```
 
-For each known class, calibration scores come only from its dedicated conformal-calibration examples. The prediction set contains classes whose conformal p-values exceed the frozen alpha.
+For candidate class `k` on a new example:
+
+```text
+candidate_score = 1 - p(k | x)
+```
+
+The class-conditional conformal p-value is:
+
+```text
+(1 + count(calibration_score >= candidate_score)) / (n_class + 1)
+```
 
 Decision mapping:
 
@@ -166,9 +178,9 @@ Decision mapping:
 - multiple classes -> `UNKNOWN_AMBIGUOUS`;
 - inadequate calibration/evidence -> `UNKNOWN_INSUFFICIENT_EVIDENCE`.
 
-The finite-sample coverage interpretation applies to known-class **prediction sets** under the relevant exchangeability assumptions. It is not a guarantee that a singleton is correct and is not a guarantee that an unseen family is rejected.
+The finite-sample coverage interpretation applies to known-class **prediction sets** under the relevant class-conditional exchangeability assumptions. It is not a guarantee that a singleton is correct and is not a guarantee that an unseen family is rejected.
 
-The report therefore separates prediction-set coverage, singleton rate/accuracy, ambiguity, empty sets, insufficient evidence and held-out unknown false-known behavior.
+The M2 implementation records known prediction-set coverage and singleton behavior separately from unknown false-known/rejection behavior. A post-result limitation is that unknown non-singletons currently combine empty and ambiguous sets in the aggregate rejection statistic; that must not be presented as a pure OOD-empty-set rate.
 
 ## 11. Decision-theoretic reject option and Claim Firewall
 
@@ -230,15 +242,25 @@ A negative result narrows the claim and is retained.
 
 The historical Stage A sample is small for fine-grained calibration claims. The current feature map is not automatically language-invariant. Cross-language transfer is therefore outside the primary Paper 1 claim. Conformal validity depends on exchangeability assumptions appropriate to the chosen calibration/test design. Open-set metrics depend on the particular held-out families and cannot establish universal OOD rejection.
 
-## 15. Planned result table — intentionally blank
+## 15. First real pinned M2 result
 
-| Representation | Macro-F1 | NLL | Brier | Risk @ matched coverage | FKR unknown | AURC |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| CogniPrint 12D | TBD | TBD | TBD | TBD | TBD | TBD |
-| Word n-gram | TBD | TBD | TBD | TBD | TBD | TBD |
-| Character n-gram | TBD | TBD | TBD | TBD | TBD | TBD |
+The first real pinned M2 run completed on 24 November 2026 using the historical Stage A source, feature and selected-record hashes. Full evidence is recorded in [`docs/raid-m2-results-2026-11-24.md`](../docs/raid-m2-results-2026-11-24.md).
 
-No value in this table may be filled from synthetic fixtures or tuned-on-test experiments.
+| Representation | Mean macro-F1 | Mean NLL | Mean Brier | Mean AURC | Mean false-known |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| CogniPrint 12D cosine centroid | 0.382981 | 1.348983 | 0.710081 | 0.511947 | 0.657500 |
+| Character 3–5 hashed TF-IDF | 0.447966 | 1.241039 | 0.673324 | 0.338034 | **0.485000** |
+| Word 1–2 hashed TF-IDF | **0.515231** | **1.234877** | **0.670327** | **0.303210** | 0.512500 |
+
+Lower is better for NLL, Brier, AURC and false-known rate.
+
+The first M2 result is therefore negative/mixed rather than a 12D win. The lexical baselines have better aggregate point estimates on the principal closed-set, proper-score and selective-risk summaries. However, all predeclared per-fold 95% lineage-group bootstrap intervals for 12D-versus-baseline NLL and Brier differences include zero, so the aggregate ordering must not be converted into a pooled significance claim without a separately specified cross-fold estimand.
+
+Temperature scaling also produced a negative 12D result: mean held-out NLL worsened from 1.277792 to 1.348983, and mean Brier worsened from 0.692123 to 0.710081. By contrast, both n-gram representations improved under the frozen transform, but all eight n-gram fits hit the lower temperature bound `T=0.05`, motivating a separately specified score-scale sensitivity study rather than retroactive retuning.
+
+The conformal layer produced very low false-known singleton rates on held-out families, but known singleton rates were also extremely low: about 0.6% for 12D, 2.8% for character n-grams and 6.1% for word n-grams. This is evidence of a highly conservative prediction-set regime, not proof of strong practical OOD detection.
+
+The result therefore supports **claim narrowing and abstention** rather than stronger source-attribution claims.
 
 ## References
 
@@ -251,4 +273,4 @@ No value in this table may be filled from synthetic fixtures or tuned-on-test ex
 
 ## Current status
 
-This document is a research protocol/manuscript draft. M2 is **NOT EXECUTED**. No DOI, peer review, external endorsement, Stage B authorization or scientific feature unlock is implied.
+This document is a research protocol/manuscript draft with the first real pinned M2 result incorporated. M2 is **EXECUTED / DEVELOPMENT_ONLY / PRE-FREEZE**. The result does not create a DOI, peer review, external endorsement, Stage B authorization or scientific feature unlock.
