@@ -25,8 +25,11 @@ Rationale:
 2. Keep the submitted PDF double blind.
 3. Verify that every author has a complete active OpenReview profile.
 4. Add the required first-page disclosure that an LLM was used as an
-   assistive tool; the human author remains responsible for all claims,
-   derivations, citations, and text.
+   assistive tool. Before submission, the human author must independently
+   re-check and be able to defend every central definition, proof, literature
+   statement, and scientific conclusion; TMLR places responsibility for all
+   content on the listed authors and explicitly expects the scientific ideas,
+   claims, and results to be human-grounded rather than delegated to an LLM.
 5. Keep novelty claims narrow and support every mathematical claim with either
    a proof or an explicit citation.
 6. Complete the full-text prior-art comparison, especially the Zhu preprint,
@@ -39,9 +42,10 @@ Rationale:
 ## Why no 2027 workshop is selected today
 
 As of 24 November 2026, the ICLR 2027 workshop program has not yet been
-finalized: the official workshop acceptance notification is scheduled for
-29 November 2026. Individual workshop calls therefore cannot yet be treated as
-stable submission targets merely because proposal websites exist.
+finalized. Official ICLR pages place workshop decisions in the late-November /
+early-December window, and individual workshop calls should therefore not yet
+be treated as stable submission targets merely because proposal websites
+exist.
 
 ICML 2027 has published its main-conference dates, but the 2027 individual
 workshop calls are not yet available. The official main-track policy has also
