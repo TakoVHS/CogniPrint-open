@@ -511,6 +511,21 @@ The first real run should compare the same frozen scoring/classifier family for
 logistic regression must be frozen prospectively and applied consistently to
 all three representations.
 
+The historical RAID M1 lexical baselines must not be silently replaced. M1 used
+the documented privacy-preserving hashed protocol: character 3–5 n-grams with
+262144 bins and word 1–2 n-grams with 131072 bins, logarithmic TF, train-only
+IDF, L2 normalization and cosine nearest centroid. A scikit-learn TF-IDF +
+logistic-regression comparison is scientifically admissible only as a **new M2
+baseline**, prospectively specified and clearly separated from the historical
+M1 result.
+
+Likewise, the development study should not create a new persistent
+`raid_stage_a.csv` containing raw texts merely for convenience. Reuse the
+existing pinned-source / selected-record-manifest approach: verify the
+authoritative RAID source and hashes, rehydrate only selected records
+transiently, and persist aggregate features, predictions, metrics and hashes
+rather than raw source text where the existing privacy contract forbids it.
+
 The study protocol must not contain language such as "the 12D curve should be
 lower". The admissible statement is: **the ordering is unknown before
 evaluation**.
