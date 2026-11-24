@@ -1,6 +1,6 @@
 # Certificate-to-Claim Target Typing — Candidate Formal Object
 
-Status: **CANDIDATE / NOT A THEOREM / NOVELTY UNESTABLISHED**
+Status: **CANDIDATE / HIGH COLLISION RISK / NOT A THEOREM / NOVELTY UNESTABLISHED**
 
 This note records the only novelty candidate surviving the 2026-11-24 deep
 audit. It is intentionally separated from the proved/standard components.
@@ -102,3 +102,79 @@ Its existence proves that the certificate alone does not entail the claim.
    convex world-class specification?
 
 No theorem or novelty claim should be made until these are checked externally.
+
+
+## 7. Newly identified collision risks
+
+The deep audit found close antecedents that materially narrow this candidate.
+
+### Assurance 2.0 / Toulmin-style warrants
+
+Assurance-case theory already distinguishes:
+- evidence incorporation;
+- the reasoning/warrant linking evidence to a claim;
+- substitution/concretion steps;
+- side claims/assumptions required for the inference;
+- defeaters and reasons a top-level claim is not established.
+
+Therefore the generic rule
+
+> evidence may support claim B only if an explicit warrant bridges evidence A to B
+
+is established argumentation/assurance territory.
+
+### StatWhy
+
+StatWhy formally annotates statistical hypothesis-testing programs with the
+requirements of the statistical methods and automatically checks whether those
+requirements were specified, including assumptions that cannot themselves be
+mechanically verified, such as properties of the unknown population.
+
+Therefore the generic idea
+
+> statistically typed requirements + machine checking of missing assumptions
+
+also has strong prior art.
+
+### Machine-checked assurance cases
+
+Recent assurance work uses logic programming / machine checking to determine
+whether a top-level claim follows and to expose defeaters or reasons for
+failure.
+
+Therefore "machine-checkable non-promotion" is not enough by itself to
+establish novelty.
+
+## 8. Surviving candidate, narrowed again
+
+The remaining candidate is now:
+
+> a domain-specific statistical interface in which each certificate carries
+> its exact target functional, validation/deployment population scope,
+> evidence channel, confidence accounting, and transport assumptions; each
+> downstream AI provenance claim carries a distinct semantic target and
+> tolerated risk; and rejection is witnessed by a partial-identification
+> counterworld that satisfies the certificate while violating the claim.
+
+Potential distinct ingredients are the **combination** of:
+
+1. statistical target typing rather than generic argument typing;
+2. explicit prevention of loss/population/evidence-scope upcasts;
+3. partial-identification counterworlds as concrete rejection witnesses;
+4. finite-sample confidence accounting that survives only admissible
+   composition;
+5. a claim poset that distinguishes semantic/logical strength from statistical
+   confidence.
+
+Whether this combination is actually novel is still unknown.
+
+## 9. Revised falsification question
+
+The external-review question should now be even narrower:
+
+> Is there an existing formal system that types a statistical certificate by
+> target functional, population/domain, evidence sigma-field and confidence
+> budget, then checks whether it can support a semantically distinct downstream
+> claim and emits a compatible counterworld when the promotion is invalid?
+
+If such a system exists, the remaining theory novelty largely collapses.
