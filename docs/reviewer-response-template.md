@@ -6,51 +6,139 @@ Date:
 
 Public link or email reference (optional):
 
-## 1. Current claim boundaries
+Review classification:
 
-Are CogniPrint's current public claims appropriately bounded for a `descriptive_only` research framework?
+- substantive methodological review;
+- informal methodological comment;
+- decline/referral;
+- acknowledgement only.
 
-## 2. Current methodological concerns
+## 1. Claim boundaries
 
-What are the most important weaknesses in the implemented feature definitions, corpus design, perturbation protocol, similarity/stability analysis, or uncertainty language?
+Are CogniPrint's current claims appropriately bounded at `descriptive_only`?
 
-## 3. Model-fingerprint benchmark
+Does any wording still read as authorship, exact-model identity, universal
+AI-origin or reliable OOD detection despite the explicit non-claims?
 
-Does the proposed benchmark adequately separate closed-set classification from open-world attribution? Which baselines, negative controls, split rules, or calibration tests are missing?
+## 2. M1/M2 interpretation
 
-## 4. Robustness and failure modes
+The current 12D representation did not lead the tested lexical baselines on the
+fixed M1 comparison or M2 aggregate point estimates.
 
-Are paraphrasing, translation, domain/language shift, model drift, unseen model families, and human editing treated strongly enough? Which additional failure tests should be mandatory?
+Is the project's negative/mixed interpretation sufficiently conservative?
 
-## 5. Human–AI intervention mapping
+Are we making too much or too little of the fact that the predeclared per-fold
+proper-score intervals all include zero?
 
-Is the proposed sentence/span/revision-level human–AI intervention study methodologically defensible? What labels, controls, or evaluation metrics would you require?
+## 3. Five-role / leave-one-family-out design
 
-## 6. Provenance boundary
+Is the lineage-disjoint separation into:
 
-Is the distinction between content-derived statistical evidence and externally authenticated provenance evidence sufficiently clear? Are there cases where the current wording could still be mistaken for actor/tool provenance proof?
+- training/reference;
+- probability calibration;
+- conformal calibration;
+- threshold development;
+- held-out development evaluation
 
-## 7. Reproducibility
+methodologically defensible?
 
-Are the public materials sufficient to inspect and reproduce the current descriptive evidence and to audit the proposed benchmark protocol? If not, what is missing?
+Is leave-one-machine-family-out useful Stage A evidence when every family is
+already visible to the research programme?
+
+## 4. Probability mapping and temperature scaling
+
+M2 treats cosine-centroid similarity vectors as logit-like scores before scalar
+temperature scaling.
+
+M2/M2.1 found:
+
+- 12D calibration-selected temperatures worsened held-out NLL on average;
+- n-gram M2 fits all hit `T=0.05`;
+- an exploratory wider grid selected `T=0.01–0.02` for n-grams;
+- score scales differ greatly across representations.
+
+Would you retain this probability mapping in a future sealed study?
+
+If not, what fixed/prospectively specified alternative would you recommend?
+
+## 5. Selective prediction
+
+M2.1's exploratory risk-coverage analysis did not reveal a hidden 12D
+advantage.
+
+Does the current evidence justify further selective-prediction work with this
+representation?
+
+What risk/coverage operating point would be scientifically meaningful?
+
+## 6. Conformal prediction
+
+M2.1 found:
+
+- unknown empty-set rate `0.0` in every fold/representation;
+- almost all unknown outcomes were multi-class ambiguous sets;
+- known examples were also overwhelmingly ambiguous;
+- duplicate declared lineage groups were absent.
+
+Is the correct conclusion that this conformal layer is presently a conservative
+ambiguity mechanism rather than an OOD detector?
+
+What conformal target/design, if any, would be appropriate for a future sealed
+study?
+
+## 7. Cross-fold inference
+
+The same Stage A corpus participates in multiple leave-one-family-out folds.
+
+Is any pooled cross-fold inferential estimand defensible here?
+
+If yes, what would you predefine?
 
 ## 8. Falsification
 
-What result would convince you that the fingerprint hypothesis is too unstable or weak to support model-family attribution?
+Does the current evidence already justify retiring the 12D representation from
+attribution research and keeping it only as an interpretable diagnostic
+baseline?
 
-## 9. Overall recommendation
+What future result should terminate the broader model-family fingerprint
+hypothesis?
+
+## 9. Stage B
+
+What must be frozen before a genuinely sealed Stage B study is scientifically
+worth running?
+
+Please identify required:
+
+- unseen source-family design;
+- calibration approach;
+- OOD/UNKNOWN rule;
+- sample size;
+- baseline set;
+- negative controls;
+- preregistration choices;
+- stopping/falsification criteria.
+
+## 10. Overall recommendation
 
 Choose one if useful:
 
-- Current descriptive release is responsibly bounded as written.
-- Current descriptive release needs specific corrections.
-- Proposed benchmark is a reasonable next research step with corrections noted below.
-- Proposed benchmark is not methodologically sufficient yet.
-- Evidence is insufficient even for the current descriptive framing.
-- I am not the appropriate reviewer for this question.
+- Current descriptive framing is responsibly bounded.
+- Current descriptive framing needs corrections.
+- M1/M2/M2.1 interpretation is methodologically reasonable with corrections.
+- Probability/calibration design should be replaced before Stage B.
+- Current 12D representation should remain only a diagnostic baseline.
+- The model-family fingerprint hypothesis should not proceed to Stage B.
+- I am not the appropriate reviewer.
 
 Additional comments:
 
 ---
 
-A response does not imply endorsement. CogniPrint remains `descriptive_only` unless later evidence independently justifies a status change.
+A response does not imply endorsement.
+
+A critical or negative independent methodological review is useful evidence and
+may satisfy the external review gate.
+
+Scientific readiness remains `descriptive_only` unless later evidence and a
+separate claim review justify a change.
