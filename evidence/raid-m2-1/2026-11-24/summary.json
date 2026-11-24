@@ -1,0 +1,210 @@
+{
+  "schema": "cogniprint-raid-m2-1-public-summary-001",
+  "status": "POST_RESULT_EXPLORATORY_EXECUTED",
+  "scientific_claim_evidence": false,
+  "readiness": "descriptive_only",
+  "research_status": "PRE-FREEZE",
+  "stage_b_status": "NOT_AUTHORISED_TO_START",
+  "parent_m2_results_sha256": "1fb39616725c90470e5dbc35ff7f4211190448e9bb1505c256d5febeba275dc3",
+  "execution": {
+    "workflow": "RAID M2.1 Post-Result Diagnostics",
+    "run_number": 1,
+    "run_id": 45373412957,
+    "job_id": 138373183883,
+    "head_sha": "576c939d8e491097fdf071476b796437a14a8a68",
+    "artifact_id": 14908979740,
+    "artifact_digest": "sha256:5dfba463455ddf2ab127190727fcc22d2840eb000b88f24d81f1429626127bd8",
+    "evidence_archive_sha256": "b9e8aaccb0816761d19de2aaa1d2329c5a29328fa4541037ab1b59936f79559b",
+    "diagnostics_sha256": "5ab5a4bf99ad9ab2dcfba76fde6a9b38286f64910a5f5c6f39c1a7d2d6792e90",
+    "reproducibility_sha256": "607744f280f8a582cfa082655c5de2cd785e6e24b229da4e65723a08ef35b73e",
+    "report_sha256": "ffa4c18f321e0d857ba450ea1712e7a4d2a5026a0dacb6463f080f3f3815245c",
+    "canonical_run_1_sha256": "9e90568b3443dd1561bb900c609c0baded57227d25a66b5880d7e0fa5dce0288",
+    "canonical_run_2_sha256": "9e90568b3443dd1561bb900c609c0baded57227d25a66b5880d7e0fa5dce0288",
+    "deterministic_match": true
+  },
+  "input_identity": {
+    "source_sha256": "c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4",
+    "features_sha256": "13faba4a3efaa1c7f88761722f146b7eb654fd08e4b833f2d7768a0ff45646ca",
+    "selection_manifest_sha256": "30685ed738c3f1f1074a1f89a67a504f0c9d0607b958894e385172623591f6cb",
+    "source_contract_sha256": "e0efa8ddf06861e0fbfd2ccb76313e9451986592b5d007a7cb71d30503fd9948",
+    "selected_records": 500,
+    "rehydrated_records": 500,
+    "unique_text_hashes": 500,
+    "duplicate_selected_ids": 0,
+    "missing_selected_ids": 0
+  },
+  "conformal_decomposition": {
+    "cogniprint_12d": {
+      "mean_unknown_empty_set_rate": 0,
+      "mean_unknown_ambiguous_set_rate": 0.9975,
+      "mean_unknown_singleton_false_known_rate": 0.0025,
+      "mean_known_singleton_rate": 0.005813953488372093,
+      "mean_known_empty_set_rate": 0,
+      "mean_known_ambiguous_set_rate": 0.9941860465116279
+    },
+    "character_3_5": {
+      "mean_unknown_empty_set_rate": 0,
+      "mean_unknown_ambiguous_set_rate": 1,
+      "mean_unknown_singleton_false_known_rate": 0,
+      "mean_known_singleton_rate": 0.027997416020671836,
+      "mean_known_empty_set_rate": 0,
+      "mean_known_ambiguous_set_rate": 0.9720025839793281
+    },
+    "word_1_2": {
+      "mean_unknown_empty_set_rate": 0,
+      "mean_unknown_ambiguous_set_rate": 0.995,
+      "mean_unknown_singleton_false_known_rate": 0.005,
+      "mean_known_singleton_rate": 0.06099483204134367,
+      "mean_known_empty_set_rate": 0,
+      "mean_known_ambiguous_set_rate": 0.9390051679586563
+    }
+  },
+  "exploratory_selective_risk_mean": {
+    "coverage_targets": [
+      0.25,
+      0.5,
+      0.6,
+      0.75,
+      0.9,
+      1
+    ],
+    "mean_achieved_coverage": [
+      0.2595736434108527,
+      0.5085917312661499,
+      0.6023255813953488,
+      0.762609819121447,
+      0.906266149870801,
+      1
+    ],
+    "cogniprint_12d": [
+      0.46255827505827507,
+      0.45460474308300397,
+      0.4928062678062678,
+      0.5476006191950464,
+      0.5883364602876798,
+      0.6048837209302326
+    ],
+    "character_3_5": [
+      0.23004079254079254,
+      0.3886561264822134,
+      0.42934472934472934,
+      0.497560746786753,
+      0.5163122785074005,
+      0.5291860465116279
+    ],
+    "word_1_2": [
+      0.2511655011655012,
+      0.30369565217391303,
+      0.38418803418803416,
+      0.4198799136879632,
+      0.45656660412757977,
+      0.46233850129198967
+    ]
+  },
+  "frozen_threshold_policy_evaluation": {
+    "cogniprint_12d": {
+      "mean_coverage": 0.6654651162790698,
+      "mean_selective_risk": 0.49990666069295103
+    },
+    "character_3_5": {
+      "mean_coverage": 0.539922480620155,
+      "mean_selective_risk": 0.39335497835497835
+    },
+    "word_1_2": {
+      "mean_coverage": 0.5613307493540052,
+      "mean_selective_risk": 0.36226561026221465
+    }
+  },
+  "temperature_diagnostic": {
+    "cogniprint_12d": {
+      "m2_temperatures": [
+        0.5173955273178493,
+        0.5343237893318368,
+        0.38197862518788,
+        0.3601584040600575
+      ],
+      "grid_best_temperatures": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "mean_eval_nll_t1": 1.2777921923047184,
+      "mean_eval_nll_m2_temperature": 1.3489832967711917,
+      "mean_eval_nll_grid_temperature": 1.3239966853814504,
+      "mean_eval_brier_t1": 0.692122642428672,
+      "mean_eval_brier_m2_temperature": 0.7100812537503057,
+      "mean_eval_brier_grid_temperature": 0.7054257073110393
+    },
+    "character_3_5": {
+      "m2_temperatures": [
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ],
+      "grid_best_temperatures": [
+        0.02,
+        0.02,
+        0.02,
+        0.01
+      ],
+      "mean_eval_nll_t1": 1.3766628530858134,
+      "mean_eval_nll_m2_temperature": 1.2410394569493266,
+      "mean_eval_nll_grid_temperature": 1.1783188210343458,
+      "mean_eval_brier_t1": 0.7451719191166648,
+      "mean_eval_brier_m2_temperature": 0.6733238740412764,
+      "mean_eval_brier_grid_temperature": 0.6176718962215889
+    },
+    "word_1_2": {
+      "m2_temperatures": [
+        0.05,
+        0.05,
+        0.05,
+        0.05
+      ],
+      "grid_best_temperatures": [
+        0.02,
+        0.02,
+        0.01,
+        0.01
+      ],
+      "mean_eval_nll_t1": 1.3772287335839533,
+      "mean_eval_nll_m2_temperature": 1.2348769411831677,
+      "mean_eval_nll_grid_temperature": 1.085222477402085,
+      "mean_eval_brier_t1": 0.7454523678063709,
+      "mean_eval_brier_m2_temperature": 0.6703268669406733,
+      "mean_eval_brier_grid_temperature": 0.5908973015577415
+    }
+  },
+  "score_scale_four_fold_mean_probability_calibration": {
+    "cogniprint_12d": {
+      "score_std": 0.48334087000268505,
+      "top1_minus_top2_margin_mean": 0.33378228348995764
+    },
+    "character_3_5": {
+      "score_std": 0.04502419807048622,
+      "top1_minus_top2_margin_mean": 0.00956479655912182
+    },
+    "word_1_2": {
+      "score_std": 0.02078673922862166,
+      "top1_minus_top2_margin_mean": 0.00939133790463903
+    }
+  },
+  "conformal_lineage_structure": {
+    "every_calibration_record_unique_declared_lineage": true,
+    "largest_records_per_lineage_group": 1,
+    "interpretation": "Duplicate declared lineage groups did not explain conformal ambiguity; exchangeability remains an assumption."
+  },
+  "interpretation": {
+    "result_class": "post_result_failure_analysis",
+    "core_findings": [
+      "Near-zero M2 conformal false-known came from ambiguity rather than empty-set OOD rejection.",
+      "Exploratory risk-coverage does not reveal a hidden 12D selective advantage.",
+      "The M2 n-gram T=0.05 lower bound was materially restrictive for the tested cosine score scale.",
+      "Widening the lower temperature range does not rescue 12D calibration; T=1 remains better on average on exposed evaluation data.",
+      "The 60% threshold-development coverage rule is not a held-out coverage guarantee."
+    ],
+    "claim_effect": "Narrow claims and redesign future sealed probability/OOD methodology; do not replace M2 #1."
+  }
+}
