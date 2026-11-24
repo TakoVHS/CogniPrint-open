@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{hyperref}
+\usepackage{booktabs}
 \usepackage[margin=1in]{geometry}
 
 \newtheorem{theorem}{Theorem}
@@ -117,6 +118,126 @@ restriction of the world class, (ii) an evidence refinement that breaks the
 relevant observational equivalence, or (iii) narrowing the claim to a target
 that is identified.
 
+\section{Identified Sets and Robust Claim Admissibility}
+\label{sec:identified}
+
+Let $\rho_C(D)\in[0,1]$ denote the population error risk attached to claim
+$C$. For an observed evidence law $\mu_{\mathrm{obs}}^E$, define the
+identified risk set
+\[
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E)
+=
+\{\rho_C(D):D\in\mathcal W,\ \mu_D^E=\mu_{\mathrm{obs}}^E\}.
+\]
+
+\begin{definition}[Robust evidence admissibility]
+A claim is robustly admissible at tolerance $\delta$ iff
+\[
+\sup \mathcal R_C(E;\mu_{\mathrm{obs}}^E)\le\delta.
+\]
+\end{definition}
+
+\begin{proposition}[Plug-in non-certification]
+If the identified risk set contains
+$r_{\rm safe}\le\delta<r_{\rm unsafe}$, then a plug-in value
+$\hat r\le\delta$ based only on $E$ does not certify robust admissibility.
+\end{proposition}
+
+\begin{proof}
+The same observed evidence law is compatible with a world whose claim risk
+exceeds $\delta$. Hence the supremum of the identified risk set exceeds the
+tolerance.
+\end{proof}
+
+\begin{theorem}[No-data-at-the-same-channel impossibility]
+\label{thm:no-data}
+Suppose $D_0,D_1\in\mathcal W$ satisfy
+$\mu_{D_0}^{E}=\mu_{D_1}^{E}$ while
+\[
+\rho_C(D_0)\le\delta<\rho_C(D_1).
+\]
+For every $n$ and every decision rule
+$\varphi_n:E^n\to\{\mathrm{CLAIM},\mathrm{ABSTAIN}\}$,
+\[
+\Pr_{D_0}(\varphi_n=\mathrm{CLAIM})
+=
+\Pr_{D_1}(\varphi_n=\mathrm{CLAIM}).
+\]
+Thus if the rule claims with probability at most $\alpha$ in the unsafe world,
+it also claims with probability at most $\alpha$ in the safe observationally
+equivalent world.
+\end{theorem}
+
+\begin{proof}
+Equality of the one-observation evidence laws implies equality of all
+$n$-fold product laws. Every evidence-measurable decision rule therefore has
+the same distribution in the two worlds.
+\end{proof}
+
+\begin{proposition}[Channel-refinement monotonicity]
+Let $E'=(E,F)$ have observed joint law $\nu_{\mathrm{obs}}^{E,F}$, whose
+$E$-marginal is $\mu_{\mathrm{obs}}^E$. Then
+\[
+\mathcal R_C(E';\nu_{\mathrm{obs}}^{E,F})
+\subseteq
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E).
+\]
+\end{proposition}
+
+\begin{proof}
+Every world matching the observed joint law also matches its $E$-marginal.
+The compatible-world set can therefore only shrink under channel refinement.
+\end{proof}
+
+A deterministic derived channel $F=\phi(E)$ need not shrink the identified set
+at all. We call a refinement \emph{claim-relevant} when the inclusion is
+strict for the target claim; this is distinct from statistical independence.
+
+\subsection{Exact camouflage example}
+
+Let $\pi$ be the unknown-source fraction, $a_K$ the acceptance probability for
+known sources, and $a_U$ the acceptance probability for unknown sources. The
+risk of claiming known-set membership among accepted observations is
+\[
+\rho_K(\pi)
+=
+\frac{\pi a_U}{(1-\pi)a_K+\pi a_U}.
+\]
+Under exact camouflage $a_U=a_K>0$, this reduces to $\rho_K(\pi)=\pi$.
+Thus if $\pi\in[\pi_L,\pi_U]$, the sharp identified risk interval is
+$[\pi_L,\pi_U]$.
+
+Table~\ref{tab:identified} is deliberately synthetic: no OOD channel has been
+measured on the exposed RAID Stage A sample.
+
+\begin{table}[h]
+\centering
+\caption{Synthetic identified-risk consequences under declared channel assumptions.}
+\label{tab:identified}
+\begin{tabular}{lllll}
+\toprule
+Evidence & $\pi$ range & $(a_K,a_U)$ & Identified risk & $\delta=0.1$ \\
+\midrule
+Closed channel, camouflage & $[0,0.5]$ & $(0.50,0.50)$ & $[0,0.50]$ & Not admissible \\
+Closed + illustrative refinement & $[0,0.5]$ & $(0.95,0.05)$ & $[0,0.05]$ & Admissible \\
+Closed + redundant transform & $[0,0.5]$ & $(0.50,0.50)$ & $[0,0.50]$ & Not admissible \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The second row is an illustrative assumption, not a measured CogniPrint OOD
+result. A model-specific empirical table is deferred until prospectively
+designed evidence can measure the additional channel.
+
+\subsection{Decision-theoretic interpretation}
+
+The robust admissibility criterion is related to decisions under ambiguity,
+but it should not be called \emph{maximin optimality} without specifying the
+loss of abstention. If claim loss is $\rho_C(D)$ and abstention has fixed loss
+$\lambda$, then the worst-case comparison chooses CLAIM only when
+$\sup\mathcal R_C\le\lambda$ (up to tie convention). Different abstention
+costs or utilities produce different decision rules.
+
 \section{Claim poset}
 
 Claims are ordered by logical implication:
@@ -166,6 +287,18 @@ claim-admissibility calculus, together with composition and non-promotion
 rules across heterogeneous evidence channels, yields a useful new formal
 object for AI provenance and safety. This remains unestablished.
 
+\section{Partial-identification context}
+
+Identified sets and decisions under incomplete identification are classical.
+Manski's work separates population identification from finite-sample
+statistical uncertainty; Imbens--Manski, Romano--Shaikh, and Stoye develop
+inference for partially identified parameters. Gilboa--Schmeidler provide a
+classical maxmin model for ambiguity.
+
+We do not claim novelty for identified sets themselves. The candidate
+contribution is the claim-admissibility layer over heterogeneous evidence
+channels and explicit non-promotion rules for AI provenance claims.
+
 \section{Conclusion}
 
 \[
@@ -174,5 +307,39 @@ object for AI provenance and safety. This remains unestablished.
 claim without assumptions or evidence that identify that claim.}
 }
 \]
+
+\begin{thebibliography}{9}
+
+\bibitem{manski1990}
+C. F. Manski.
+Nonparametric Bounds on Treatment Effects.
+\emph{American Economic Review}, 80(2):319--323, 1990.
+
+\bibitem{manski2000}
+C. F. Manski.
+Identification Problems and Decisions under Ambiguity.
+\emph{Journal of Econometrics}, 95(2):415--442, 2000.
+
+\bibitem{imbensmanski2004}
+G. W. Imbens and C. F. Manski.
+Confidence Intervals for Partially Identified Parameters.
+\emph{Econometrica}, 72(6):1845--1857, 2004.
+
+\bibitem{romanoshaikh2008}
+J. P. Romano and A. M. Shaikh.
+Inference for Identifiable Parameters in Partially Identified Econometric Models.
+\emph{Journal of Statistical Planning and Inference}, 138(9):2786--2807, 2008.
+
+\bibitem{stoye2009}
+J. Stoye.
+More on Confidence Intervals for Partially Identified Parameters.
+\emph{Econometrica}, 77(4):1299--1315, 2009.
+
+\bibitem{gilboaschmeidler1989}
+I. Gilboa and D. Schmeidler.
+Maxmin Expected Utility with Non-Unique Prior.
+\emph{Journal of Mathematical Economics}, 18(2):141--153, 1989.
+
+\end{thebibliography}
 
 \end{document}
