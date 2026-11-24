@@ -378,6 +378,126 @@ def conformal_decision(
     }
 
 
+def evaluate_class_conditional_conformal(
+    reference: list[Record],
+    calibration: list[Record],
+    evaluation: list[Record],
+    vector_fn: VectorFn,
+    *,
+    alpha: float = 0.05,
+) -> dict[str, Any]:
+    """Fit and evaluate class-conditional conformal sets on a disjoint partition.
+
+    The finite-sample prediction-set coverage statement applies only to known
+    classes under the relevant within-class exchangeability assumptions. It does
+    not guarantee singleton correctness or rejection of genuinely unseen/OOD
+    classes.
+    """
+    if not reference or not calibration or not evaluation:
+        raise ValueError(
+            "reference, conformal calibration and evaluation must be non-empty"
+        )
+    _require_disjoint(
+        {
+            "reference": reference,
+            "conformal_calibration": calibration,
+            "evaluation": evaluation,
+        }
+    )
+    model = fit_class_conditional_conformal(
+        reference,
+        calibration,
+        vector_fn,
+        alpha=alpha,
+    )
+    known_labels = set(model.centroid_model.labels)
+
+    known_total = 0
+    known_set_covered = 0
+    known_singleton = 0
+    known_singleton_correct = 0
+    known_empty = 0
+    known_ambiguous = 0
+    known_insufficient = 0
+    unknown_total = 0
+    unknown_false_known = 0
+    unknown_rejected = 0
+    decision_counts: dict[str, int] = defaultdict(int)
+
+    for record in evaluation:
+        actual = str(record.get("model_family") or "").strip()
+        if not actual:
+            raise ValueError("evaluation record is missing model_family")
+        result = conformal_decision(model, record, vector_fn)
+        decision = str(result["decision"])
+        accepted = set(result["accepted_classes"])
+        decision_counts[decision] += 1
+
+        if actual in known_labels:
+            known_total += 1
+            if actual in accepted:
+                known_set_covered += 1
+            if decision in known_labels:
+                known_singleton += 1
+                if decision == actual:
+                    known_singleton_correct += 1
+            elif decision == UNKNOWN_OOD:
+                known_empty += 1
+            elif decision == UNKNOWN_INSUFFICIENT_EVIDENCE:
+                known_insufficient += 1
+            else:
+                known_ambiguous += 1
+        else:
+            unknown_total += 1
+            if decision in known_labels:
+                unknown_false_known += 1
+            else:
+                unknown_rejected += 1
+
+    return {
+        "protocol": "challenge-001-stage-a-class-conditional-conformal-eval-v1",
+        "status": "DEVELOPMENT_ONLY",
+        "scientific_claim_evidence": False,
+        "alpha": model.alpha,
+        "known_labels": sorted(known_labels),
+        "known_total": known_total,
+        "known_prediction_set_coverage": (
+            known_set_covered / known_total if known_total else None
+        ),
+        "known_singleton_rate": (
+            known_singleton / known_total if known_total else None
+        ),
+        "known_singleton_accuracy": (
+            known_singleton_correct / known_singleton
+            if known_singleton
+            else None
+        ),
+        "known_empty_set_rate": (
+            known_empty / known_total if known_total else None
+        ),
+        "known_ambiguous_set_rate": (
+            known_ambiguous / known_total if known_total else None
+        ),
+        "known_insufficient_evidence_rate": (
+            known_insufficient / known_total if known_total else None
+        ),
+        "unknown_total": unknown_total,
+        "unknown_false_known_rate": (
+            unknown_false_known / unknown_total if unknown_total else None
+        ),
+        "unknown_rejection_rate": (
+            unknown_rejected / unknown_total if unknown_total else None
+        ),
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "coverage_guarantee_scope": (
+            "known-class prediction-set coverage under within-class "
+            "exchangeability; not a singleton-accuracy or OOD-rejection guarantee"
+        ),
+        "singleton_claim_guarantee": False,
+        "ood_rejection_guarantee": False,
+    }
+
+
 def _validate_logits(
     logits: Sequence[Sequence[float]],
     truth: Sequence[str],
@@ -423,6 +543,50 @@ def softmax(
     exps = [math.exp(value - maximum) for value in scaled]
     total = sum(exps)
     return [value / total for value in exps]
+
+
+def multiclass_nll_per_example(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+) -> list[float]:
+    """Return per-example logarithmic losses for paired uncertainty analysis."""
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    index = {label: position for position, label in enumerate(labels_tuple)}
+    return [
+        -math.log(
+            max(
+                softmax(row, temperature=temperature)[index[actual]],
+                1e-15,
+            )
+        )
+        for row, actual in zip(matrix, truth_list)
+    ]
+
+
+def multiclass_brier_per_example(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+) -> list[float]:
+    """Return per-example multiclass Brier losses (lower is better)."""
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    index = {label: position for position, label in enumerate(labels_tuple)}
+    values: list[float] = []
+    for row, actual in zip(matrix, truth_list):
+        probabilities = softmax(row, temperature=temperature)
+        target = index[actual]
+        values.append(
+            sum(
+                (probability - (1.0 if position == target else 0.0)) ** 2
+                for position, probability in enumerate(probabilities)
+            )
+        )
+    return values
 
 
 def multiclass_nll(
@@ -522,6 +686,90 @@ def expected_calibration_error(
         mean_accuracy = sum(correct for _, _, correct in bucket) / bucket_size
         ece += bucket_size / total * abs(mean_accuracy - mean_confidence)
     return ece
+
+
+def _equal_frequency_calibration_error(
+    observations: Sequence[tuple[float, int]],
+    *,
+    bins: int,
+) -> float:
+    """Tie-preserving equal-frequency calibration error for binary events."""
+    bins = _require_positive_int(bins, "bins")
+    if not observations:
+        raise ValueError("calibration observations are empty")
+    confidence_groups: dict[float, list[int]] = defaultdict(list)
+    for confidence, outcome in observations:
+        value = float(confidence)
+        if not math.isfinite(value) or not 0.0 <= value <= 1.0:
+            raise ValueError("calibration confidence must be finite and in [0,1]")
+        if outcome not in (0, 1):
+            raise ValueError("calibration outcomes must be binary")
+        confidence_groups[value].append(int(outcome))
+
+    grouped = [
+        (confidence, len(outcomes), sum(outcomes))
+        for confidence, outcomes in sorted(confidence_groups.items())
+    ]
+    total = sum(size for _, size, _ in grouped)
+    target_size = max(1, math.ceil(total / bins))
+    buckets: list[list[tuple[float, int, int]]] = []
+    current: list[tuple[float, int, int]] = []
+    current_size = 0
+    for group in grouped:
+        _, group_size, _ = group
+        if (
+            current
+            and current_size + group_size > target_size
+            and len(buckets) < bins - 1
+        ):
+            buckets.append(current)
+            current = []
+            current_size = 0
+        current.append(group)
+        current_size += group_size
+    if current:
+        buckets.append(current)
+
+    error = 0.0
+    for bucket in buckets:
+        bucket_size = sum(size for _, size, _ in bucket)
+        mean_confidence = sum(
+            confidence * size for confidence, size, _ in bucket
+        ) / bucket_size
+        mean_outcome = sum(positive for _, _, positive in bucket) / bucket_size
+        error += bucket_size / total * abs(mean_outcome - mean_confidence)
+    return error
+
+
+def classwise_expected_calibration_error(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+    bins: int = 15,
+) -> float:
+    """Macro classwise ECE using every class probability on every example.
+
+    This differs from top-label ECE: for class k it compares p(y=k) with the
+    binary event 1[y=k] across all evaluation rows, then averages equally over
+    classes. It is a secondary binned diagnostic, not a proper scoring rule.
+    """
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    bins = _require_positive_int(bins, "bins")
+    probability_rows = [
+        softmax(row, temperature=temperature) for row in matrix
+    ]
+    per_class: list[float] = []
+    for class_index, label in enumerate(labels_tuple):
+        observations = [
+            (probabilities[class_index], int(actual == label))
+            for probabilities, actual in zip(probability_rows, truth_list)
+        ]
+        per_class.append(
+            _equal_frequency_calibration_error(observations, bins=bins)
+        )
+    return fmean(per_class)
 
 
 @dataclass(frozen=True)
@@ -627,4 +875,114 @@ def fit_temperature(
             bins=ece_bins,
         ),
         ece_bins,
+    )
+
+
+@dataclass(frozen=True)
+class TemperatureEvaluationResult:
+    """Held-out evaluation of a temperature fitted elsewhere."""
+
+    temperature: float
+    uncalibrated_nll: float
+    calibrated_nll: float
+    uncalibrated_brier: float
+    calibrated_brier: float
+    uncalibrated_ece: float
+    calibrated_ece: float
+    uncalibrated_classwise_ece: float
+    calibrated_classwise_ece: float
+    ece_bins: int
+    argmax_invariant: bool
+    evaluation_partition: str = "held_out_evaluation_only"
+    probability_semantics: str = "temperature_scaled_softmax_development_only"
+
+
+def evaluate_temperature(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float,
+    calibration_group_ids: Sequence[str],
+    evaluation_group_ids: Sequence[str],
+    ece_bins: int = 15,
+) -> TemperatureEvaluationResult:
+    """Evaluate a frozen temperature on a lineage-disjoint held-out partition.
+
+    Temperature MUST be fitted on the probability-calibration partition before
+    this function is called. This function refuses lineage overlap between that
+    partition and the evaluation rows.
+    """
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    ece_bins = _require_positive_int(ece_bins, "ece_bins")
+    temperature = float(temperature)
+    if not math.isfinite(temperature) or temperature <= 0.0:
+        raise ValueError("temperature must be finite and positive")
+
+    fit_groups = {str(value).strip() for value in calibration_group_ids}
+    eval_groups = [str(value).strip() for value in evaluation_group_ids]
+    if not fit_groups or any(not value for value in fit_groups):
+        raise ValueError("calibration group IDs must be non-empty")
+    if len(eval_groups) != len(matrix) or any(not value for value in eval_groups):
+        raise ValueError(
+            "evaluation group IDs must be non-empty and match evaluation rows"
+        )
+    overlap = sorted(fit_groups & set(eval_groups))
+    if overlap:
+        raise ValueError(
+            f"probability-calibration/evaluation lineage overlap: {overlap}"
+        )
+
+    def predicted_indices(temp: float) -> list[int]:
+        predictions: list[int] = []
+        for row in matrix:
+            probabilities = softmax(row, temperature=temp)
+            predictions.append(
+                min(
+                    range(len(labels_tuple)),
+                    key=lambda index: (-probabilities[index], labels_tuple[index]),
+                )
+            )
+        return predictions
+
+    raw_predictions = predicted_indices(1.0)
+    calibrated_predictions = predicted_indices(temperature)
+    argmax_invariant = raw_predictions == calibrated_predictions
+    if not argmax_invariant:
+        raise AssertionError(
+            "positive scalar temperature unexpectedly changed class argmax"
+        )
+
+    return TemperatureEvaluationResult(
+        temperature=temperature,
+        uncalibrated_nll=multiclass_nll(matrix, truth_list, labels_tuple),
+        calibrated_nll=multiclass_nll(
+            matrix, truth_list, labels_tuple, temperature=temperature
+        ),
+        uncalibrated_brier=multiclass_brier(matrix, truth_list, labels_tuple),
+        calibrated_brier=multiclass_brier(
+            matrix, truth_list, labels_tuple, temperature=temperature
+        ),
+        uncalibrated_ece=expected_calibration_error(
+            matrix, truth_list, labels_tuple, bins=ece_bins
+        ),
+        calibrated_ece=expected_calibration_error(
+            matrix,
+            truth_list,
+            labels_tuple,
+            temperature=temperature,
+            bins=ece_bins,
+        ),
+        uncalibrated_classwise_ece=classwise_expected_calibration_error(
+            matrix, truth_list, labels_tuple, bins=ece_bins
+        ),
+        calibrated_classwise_ece=classwise_expected_calibration_error(
+            matrix,
+            truth_list,
+            labels_tuple,
+            temperature=temperature,
+            bins=ece_bins,
+        ),
+        ece_bins=ece_bins,
+        argmax_invariant=argmax_invariant,
     )

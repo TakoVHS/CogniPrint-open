@@ -1,6 +1,6 @@
 # CogniPrint Attribution Challenge 001 — Preregistration Submission Packet
 
-Status: **HOLD — DO NOT SUBMIT WHILE `RESEARCH_FREEZE_001.md` IS `PRE-FREEZE`**
+Status: **HOLD — EXTERNAL REVIEW + RESEARCH FREEZE REQUIRED BEFORE SUBMISSION**
 
 Purpose: provide a copy-ready preregistration package for an external timestamped registration service once Challenge 001 is genuinely frozen.
 
@@ -10,6 +10,10 @@ Recommended registration path: use a general-purpose preregistration template su
 
 This packet may be submitted only when all of the following are true:
 
+- at least one substantive independent methodological review of the executed M1/M2/M2.1 evidence has been received, classified and dispositioned;
+- the external review counter is `1/1` under the repository counting rule;
+- reviewer criticisms that affect probability mapping, OOD/UNKNOWN, thresholding, sample design or falsification have an explicit written disposition;
+- the Stage B probability/OOD method was selected **after** that review and was not tuned to the already-exposed Stage A evaluation outcomes;
 - `RESEARCH_FREEZE_001.md` status is `FROZEN`;
 - every `TO BE FILLED AT FREEZE` field is resolved;
 - the frozen file SHA-256 is preserved;
@@ -21,6 +25,8 @@ This packet may be submitted only when all of the following are true:
 - no sealed Stage B analysis has occurred.
 
 If any item is false, the preregistration remains `HOLD`.
+
+A favorable review does not automatically authorize Stage B. A critical or negative review may satisfy the review gate while still requiring the Stage B hypothesis or method to be narrowed, redesigned, or abandoned.
 
 ## Proposed title
 
@@ -348,6 +354,9 @@ Do not choose embargo merely to hide an unfavourable result or an incomplete pro
 
 ## Final pre-submit checklist
 
+- [ ] substantive external methodological review counter is `1/1`;
+- [ ] reviewer criticisms have been classified and dispositioned in the post-review decision record;
+- [ ] the selected Stage B probability/OOD method is prospectively justified and was not chosen by optimizing exposed Stage A evaluation outcomes;
 - [ ] `RESEARCH_FREEZE_001.md` says `FROZEN`;
 - [ ] no unresolved placeholders remain in the frozen protocol;
 - [ ] issue #30 has actual executed test evidence or equivalent runner evidence;

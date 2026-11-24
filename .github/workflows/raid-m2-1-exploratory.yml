@@ -1,0 +1,167 @@
+name: RAID M2.1 Post-Result Diagnostics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-raid-m2-1:
+    name: Pinned RAID M2.1 / post-result exploratory
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RAID_URL: https://dataset.raid-bench.xyz/train_none.csv
+      EXPECTED_SOURCE_SHA256: c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4
+      EXPECTED_SOURCE_SIZE: "801662741"
+      EXPECTED_FEATURES_SHA256: 13faba4a3efaa1c7f88761722f146b7eb654fd08e4b833f2d7768a0ff45646ca
+      EXPECTED_SELECTION_MANIFEST_SHA256: 30685ed738c3f1f1074a1f89a67a504f0c9d0607b958894e385172623591f6cb
+      EXPECTED_SOURCE_CONTRACT_SHA256: e0efa8ddf06861e0fbfd2ccb76313e9451986592b5d007a7cb71d30503fd9948
+      CONTRACT_B64: ewogICJhY3F1aXJlZF9hdF91dGMiOiAiMjAyNi0wNy0yOVQwNzoyNTozMFoiLAogICJieXRlX3NpemUiOiA4MDE2NjI3NDEsCiAgImNvbnRlbnRfbGVuZ3RoIjogODAxNjYyNzQxLAogICJkb3dubG9hZF9jb21tYW5kIjogImN1cmwgLS1sb2NhdGlvbiAtLWZhaWwgLS1yZXRyeSA1IC0tcmV0cnktZGVsYXkgNSAtLWNvbnRpbnVlLWF0IC0gLS1vdXRwdXQgL2hvbWUvdmlldGNhc2gvcHJvamVjdHMvY29nbmlwcmludC1kYXRhL3JhaWQvdHJhaW5fbm9uZS5jc3YgaHR0cHM6Ly9kYXRhc2V0LnJhaWQtYmVuY2gueHl6L3RyYWluX25vbmUuY3N2IiwKICAiZG93bmxvYWRfdXJsIjogImh0dHBzOi8vZGF0YXNldC5yYWlkLWJlbmNoLnh5ei90cmFpbl9ub25lLmNzdiIsCiAgImV0YWciOiAiXCJhM2IwNjYxYmRkYWIxZjdlNjM0OTllOGYzMDljNWViNC04XCIiLAogICJmaW5hbF91cmwiOiAiaHR0cHM6Ly9kYXRhc2V0LnJhaWQtYmVuY2gueHl6L3RyYWluX25vbmUuY3N2IiwKICAiaHR0cF9zdGF0dXMiOiAyMDAsCiAgImludGVuZGVkX3VzZSI6ICJTVEFHRV9BX0RFVkVMT1BNRU5UX09OTFkiLAogICJsYW5kaW5nX3VybCI6ICJodHRwczovL2dpdGh1Yi5jb20vbGlhbWR1Z2FuL3JhaWQvYmxvYi83Y2ZjZWZlZjIzOTMyM2U2ZmExZWM0M2QxYTZlY2M4MTVjOGI4NjQyL1JFQURNRS5tZCIsCiAgImxhc3RfbW9kaWZpZWQiOiAiVHVlLCAwNCBKdW4gMjAyNCAyMDoyMDowOCBHTVQiLAogICJsaWNlbnNlIjogIk1JVCIsCiAgInJhd19zb3VyY2VfY29tbWl0dGVkIjogZmFsc2UsCiAgInJhd19zb3VyY2VfaW5fZXZpZGVuY2VfYnVuZGxlIjogZmFsc2UsCiAgInNjaGVtYSI6ICJjb2duaXByaW50LXJhaWQtc291cmNlLWNvbnRyYWN0LTAwMSIsCiAgInNjaWVudGlmaWNfY2xhaW1fZXZpZGVuY2UiOiBmYWxzZSwKICAic2hhMjU2IjogImM1NDY3YmNhNmZjN2Y1YzcyOGM2NzY0NTBjN2Y4NGNlNDAxZGY2YzZjY2M2ZDgyYzQ3ZTNiNWYzYzZkNmZjZTQiLAogICJzb3VyY2VfYXV0aG9yaXR5IjogImh0dHBzOi8vZ2l0aHViLmNvbS9saWFtZHVnYW4vcmFpZCIsCiAgInNvdXJjZV9uYW1lIjogIlJBSUQgdHJhaW5fbm9uZSIsCiAgInNvdXJjZV9yZXBvc2l0b3J5X3JlYWRtZV91cmwiOiAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xpYW1kdWdhbi9yYWlkLzdjZmNlZmVmMjM5MzIzZTZmYTFlYzQzZDFhNmVjYzgxNWM4Yjg2NDIvUkVBRE1FLm1kIiwKICAic291cmNlX3JlcG9zaXRvcnlfcmV2aXNpb24iOiAiN2NmY2VmZWYyMzkzMjNlNmZhMWVjNDNkMWE2ZWNjODE1YzhiODY0MiIsCiAgInN0YXR1cyI6ICJQSU5ORUQiCn0K
+
+    steps:
+      - name: Check out PR
+        uses: actions/checkout@v4
+
+      - name: One-run gate
+        id: gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f docs/raid-m2-1-results-2026-11-24.md ]; then
+            echo "execute=false" >> "$GITHUB_OUTPUT"
+            echo "M2.1 result record already exists; heavy exploratory rerun suppressed."
+          else
+            echo "execute=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python 3.12
+        if: steps.gate.outputs.execute == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install CogniPrint
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Prepare pinned workspace and historical source contract
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/raid-m2-1-recovery/m1"
+          printf '%s' "$CONTRACT_B64" | base64 -d > "$RUNNER_TEMP/raid-m2-1-recovery/RAID_SOURCE_CONTRACT_001.json"
+          echo "$EXPECTED_SOURCE_CONTRACT_SHA256  $RUNNER_TEMP/raid-m2-1-recovery/RAID_SOURCE_CONTRACT_001.json" | sha256sum -c -
+
+      - name: Download authoritative RAID train_none.csv
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$RUNNER_TEMP/raid-m2-1-recovery/train_none.csv"
+          curl --location --fail --retry 6 --retry-all-errors --retry-delay 5 \
+            --connect-timeout 30 --output "$SOURCE" "$RAID_URL"
+          test "$(stat -c%s "$SOURCE")" = "$EXPECTED_SOURCE_SIZE"
+          echo "$EXPECTED_SOURCE_SHA256  $SOURCE" | sha256sum -c -
+
+      - name: Re-materialize exact historical 500-record metadata evidence
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$RUNNER_TEMP/raid-m2-1-recovery/train_none.csv"
+          CONTRACT="$RUNNER_TEMP/raid-m2-1-recovery/RAID_SOURCE_CONTRACT_001.json"
+          OUT="$RUNNER_TEMP/raid-m2-1-recovery/m1/raid-pilot"
+          python scripts/prepare_raid_pilot.py \
+            --input-file "$SOURCE" \
+            --expected-source-sha256 "$EXPECTED_SOURCE_SHA256" \
+            --source-contract "$CONTRACT" \
+            --models human,chatgpt,gpt4,llama-chat,mistral-chat \
+            --domains abstracts,news,reviews,wiki \
+            --per-cell 25 \
+            --seed 20260725 \
+            --output-dir "$OUT"
+          echo "$EXPECTED_FEATURES_SHA256  $OUT/features.jsonl" | sha256sum -c -
+
+      - name: Verify historical selection-manifest identity
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"]) / "raid-m2-1-recovery/m1/raid-pilot/features.jsonl"
+          records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+          selection = [
+              {
+                  "source_record_id": r.get("source_record_id"),
+                  "source_id": r.get("source_id"),
+                  "model_family": r.get("model_family"),
+                  "domain": r.get("domain"),
+                  "text_sha256": r.get("text_sha256"),
+                  "prompt_sha256": r.get("prompt_sha256"),
+                  "lineage_id": r.get("lineage_id"),
+              }
+              for r in sorted(records, key=lambda item: str(item.get("source_record_id") or ""))
+          ]
+          encoded = json.dumps(selection, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+          actual = hashlib.sha256(encoded).hexdigest()
+          expected = os.environ["EXPECTED_SELECTION_MANIFEST_SHA256"]
+          print("selected_records=", len(records))
+          print("selection_manifest_sha256=", actual)
+          if len(records) != 500:
+              raise SystemExit("expected exactly 500 selected records")
+          if actual != expected:
+              raise SystemExit(f"selection manifest mismatch: expected {expected}, got {actual}")
+          PY
+
+      - name: Run frozen M2.1 diagnostics
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/raid-m2-1-final"
+          mkdir -p "$OUT"
+          python scripts/analyze_raid_m2_1_diagnostics.py \
+            --features "$RUNNER_TEMP/raid-m2-1-recovery/m1/raid-pilot/features.jsonl" \
+            --input-file "$RUNNER_TEMP/raid-m2-1-recovery/train_none.csv" \
+            --expected-source-sha256 "$EXPECTED_SOURCE_SHA256" \
+            --expected-features-sha256 "$EXPECTED_FEATURES_SHA256" \
+            --expected-selection-manifest-sha256 "$EXPECTED_SELECTION_MANIFEST_SHA256" \
+            --source-contract "$RUNNER_TEMP/raid-m2-1-recovery/RAID_SOURCE_CONTRACT_001.json" \
+            --output-dir "$OUT"
+
+      - name: Freeze raw-text-free M2.1 evidence
+        if: steps.gate.outputs.execute == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/raid-m2-1-final"
+          (
+            cd "$OUT"
+            sha256sum m2-1-diagnostics.json m2-1-reproducibility.json m2-1-report.md > EVIDENCE_SHA256SUMS.txt
+          )
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/cogniprint-raid-m2-1-post-result.tar.gz" raid-m2-1-final
+          sha256sum "$RUNNER_TEMP/cogniprint-raid-m2-1-post-result.tar.gz" > "$RUNNER_TEMP/cogniprint-raid-m2-1-post-result.tar.gz.sha256"
+          cat "$OUT/m2-1-report.md"
+          echo
+          cat "$OUT/m2-1-reproducibility.json"
+          echo
+          cat "$RUNNER_TEMP/cogniprint-raid-m2-1-post-result.tar.gz.sha256"
+
+      - name: Upload raw-text-free M2.1 evidence
+        if: steps.gate.outputs.execute == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cogniprint-raid-m2-1-post-result
+          path: |
+            ${{ runner.temp }}/raid-m2-1-final
+            ${{ runner.temp }}/cogniprint-raid-m2-1-post-result.tar.gz
+            ${{ runner.temp }}/cogniprint-raid-m2-1-post-result.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 30

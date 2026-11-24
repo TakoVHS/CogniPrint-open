@@ -25,6 +25,22 @@ After the freeze, any change capable of affecting the scientific result — incl
 - Dataset/corpus version: **TO BE FILLED AT FREEZE**
 - Dependency/environment lock hash: **TO BE FILLED AT FREEZE**
 
+## External methodological review gate
+
+The freeze cannot proceed directly from Stage A experimentation to Stage B design.
+
+Required before any Stage B probability/OOD method is frozen:
+
+- substantive independent methodological review count: **1/1 REQUIRED**;
+- current count: **0/1**;
+- review may be critical or negative;
+- acknowledgement, automated response, generic encouragement, decline/referral or project-owner opinion does not count;
+- material reviewer criticisms must be preserved and dispositioned;
+- the disposition must state whether the Stage B programme should `PROCEED_WITH_REDESIGN`, `NARROW`, or `ABANDON`;
+- a replacement probability/OOD method must be justified prospectively after review and must not be selected by optimizing already-exposed Stage A evaluation outcomes.
+
+Closing the review gate does not by itself change `descriptive_only` or authorize Stage B.
+
 ## Scientific claim under test
 
 Primary question:
@@ -204,6 +220,10 @@ Never overwrite the frozen protocol to make the completed result look cleaner.
 
 The status may change from `PRE-FREEZE` to `FROZEN` only when:
 
+- [ ] substantive external methodological review count is `1/1`;
+- [ ] material reviewer criticisms are preserved and dispositioned;
+- [ ] post-review decision is `PROCEED_WITH_REDESIGN` or an explicitly narrower testable scope, not an undocumented continuation;
+- [ ] replacement probability/OOD method is prospectively justified without tuning to exposed Stage A evaluation outcomes;
 - [ ] exact software/evaluator commits are recorded;
 - [ ] dataset/reference versions are recorded;
 - [ ] source families and held-out generators are recorded;

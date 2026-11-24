@@ -12,14 +12,16 @@ This document does **not** freeze Challenge 001, submit a registration, create S
 - research mode: `PROOF_MODE`;
 - research state: `PRE-FREEZE`;
 - Stage B: `NOT_AUTHORISED_TO_START`;
-- completed development evidence: Stage A public benchmark materialization, RAID Pilot A, and privacy-preserving character/word n-gram comparisons;
-- current Stage A finding: both tested n-gram baselines outperformed the compact CogniPrint 12D representation on the fixed RAID Pilot A;
-- interpretation: 12D remains a compact, interpretable signal, but it is not the strongest tested classifier;
+- completed development evidence: Stage A public benchmark materialization, historical M1, real pinned M2, and the separately labelled M2.1 post-result failure analysis;
+- current Stage A finding: lexical n-gram baselines have stronger aggregate point estimates than the compact CogniPrint 12D representation on the executed M1/M2 protocols;
+- calibration/OOD finding: the current 12D temperature procedure did not improve held-out probability quality, max-confidence open-set separation remained weak, and conformal near-zero false-known behavior was driven almost entirely by ambiguity rather than empty-set OOD rejection;
+- interpretation: current evidence supports abstention, claim narrowing and failure analysis, not stronger source attribution;
+- external methodological review: `0/1`;
 - external preregistration: `NOT_SUBMITTED`;
 - final Research Lock 001: `NOT_CREATED`;
 - candidate sealed Stage B manifest: `NOT_CREATED`;
 - sealed labels: `NOT_CREATED`;
-- hosted-runner gate: issue #30 remains open and must not be called PASS.
+- hosted-runner gate: issue #30 is resolved with executed canary/runtime evidence.
 
 The Stage A result narrows, rather than expands, the Stage B question. The preregistered primary analysis must compare CogniPrint against transparent baselines and must allow the result that CogniPrint does not outperform them.
 
@@ -232,6 +234,16 @@ A data-quality failure discovered before label reveal follows the frozen replace
 - do not create or inspect sealed Stage B labels;
 - resolve issue #30 or archive an explicitly accepted equivalent reproducible-runner record.
 
+### Phase 0.5 — External review and design disposition
+
+- obtain at least one substantive independent methodological critique of executed M1/M2/M2.1 evidence;
+- preserve and classify the critique without requiring endorsement;
+- record each criticism that affects probability mapping, OOD/UNKNOWN, thresholding, sample design, inference or falsification;
+- choose one explicit disposition for each material criticism: `ACCEPT`, `PARTIALLY_ACCEPT`, `REJECT_WITH_REASON`, or `REQUIRES_NEW_EVIDENCE`;
+- decide whether the next Stage B question should `PROCEED_WITH_REDESIGN`, `NARROW`, or `ABANDON`;
+- do not freeze a replacement probability/OOD method until this disposition exists;
+- do not tune the replacement method to the already-exposed Stage A evaluation outcomes.
+
 ### Phase 1 — Freeze candidate design
 
 - resolve every scientific placeholder;
@@ -321,7 +333,10 @@ After sealed predictions exist, a scientific-impacting change requires a new exp
 
 The packet must not be submitted while any of these remain unresolved:
 
-- issue #30 lacks actual hosted-runner execution markers or a formally accepted equivalent record;
+- substantive external methodological review remains below `1/1`;
+- post-review design disposition has not been recorded;
+- Stage B probability/OOD method has not been prospectively justified after review;
+- any replacement method has been selected by optimizing the already-exposed Stage A evaluation outcomes;
 - exact Stage B source families/checkpoints/endpoints are not frozen;
 - held-out unknown-family policy is not frozen;
 - human-control definition is not frozen;

@@ -159,6 +159,71 @@ def predict_cosine_nearest_centroid(
     return predictions
 
 
+@dataclass(frozen=True)
+class HashedNgramScoringModel:
+    """In-memory scoring model for M2 calibration work.
+
+    The IDF map and centroids may encode recoverable aggregate lexical structure
+    and therefore are never intended for persistence in public evidence.
+    """
+
+    config: HashedNgramConfig
+    labels: tuple[str, ...]
+    idf: dict[int, float]
+    unseen_idf: float
+    centroids: dict[str, SparseVector]
+    occupied_training_hash_bins: int
+
+
+def fit_hashed_ngram_scoring_model(
+    train: list[Record],
+    config: HashedNgramConfig,
+) -> HashedNgramScoringModel:
+    config.validate()
+    if not train:
+        raise ValueError("training records are empty")
+    counts = [
+        hashed_counts(str(record.get("_text") or ""), config)
+        for record in train
+    ]
+    if any(not vector for vector in counts):
+        raise ValueError(f"{config.name} produced an empty training vector")
+    idf, unseen_idf, occupied = fit_idf(counts)
+    vectors = [transform_tfidf(vector, idf, unseen_idf) for vector in counts]
+    centroids = fit_centroids(train, vectors)
+    labels = tuple(sorted(centroids))
+    if not labels:
+        raise ValueError("hashed n-gram scoring model has no labels")
+    return HashedNgramScoringModel(
+        config=config,
+        labels=labels,
+        idf=idf,
+        unseen_idf=unseen_idf,
+        centroids=centroids,
+        occupied_training_hash_bins=occupied,
+    )
+
+
+def hashed_ngram_score_matrix(
+    model: HashedNgramScoringModel,
+    records: Iterable[Record],
+) -> list[list[float]]:
+    """Return cosine-similarity rows aligned to model.labels."""
+    rows: list[list[float]] = []
+    for record in records:
+        counts = hashed_counts(str(record.get("_text") or ""), model.config)
+        if not counts:
+            raise ValueError(f"{model.config.name} produced an empty evaluation vector")
+        vector = transform_tfidf(counts, model.idf, model.unseen_idf)
+        rows.append(
+            [
+                sparse_dot(vector, model.centroids[label])
+                for label in model.labels
+            ]
+        )
+    return rows
+
+
 def evaluate_hashed_ngram(
     train: list[Record],
     test: list[Record],

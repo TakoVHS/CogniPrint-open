@@ -1,0 +1,92 @@
+{
+  "schema": "cogniprint-raid-m2-public-summary-001",
+  "status": "EXECUTED_DEVELOPMENT_ONLY",
+  "readiness": "descriptive_only",
+  "research_status": "PRE-FREEZE",
+  "stage_b_status": "NOT_AUTHORISED_TO_START",
+  "executed_at_utc": "2026-11-24",
+  "primary_run": {
+    "workflow": "RAID M2 External Pinned Evidence",
+    "run_number": 1,
+    "run_id": 45370233451,
+    "pr_head_sha": "eee3a48e31dde2cb61207a2165a822fc8ee3bf7c",
+    "checkout_commit": "b335ed03f2e282b9d099f7166f284ca286e7c276",
+    "tree_sha": "16c7e4a1c38fe9bec52a8ed2358aa12e36622b77",
+    "github_artifact_id": 14908951672,
+    "github_artifact_digest": "sha256:c929f1fce7702502bca29770c4d6290c158954dbed51f90656274ffaafc8b310",
+    "evidence_archive_sha256": "93c2cdb6c05919fb3ba348c948c73a836358da633352e566c243dd6c8a1e2352"
+  },
+  "input_identity": {
+    "source_byte_size": 801662741,
+    "source_sha256": "c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4",
+    "features_sha256": "13faba4a3efaa1c7f88761722f146b7eb654fd08e4b833f2d7768a0ff45646ca",
+    "selection_manifest_sha256": "30685ed738c3f1f1074a1f89a67a504f0c9d0607b958894e385172623591f6cb",
+    "source_contract_sha256": "e0efa8ddf06861e0fbfd2ccb76313e9451986592b5d007a7cb71d30503fd9948",
+    "selected_records": 500
+  },
+  "reproducibility": {
+    "within_run_canonical_result_sha256": "ead3facf0771b724b2d54a142feaad9b6f5b494d44a521aca1a05503844db6d7",
+    "persisted_m2_results_sha256": "1fb39616725c90470e5dbc35ff7f4211190448e9bb1505c256d5febeba275dc3",
+    "independent_repeat_run_id": 45371006757,
+    "independent_repeat_run_number": 4,
+    "repeat_pr_head_sha": "7e72024c038cd6bc607880fe66477beafb18679c",
+    "persisted_results_byte_identical": true
+  },
+  "aggregate": {
+    "cogniprint_12d_cosine_centroid": {
+      "mean_macro_f1": 0.382981,
+      "mean_calibrated_nll": 1.348983,
+      "mean_calibrated_brier": 0.710081,
+      "mean_aurc": 0.511947,
+      "mean_false_known_rate": 0.6575,
+      "mean_conformal_false_known_rate": 0.0025
+    },
+    "character_3_5_hashed_tfidf": {
+      "mean_macro_f1": 0.447966,
+      "mean_calibrated_nll": 1.241039,
+      "mean_calibrated_brier": 0.673324,
+      "mean_aurc": 0.338034,
+      "mean_false_known_rate": 0.485,
+      "mean_conformal_false_known_rate": 0
+    },
+    "word_1_2_hashed_tfidf": {
+      "mean_macro_f1": 0.515231,
+      "mean_calibrated_nll": 1.234877,
+      "mean_calibrated_brier": 0.670327,
+      "mean_aurc": 0.30321,
+      "mean_false_known_rate": 0.5125,
+      "mean_conformal_false_known_rate": 0.005
+    }
+  },
+  "interpretation": {
+    "result_class": "negative_mixed",
+    "primary_point_estimate_ordering": "lexical baselines stronger than current 12D on aggregate closed-set, proper-score and selective-risk summaries",
+    "per_fold_proper_score_inference": "all predeclared 95% lineage-group bootstrap intervals for 12D-vs-baseline NLL and Brier differences include zero",
+    "temperature_12d": "held-out NLL worsened in all four folds; mean NLL 1.277792 -> 1.348983; mean Brier 0.692123 -> 0.710081",
+    "max_confidence_open_set": "weak; mean AUROC approximately 0.51-0.54 with high false-known rates",
+    "conformal": "very conservative; near-zero false-known singleton behavior coexists with very low known singleton rates, so this is not evidence of strong practical OOD detection"
+  },
+  "privacy": {
+    "audit": "PASS",
+    "raw_source_persisted": false,
+    "raw_prompt_persisted": false,
+    "raw_generation_persisted": false,
+    "recoverable_vocabulary_persisted": false
+  },
+  "claim_boundary": [
+    "no exact model identity",
+    "no universal AI-origin detection",
+    "no authorship",
+    "no actor or commissioner identity",
+    "no intent or responsibility",
+    "no legal or forensic provenance",
+    "no production readiness"
+  ],
+  "protocol_deviations": {
+    "matched_coverage_primary_output": {
+      "status": "NOT_PROSPECTIVELY_ENUMERATED_OR_PERSISTED",
+      "detail": "M2 protocol named matched-coverage selective risk as primary, but no concrete coverage grid was frozen before execution and persisted output retained AURC/full-coverage risk rather than matched-coverage risk values.",
+      "claim_effect": "No post hoc matched-coverage table may be relabelled as a primary M2 outcome."
+    }
+  }
+}

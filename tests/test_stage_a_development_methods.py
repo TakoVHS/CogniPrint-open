@@ -14,18 +14,30 @@ from cogniprint.benchmarks.development_methods import (  # noqa: E402
     UNKNOWN_AMBIGUOUS,
     UNKNOWN_INSUFFICIENT_EVIDENCE,
     UNKNOWN_OOD,
+    classwise_expected_calibration_error,
     conformal_decision,
+    evaluate_class_conditional_conformal,
     evaluate_surface_baseline,
+    evaluate_temperature,
     expected_calibration_error,
     fit_class_conditional_conformal,
     fit_temperature,
+    multiclass_brier,
+    multiclass_brier_per_example,
+    multiclass_nll,
+    multiclass_nll_per_example,
     softmax,
     surface_statistics,
 )
 from cogniprint.benchmarks.development_statistics import (  # noqa: E402
     DevelopmentClaimThresholds,
+    area_under_risk_coverage,
+    bayes_reject_decision,
     evaluate_claim_narrowing,
+    open_set_confidence_metrics,
     paired_group_bootstrap_delta,
+    paired_group_bootstrap_mean_delta,
+    selective_risk_curve,
     wilson_interval,
 )
 
@@ -249,6 +261,78 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
                 evidence_sufficient="yes",  # type: ignore[arg-type]
             )
 
+    def test_conformal_evaluation_rejects_evaluation_lineage_overlap(self) -> None:
+        reference, calibration = self.reference_and_calibration()
+        evaluation = [
+            record("a", "eval-a", [2.0, 0.0]),
+            record("b", "ac1", [0.0, 2.0]),
+        ]
+        with self.assertRaisesRegex(ValueError, "both"):
+            evaluate_class_conditional_conformal(
+                reference,
+                calibration,
+                evaluation,
+                vector,
+                alpha=0.2,
+            )
+
+    def test_conformal_evaluation_separates_set_coverage_from_ood_rejection(self) -> None:
+        reference, calibration = self.reference_and_calibration()
+        evaluation = [
+            record("a", "eval-a", [2.0, 0.0]),
+            record("b", "eval-b", [0.0, 2.0]),
+            record("unseen", "eval-u", [10.0, 10.0]),
+        ]
+        report = evaluate_class_conditional_conformal(
+            reference,
+            calibration,
+            evaluation,
+            vector,
+            alpha=0.2,
+        )
+        self.assertEqual(report["known_total"], 2)
+        self.assertEqual(report["unknown_total"], 1)
+        self.assertFalse(report["singleton_claim_guarantee"])
+        self.assertFalse(report["ood_rejection_guarantee"])
+        self.assertIn("within-class exchangeability", report["coverage_guarantee_scope"])
+
+    def test_selective_risk_curve_is_tie_preserving(self) -> None:
+        truth = ["a", "b", "a", "b"]
+        predictions = ["a", "a", "a", "b"]
+        confidences = [0.9, 0.9, 0.6, 0.2]
+        curve = selective_risk_curve(truth, predictions, confidences)
+        self.assertEqual(curve[0]["accepted"], 2)
+        self.assertAlmostEqual(curve[0]["coverage"], 0.5)
+        self.assertAlmostEqual(curve[0]["selective_risk"], 0.5)
+        summary = area_under_risk_coverage(truth, predictions, confidences)
+        self.assertGreaterEqual(summary["aurc"], 0.0)
+        self.assertLessEqual(summary["aurc"], 1.0)
+        self.assertAlmostEqual(summary["full_coverage_risk"], 0.25)
+
+    def test_open_set_metrics_use_frozen_threshold_and_report_auc(self) -> None:
+        result = open_set_confidence_metrics(
+            [0.95, 0.91, 0.80, 0.60],
+            [0.85, 0.40, 0.30, 0.20],
+            frozen_threshold=0.9,
+        )
+        self.assertAlmostEqual(result["true_known_rate"], 0.5)
+        self.assertAlmostEqual(result["false_known_rate"], 0.0)
+        self.assertGreater(result["known_vs_unknown_auroc"], 0.5)
+        self.assertEqual(
+            result["threshold_semantics"],
+            "pre_frozen_max_confidence_baseline",
+        )
+
+    def test_bayes_reject_rule_matches_symmetric_threshold(self) -> None:
+        claim = bayes_reject_decision(0.81, abstain_cost=0.2)
+        abstain = bayes_reject_decision(0.79, abstain_cost=0.2)
+        self.assertAlmostEqual(claim["threshold"], 0.8)
+        self.assertTrue(claim["claim"])
+        self.assertFalse(abstain["claim"])
+        self.assertTrue(claim["policy_gate_required"])
+        with self.assertRaisesRegex(ValueError, "between"):
+            bayes_reject_decision(0.9, abstain_cost=1.2)
+
     def test_temperature_calibration_is_deterministic_and_improves_nll(
         self,
     ) -> None:
@@ -332,6 +416,106 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
                 ["a"],
                 ["a", "b"],
                 bins=True,
+            )
+
+    def test_classwise_ece_uses_all_class_probabilities(self) -> None:
+        logits = [
+            [3.0, 0.0, -1.0],
+            [0.0, 3.0, -1.0],
+            [1.0, 0.9, 0.8],
+            [0.9, 1.0, 0.8],
+            [-1.0, 0.0, 3.0],
+            [0.0, -1.0, 3.0],
+        ]
+        truth = ["a", "b", "c", "c", "c", "a"]
+        labels = ["a", "b", "c"]
+        first = classwise_expected_calibration_error(
+            logits, truth, labels, bins=3
+        )
+        second = classwise_expected_calibration_error(
+            list(reversed(logits)),
+            list(reversed(truth)),
+            labels,
+            bins=3,
+        )
+        self.assertGreaterEqual(first, 0.0)
+        self.assertLessEqual(first, 1.0)
+        self.assertAlmostEqual(first, second, places=12)
+
+    def test_per_example_proper_scores_match_aggregate_scores(self) -> None:
+        logits = [[2.0, 0.0], [0.0, 2.0], [1.0, 0.5], [0.5, 1.0]]
+        truth = ["a", "b", "b", "a"]
+        labels = ["a", "b"]
+        nll_values = multiclass_nll_per_example(logits, truth, labels)
+        brier_values = multiclass_brier_per_example(logits, truth, labels)
+        self.assertAlmostEqual(
+            sum(nll_values) / len(nll_values),
+            multiclass_nll(logits, truth, labels),
+            places=12,
+        )
+        self.assertAlmostEqual(
+            sum(brier_values) / len(brier_values),
+            multiclass_brier(logits, truth, labels),
+            places=12,
+        )
+
+    def test_temperature_evaluation_requires_lineage_disjoint_holdout(self) -> None:
+        fit = fit_temperature(
+            [[8.0, 0.0], [0.0, 8.0], [8.0, 0.0], [0.0, 8.0]],
+            ["a", "b", "b", "a"],
+            ["a", "b"],
+        )
+        with self.assertRaisesRegex(ValueError, "lineage overlap"):
+            evaluate_temperature(
+                [[2.0, 0.0], [0.0, 2.0]],
+                ["a", "b"],
+                ["a", "b"],
+                temperature=fit.temperature,
+                calibration_group_ids=["cal-1", "shared"],
+                evaluation_group_ids=["shared", "eval-2"],
+                ece_bins=2,
+            )
+
+    def test_temperature_evaluation_preserves_argmax_on_holdout(self) -> None:
+        fit = fit_temperature(
+            [[8.0, 0.0], [0.0, 8.0], [0.0, 7.0], [7.0, 0.0]],
+            ["a", "b", "a", "b"],
+            ["a", "b"],
+        )
+        result = evaluate_temperature(
+            [[3.0, 0.0], [0.0, 3.0], [2.0, 1.0], [1.0, 2.0]],
+            ["a", "b", "b", "a"],
+            ["a", "b"],
+            temperature=fit.temperature,
+            calibration_group_ids=["cal-1", "cal-2", "cal-3", "cal-4"],
+            evaluation_group_ids=["eval-1", "eval-2", "eval-3", "eval-4"],
+            ece_bins=2,
+        )
+        self.assertTrue(result.argmax_invariant)
+        self.assertEqual(result.evaluation_partition, "held_out_evaluation_only")
+        self.assertGreaterEqual(result.calibrated_brier, 0.0)
+        self.assertGreaterEqual(result.calibrated_classwise_ece, 0.0)
+
+    def test_numeric_group_bootstrap_compares_paired_proper_scores(self) -> None:
+        losses_a = [0.1, 0.2, 0.1, 0.2, 0.15, 0.20]
+        losses_b = [0.4, 0.5, 0.35, 0.45, 0.40, 0.50]
+        groups = ["g1", "g1", "g2", "g2", "g3", "g3"]
+        result = paired_group_bootstrap_mean_delta(
+            losses_a,
+            losses_b,
+            groups,
+            resamples=500,
+            seed=11,
+        )
+        self.assertLess(result["point_delta"], 0.0)
+        self.assertLess(result["ci_upper"], 0.0)
+        self.assertEqual(result["estimand"], "mean_a_minus_mean_b")
+        with self.assertRaisesRegex(ValueError, "at least two lineage groups"):
+            paired_group_bootstrap_mean_delta(
+                [0.1, 0.2],
+                [0.2, 0.3],
+                ["one", "one"],
+                resamples=20,
             )
 
     def test_wilson_interval(self) -> None:

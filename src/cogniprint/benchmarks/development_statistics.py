@@ -162,6 +162,299 @@ def paired_group_bootstrap_delta(
     }
 
 
+def paired_group_bootstrap_mean_delta(
+    values_a: Sequence[float],
+    values_b: Sequence[float],
+    group_ids: Sequence[str],
+    *,
+    resamples: int = 10_000,
+    seed: int = 20261124,
+    confidence: float = 0.95,
+) -> dict[str, float | int | str]:
+    """Cluster bootstrap for paired per-example losses/scores.
+
+    The reported estimand is mean(A) - mean(B). For losses such as NLL or
+    Brier, a negative interval therefore favors system A.
+    """
+    if not (len(values_a) == len(values_b) == len(group_ids)):
+        raise ValueError("paired numeric bootstrap inputs must have equal length")
+    if not values_a:
+        raise ValueError("paired numeric bootstrap inputs are empty")
+    left = [_require_finite_scalar(value, "numeric value A") for value in values_a]
+    right = [_require_finite_scalar(value, "numeric value B") for value in values_b]
+    resamples = _require_positive_int(resamples, "resamples")
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise TypeError("seed must be an integer")
+    confidence = _require_finite_scalar(confidence, "confidence")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0,1)")
+
+    grouped: dict[str, list[int]] = defaultdict(list)
+    for index, group_id in enumerate(group_ids):
+        group = str(group_id).strip()
+        if not group:
+            raise ValueError("group IDs must be non-empty")
+        grouped[group].append(index)
+    groups = sorted(grouped)
+    if len(groups) < 2:
+        raise ValueError("paired numeric bootstrap requires at least two lineage groups")
+
+    point = sum(a - b for a, b in zip(left, right)) / len(left)
+    rng = random.Random(seed)
+    deltas: list[float] = []
+    for _ in range(resamples):
+        sampled_groups = [groups[rng.randrange(len(groups))] for _ in groups]
+        indices = [
+            index for group in sampled_groups for index in grouped[group]
+        ]
+        deltas.append(
+            sum(left[index] - right[index] for index in indices) / len(indices)
+        )
+    deltas.sort()
+
+    def quantile(probability: float) -> float:
+        position = probability * (len(deltas) - 1)
+        lower_index = math.floor(position)
+        upper_index = math.ceil(position)
+        if lower_index == upper_index:
+            return deltas[lower_index]
+        weight = position - lower_index
+        return (
+            deltas[lower_index] * (1.0 - weight)
+            + deltas[upper_index] * weight
+        )
+
+    tail = (1.0 - confidence) / 2.0
+    return {
+        "point_delta": point,
+        "ci_lower": quantile(tail),
+        "ci_upper": quantile(1.0 - tail),
+        "confidence": confidence,
+        "resamples": resamples,
+        "seed": seed,
+        "group_count": len(groups),
+        "estimand": "mean_a_minus_mean_b",
+    }
+
+
+def selective_risk_curve(
+    truth: Sequence[str],
+    predictions: Sequence[str],
+    confidences: Sequence[float],
+) -> list[dict[str, float | int]]:
+    """Return a tie-preserving risk-coverage curve.
+
+    All observations sharing exactly the same confidence are accepted together,
+    so row order cannot create an artificial ranking inside a confidence tie.
+    """
+    if not (len(truth) == len(predictions) == len(confidences)):
+        raise ValueError("selective-risk inputs must have equal length")
+    if not truth:
+        raise ValueError("selective-risk inputs are empty")
+
+    grouped: dict[float, list[int]] = defaultdict(list)
+    truth_list = [str(value) for value in truth]
+    prediction_list = [str(value) for value in predictions]
+    for index, raw_confidence in enumerate(confidences):
+        confidence = _require_bounded_scalar(
+            raw_confidence,
+            "confidence",
+            lower=0.0,
+            upper=1.0,
+        )
+        grouped[confidence].append(index)
+
+    accepted = 0
+    errors = 0
+    total = len(truth_list)
+    curve: list[dict[str, float | int]] = []
+    for threshold in sorted(grouped, reverse=True):
+        indices = grouped[threshold]
+        accepted += len(indices)
+        errors += sum(
+            int(prediction_list[index] != truth_list[index])
+            for index in indices
+        )
+        curve.append(
+            {
+                "threshold": threshold,
+                "accepted": accepted,
+                "errors": errors,
+                "coverage": accepted / total,
+                "selective_risk": errors / accepted,
+            }
+        )
+    return curve
+
+
+def area_under_risk_coverage(
+    truth: Sequence[str],
+    predictions: Sequence[str],
+    confidences: Sequence[float],
+) -> dict[str, float | int | list[dict[str, float | int]]]:
+    """Right-step integral over the attainable tie-preserving risk-coverage curve."""
+    curve = selective_risk_curve(truth, predictions, confidences)
+    previous_coverage = 0.0
+    aurc = 0.0
+    for point in curve:
+        coverage = float(point["coverage"])
+        risk = float(point["selective_risk"])
+        aurc += (coverage - previous_coverage) * risk
+        previous_coverage = coverage
+    return {
+        "aurc": aurc,
+        "full_coverage_risk": float(curve[-1]["selective_risk"]),
+        "point_count": len(curve),
+        "curve": curve,
+    }
+
+
+def _binary_rank_auc(
+    positive_scores: Sequence[float],
+    negative_scores: Sequence[float],
+) -> float:
+    """AUC where larger scores indicate the positive (known/ID) class."""
+    positives = [
+        _require_finite_scalar(value, "positive score")
+        for value in positive_scores
+    ]
+    negatives = [
+        _require_finite_scalar(value, "negative score")
+        for value in negative_scores
+    ]
+    if not positives or not negatives:
+        raise ValueError("AUC requires non-empty positive and negative scores")
+
+    combined = [(value, 1) for value in positives] + [
+        (value, 0) for value in negatives
+    ]
+    combined.sort(key=lambda item: item[0])
+    rank_sum_positive = 0.0
+    index = 0
+    while index < len(combined):
+        end = index + 1
+        while end < len(combined) and combined[end][0] == combined[index][0]:
+            end += 1
+        average_rank = ((index + 1) + end) / 2.0
+        rank_sum_positive += average_rank * sum(
+            label for _, label in combined[index:end]
+        )
+        index = end
+
+    n_positive = len(positives)
+    n_negative = len(negatives)
+    u_statistic = (
+        rank_sum_positive - n_positive * (n_positive + 1) / 2.0
+    )
+    return u_statistic / (n_positive * n_negative)
+
+
+def open_set_confidence_metrics(
+    known_confidences: Sequence[float],
+    unknown_confidences: Sequence[float],
+    *,
+    frozen_threshold: float,
+    confidence: float = 0.95,
+) -> dict[str, float | int | str]:
+    """Evaluate a pre-frozen max-confidence open-set baseline.
+
+    The threshold must be selected before the evaluation partition is inspected.
+    This function intentionally does not optimize a threshold on held-out data.
+    """
+    threshold = _require_bounded_scalar(
+        frozen_threshold,
+        "frozen_threshold",
+        lower=0.0,
+        upper=1.0,
+    )
+    known = [
+        _require_bounded_scalar(value, "known confidence", lower=0.0, upper=1.0)
+        for value in known_confidences
+    ]
+    unknown = [
+        _require_bounded_scalar(value, "unknown confidence", lower=0.0, upper=1.0)
+        for value in unknown_confidences
+    ]
+    if not known or not unknown:
+        raise ValueError("known and unknown confidence sets must be non-empty")
+
+    known_accepted = sum(value >= threshold for value in known)
+    false_known = sum(value >= threshold for value in unknown)
+    tkr_lower, tkr_upper = wilson_interval(
+        known_accepted, len(known), confidence=confidence
+    )
+    fkr_lower, fkr_upper = wilson_interval(
+        false_known, len(unknown), confidence=confidence
+    )
+    return {
+        "threshold": threshold,
+        "known_count": len(known),
+        "unknown_count": len(unknown),
+        "true_known_rate": known_accepted / len(known),
+        "true_known_wilson_lower": tkr_lower,
+        "true_known_wilson_upper": tkr_upper,
+        "false_known_rate": false_known / len(unknown),
+        "false_known_wilson_lower": fkr_lower,
+        "false_known_wilson_upper": fkr_upper,
+        "known_vs_unknown_auroc": _binary_rank_auc(known, unknown),
+        "threshold_semantics": "pre_frozen_max_confidence_baseline",
+    }
+
+
+def bayes_reject_decision(
+    max_probability: float,
+    *,
+    abstain_cost: float,
+    incorrect_claim_cost: float = 1.0,
+    correct_claim_cost: float = 0.0,
+) -> dict[str, float | bool | str]:
+    """Symmetric Bayes reject rule for an already-authorized probabilistic claim.
+
+    This helper is subordinate to Claim Firewall. A hard policy/evidence gate
+    can still prohibit a claim even when the expected-loss calculation favors
+    claiming.
+    """
+    probability = _require_bounded_scalar(
+        max_probability,
+        "max_probability",
+        lower=0.0,
+        upper=1.0,
+    )
+    correct_cost = _require_finite_scalar(
+        correct_claim_cost,
+        "correct_claim_cost",
+    )
+    wrong_cost = _require_finite_scalar(
+        incorrect_claim_cost,
+        "incorrect_claim_cost",
+    )
+    reject_cost = _require_finite_scalar(abstain_cost, "abstain_cost")
+    if correct_cost < 0.0 or wrong_cost <= correct_cost:
+        raise ValueError(
+            "require 0 <= correct_claim_cost < incorrect_claim_cost"
+        )
+    if not correct_cost <= reject_cost <= wrong_cost:
+        raise ValueError(
+            "abstain_cost must lie between correct and incorrect claim costs"
+        )
+
+    threshold = (wrong_cost - reject_cost) / (wrong_cost - correct_cost)
+    claim_loss = (
+        probability * correct_cost
+        + (1.0 - probability) * wrong_cost
+    )
+    should_claim = claim_loss <= reject_cost
+    return {
+        "claim": should_claim,
+        "threshold": threshold,
+        "max_probability": probability,
+        "expected_claim_loss": claim_loss,
+        "abstain_loss": reject_cost,
+        "policy_gate_required": True,
+        "semantics": "symmetric_bayes_reject_rule_after_evidence_authorization",
+    }
+
+
 @dataclass(frozen=True)
 class DevelopmentClaimThresholds:
     false_known_point_max: float = 0.10
