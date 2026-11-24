@@ -25,6 +25,8 @@ on:
       - "docs/claim-promotion-partial-identification-literature-map.md"
       - "docs/evidence-channel-sharp-composition-v0.1.md"
       - "docs/finite-sample-composition-certificate-v0.1.md"
+      - "docs/claim-admissibility-novelty-audit-2026-11-24.md"
+      - "docs/certificate-to-claim-target-typing-candidate.md"
       - "docs/evidence-bounded-inference-paper-plan.md"
       - "paper/evidence-bounded-inference-theory-draft.tex"
       - "paper/claim-promotion-identifiability-draft.tex"
