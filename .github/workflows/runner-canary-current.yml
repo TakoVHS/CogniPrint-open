@@ -1,9 +1,6 @@
 name: Runner Canary Current
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/runner-canary-current.yml"
   workflow_dispatch:
 
 permissions:
