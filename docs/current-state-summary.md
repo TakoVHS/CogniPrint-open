@@ -145,6 +145,38 @@ Full records:
 - `evidence/raid-m2/2026-11-24/summary.json`;
 - `reviewer-bundle/m2-results.md`.
 
+## M2.1 — post-result failure analysis
+
+A separate post-result diagnostic protocol was frozen after M2 #1 and executed once.
+
+Status:
+
+`POST_RESULT_EXPLORATORY / EXECUTED`
+
+Workflow run: `45373412957`.
+
+Evidence archive SHA-256:
+
+`b9e8aaccb0816761d19de2aaa1d2329c5a29328fa4541037ab1b59936f79559b`
+
+Main findings:
+
+- conformal unknown empty-set rate was `0.0` in every fold/representation;
+- the near-zero M2 conformal false-known result came almost entirely from multi-class ambiguity;
+- exploratory matched-coverage risk did not reveal a 12D selective advantage;
+- the 60% development-coverage threshold was not a held-out coverage guarantee;
+- the n-gram `T=0.05` lower bound was materially restrictive for their cosine-score scale;
+- a wider lower-temperature grid did not rescue 12D calibration;
+- duplicate declared lineage groups did not explain conformal ambiguity.
+
+M2.1 is failure analysis only and cannot replace M2 #1.
+
+Full records:
+
+- `docs/raid-m2-1-post-result-diagnostics.md`;
+- `docs/raid-m2-1-results-2026-11-24.md`;
+- `evidence/raid-m2-1/2026-11-24/summary.json`.
+
 ## Reproducibility and privacy state
 
 The real M2 evidence path verifies:
