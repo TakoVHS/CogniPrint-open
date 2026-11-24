@@ -29,6 +29,7 @@
     "datasets/public-benchmark-v1.1/**",
     "scripts/analyze_raid_pilot.py",
     "scripts/analyze_raid_calibration_m2.py",
+    "scripts/run_raid_m2_stage_a.py",
     "scripts/bootstrap_validation.py",
     "scripts/build_arxiv_package.sh",
     "scripts/build_paper.sh",
