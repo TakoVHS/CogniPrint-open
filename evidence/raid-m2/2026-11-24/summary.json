@@ -81,5 +81,12 @@
     "no intent or responsibility",
     "no legal or forensic provenance",
     "no production readiness"
-  ]
+  ],
+  "protocol_deviations": {
+    "matched_coverage_primary_output": {
+      "status": "NOT_PROSPECTIVELY_ENUMERATED_OR_PERSISTED",
+      "detail": "M2 protocol named matched-coverage selective risk as primary, but no concrete coverage grid was frozen before execution and persisted output retained AURC/full-coverage risk rather than matched-coverage risk values.",
+      "claim_effect": "No post hoc matched-coverage table may be relabelled as a primary M2 outcome."
+    }
+  }
 }
