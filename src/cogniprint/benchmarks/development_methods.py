@@ -425,6 +425,50 @@ def softmax(
     return [value / total for value in exps]
 
 
+def multiclass_nll_per_example(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+) -> list[float]:
+    """Return per-example logarithmic losses for paired uncertainty analysis."""
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    index = {label: position for position, label in enumerate(labels_tuple)}
+    return [
+        -math.log(
+            max(
+                softmax(row, temperature=temperature)[index[actual]],
+                1e-15,
+            )
+        )
+        for row, actual in zip(matrix, truth_list)
+    ]
+
+
+def multiclass_brier_per_example(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+) -> list[float]:
+    """Return per-example multiclass Brier losses (lower is better)."""
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    index = {label: position for position, label in enumerate(labels_tuple)}
+    values: list[float] = []
+    for row, actual in zip(matrix, truth_list):
+        probabilities = softmax(row, temperature=temperature)
+        target = index[actual]
+        values.append(
+            sum(
+                (probability - (1.0 if position == target else 0.0)) ** 2
+                for position, probability in enumerate(probabilities)
+            )
+        )
+    return values
+
+
 def multiclass_nll(
     logits: Sequence[Sequence[float]],
     truth: Sequence[str],
@@ -522,6 +566,90 @@ def expected_calibration_error(
         mean_accuracy = sum(correct for _, _, correct in bucket) / bucket_size
         ece += bucket_size / total * abs(mean_accuracy - mean_confidence)
     return ece
+
+
+def _equal_frequency_calibration_error(
+    observations: Sequence[tuple[float, int]],
+    *,
+    bins: int,
+) -> float:
+    """Tie-preserving equal-frequency calibration error for binary events."""
+    bins = _require_positive_int(bins, "bins")
+    if not observations:
+        raise ValueError("calibration observations are empty")
+    confidence_groups: dict[float, list[int]] = defaultdict(list)
+    for confidence, outcome in observations:
+        value = float(confidence)
+        if not math.isfinite(value) or not 0.0 <= value <= 1.0:
+            raise ValueError("calibration confidence must be finite and in [0,1]")
+        if outcome not in (0, 1):
+            raise ValueError("calibration outcomes must be binary")
+        confidence_groups[value].append(int(outcome))
+
+    grouped = [
+        (confidence, len(outcomes), sum(outcomes))
+        for confidence, outcomes in sorted(confidence_groups.items())
+    ]
+    total = sum(size for _, size, _ in grouped)
+    target_size = max(1, math.ceil(total / bins))
+    buckets: list[list[tuple[float, int, int]]] = []
+    current: list[tuple[float, int, int]] = []
+    current_size = 0
+    for group in grouped:
+        _, group_size, _ = group
+        if (
+            current
+            and current_size + group_size > target_size
+            and len(buckets) < bins - 1
+        ):
+            buckets.append(current)
+            current = []
+            current_size = 0
+        current.append(group)
+        current_size += group_size
+    if current:
+        buckets.append(current)
+
+    error = 0.0
+    for bucket in buckets:
+        bucket_size = sum(size for _, size, _ in bucket)
+        mean_confidence = sum(
+            confidence * size for confidence, size, _ in bucket
+        ) / bucket_size
+        mean_outcome = sum(positive for _, _, positive in bucket) / bucket_size
+        error += bucket_size / total * abs(mean_outcome - mean_confidence)
+    return error
+
+
+def classwise_expected_calibration_error(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float = 1.0,
+    bins: int = 15,
+) -> float:
+    """Macro classwise ECE using every class probability on every example.
+
+    This differs from top-label ECE: for class k it compares p(y=k) with the
+    binary event 1[y=k] across all evaluation rows, then averages equally over
+    classes. It is a secondary binned diagnostic, not a proper scoring rule.
+    """
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    bins = _require_positive_int(bins, "bins")
+    probability_rows = [
+        softmax(row, temperature=temperature) for row in matrix
+    ]
+    per_class: list[float] = []
+    for class_index, label in enumerate(labels_tuple):
+        observations = [
+            (probabilities[class_index], int(actual == label))
+            for probabilities, actual in zip(probability_rows, truth_list)
+        ]
+        per_class.append(
+            _equal_frequency_calibration_error(observations, bins=bins)
+        )
+    return fmean(per_class)
 
 
 @dataclass(frozen=True)
@@ -627,4 +755,114 @@ def fit_temperature(
             bins=ece_bins,
         ),
         ece_bins,
+    )
+
+
+@dataclass(frozen=True)
+class TemperatureEvaluationResult:
+    """Held-out evaluation of a temperature fitted elsewhere."""
+
+    temperature: float
+    uncalibrated_nll: float
+    calibrated_nll: float
+    uncalibrated_brier: float
+    calibrated_brier: float
+    uncalibrated_ece: float
+    calibrated_ece: float
+    uncalibrated_classwise_ece: float
+    calibrated_classwise_ece: float
+    ece_bins: int
+    argmax_invariant: bool
+    evaluation_partition: str = "held_out_evaluation_only"
+    probability_semantics: str = "temperature_scaled_softmax_development_only"
+
+
+def evaluate_temperature(
+    logits: Sequence[Sequence[float]],
+    truth: Sequence[str],
+    labels: Sequence[str],
+    *,
+    temperature: float,
+    calibration_group_ids: Sequence[str],
+    evaluation_group_ids: Sequence[str],
+    ece_bins: int = 15,
+) -> TemperatureEvaluationResult:
+    """Evaluate a frozen temperature on a lineage-disjoint held-out partition.
+
+    Temperature MUST be fitted on the probability-calibration partition before
+    this function is called. This function refuses lineage overlap between that
+    partition and the evaluation rows.
+    """
+    matrix, truth_list, labels_tuple = _validate_logits(logits, truth, labels)
+    ece_bins = _require_positive_int(ece_bins, "ece_bins")
+    temperature = float(temperature)
+    if not math.isfinite(temperature) or temperature <= 0.0:
+        raise ValueError("temperature must be finite and positive")
+
+    fit_groups = {str(value).strip() for value in calibration_group_ids}
+    eval_groups = [str(value).strip() for value in evaluation_group_ids]
+    if not fit_groups or any(not value for value in fit_groups):
+        raise ValueError("calibration group IDs must be non-empty")
+    if len(eval_groups) != len(matrix) or any(not value for value in eval_groups):
+        raise ValueError(
+            "evaluation group IDs must be non-empty and match evaluation rows"
+        )
+    overlap = sorted(fit_groups & set(eval_groups))
+    if overlap:
+        raise ValueError(
+            f"probability-calibration/evaluation lineage overlap: {overlap}"
+        )
+
+    def predicted_indices(temp: float) -> list[int]:
+        predictions: list[int] = []
+        for row in matrix:
+            probabilities = softmax(row, temperature=temp)
+            predictions.append(
+                min(
+                    range(len(labels_tuple)),
+                    key=lambda index: (-probabilities[index], labels_tuple[index]),
+                )
+            )
+        return predictions
+
+    raw_predictions = predicted_indices(1.0)
+    calibrated_predictions = predicted_indices(temperature)
+    argmax_invariant = raw_predictions == calibrated_predictions
+    if not argmax_invariant:
+        raise AssertionError(
+            "positive scalar temperature unexpectedly changed class argmax"
+        )
+
+    return TemperatureEvaluationResult(
+        temperature=temperature,
+        uncalibrated_nll=multiclass_nll(matrix, truth_list, labels_tuple),
+        calibrated_nll=multiclass_nll(
+            matrix, truth_list, labels_tuple, temperature=temperature
+        ),
+        uncalibrated_brier=multiclass_brier(matrix, truth_list, labels_tuple),
+        calibrated_brier=multiclass_brier(
+            matrix, truth_list, labels_tuple, temperature=temperature
+        ),
+        uncalibrated_ece=expected_calibration_error(
+            matrix, truth_list, labels_tuple, bins=ece_bins
+        ),
+        calibrated_ece=expected_calibration_error(
+            matrix,
+            truth_list,
+            labels_tuple,
+            temperature=temperature,
+            bins=ece_bins,
+        ),
+        uncalibrated_classwise_ece=classwise_expected_calibration_error(
+            matrix, truth_list, labels_tuple, bins=ece_bins
+        ),
+        calibrated_classwise_ece=classwise_expected_calibration_error(
+            matrix,
+            truth_list,
+            labels_tuple,
+            temperature=temperature,
+            bins=ece_bins,
+        ),
+        ece_bins=ece_bins,
+        argmax_invariant=argmax_invariant,
     )
