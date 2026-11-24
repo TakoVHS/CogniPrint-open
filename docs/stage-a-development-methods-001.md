@@ -1,5 +1,7 @@
 # Challenge 001 — Stage A development methods 001
 
+Companion Paper 1 methods draft: [`paper/when-not-to-attribute-protocol-draft.md`](../paper/when-not-to-attribute-protocol-draft.md).
+
 Status: `DEVELOPMENT_ONLY`
 
 Scientific-claim evidence: `NO`
