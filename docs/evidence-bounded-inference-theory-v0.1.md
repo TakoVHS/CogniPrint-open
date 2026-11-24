@@ -356,6 +356,15 @@ This theory track must be positioned conservatively.
 - Angelopoulos & Bates (2021/2023): distribution-free conformal prediction.
 - Dabah & Tirer (2025): interaction between temperature scaling and conformal
   prediction.
+- Bates et al. (2021): distribution-free risk-controlling prediction sets.
+- Learn-then-Test: held-out finite-sample risk control for a family of
+  predictive rules.
+- Angelopoulos et al. (2024): Conformal Risk Control.
+- Xu, Guo & Wei (2025): selective conformal risk control.
+- Wang et al. (ICML 2026): finite-sample selection-conditioned risk control
+  from held-out calibration data (LEC).
+- Aldirawi, Li & Guo (2026): finite-sample guarantees over non-monotone
+  parameter grids.
 
 Potential CogniPrint contribution is **not** "inventing abstention" or
 "inventing risk/coverage". A defensible research question is whether a useful,
@@ -387,17 +396,21 @@ Future empirical validation should use prospectively frozen or sealed evidence.
 
 ## 10. Next mathematical targets
 
+A finite-sample selective-risk baseline is now implemented separately in
+`docs/evidence-bounded-finite-sample-baseline-v0.1.md`. It is treated as
+prior-art territory, not as a novelty claim.
+
 Candidate results worth pursuing:
 
-1. finite-sample confidence bands for selective risk with a fixed acceptance
-   rule;
-2. claim-admissibility certificates under calibration uncertainty estimated
-   from an independent calibration sample;
-3. false-known control under an explicitly specified family of distribution
-   shifts;
-4. conditions under which conformal ambiguity can be converted into a valid
-   abstention certificate;
-5. impossibility results separating marginal validity, conditional validity,
-   and OOD rejection.
+1. finite-sample claim-admissibility rules that compose more than one risk
+   certificate rather than merely selecting a confidence threshold;
+2. simultaneous selective-risk and false-known control under an explicitly
+   specified family of unknown-distribution shifts;
+3. impossibility results for promoting closed-set risk guarantees into
+   provenance or attribution claims;
+4. conditions under which conformal ambiguity can be converted into an
+   auditable abstention certificate without mislabeling ambiguity as OOD;
+5. a formal evidence/claim lattice with mathematically valid promotion and
+   non-promotion rules.
 
 These are research targets, not established CogniPrint results.
