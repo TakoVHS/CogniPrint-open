@@ -113,6 +113,22 @@ Records:
 
 These are Stage A development results. Challenge 001 Stage B remains `NOT_AUTHORISED_TO_START`.
 
+
+### M2.1 post-result diagnostics
+
+A separately labelled post-result diagnostic run clarified the M2 failure modes:
+
+- conformal unknown empty-set rate was zero in every fold/representation; near-zero false-known was almost entirely multi-class ambiguity;
+- exploratory matched-coverage risk did not reveal a hidden 12D advantage;
+- the n-gram temperature lower bound `T=0.05` was materially restrictive for their cosine-score scale;
+- widening the lower temperature range did not rescue 12D calibration.
+
+M2.1 is **exploratory failure analysis**, not a replacement for M2 #1.
+
+- [M2.1 protocol](docs/raid-m2-1-post-result-diagnostics.md)
+- [M2.1 result](docs/raid-m2-1-results-2026-11-24.md)
+- [M2.1 machine-readable summary](evidence/raid-m2-1/2026-11-24/summary.json)
+
 ## Evidence-gated research programme
 
 Capabilities are intended to unlock only after dedicated benchmark evidence.
