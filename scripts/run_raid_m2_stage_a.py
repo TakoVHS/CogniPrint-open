@@ -153,6 +153,11 @@ def validate_outputs(output_dir: Path) -> dict[str, Any]:
         raise AssertionError("M2 output features SHA-256 mismatch")
     if result.get("selection_manifest_sha256") != EXPECTED_SELECTION_MANIFEST_SHA256:
         raise AssertionError("M2 output selection-manifest SHA-256 mismatch")
+    source_rehydration = result.get("source_rehydration") or {}
+    if source_rehydration.get("selected_records") != EXPECTED_SELECTED_RECORDS:
+        raise AssertionError("M2 output did not retain exactly 500 selected records")
+    if source_rehydration.get("rehydrated_records") != EXPECTED_SELECTED_RECORDS:
+        raise AssertionError("M2 output did not rehydrate exactly 500 selected records")
     if reproducibility.get("status") != "PASS" or reproducibility.get("match") is not True:
         raise AssertionError("M2 deterministic rerun did not pass")
     if len(result.get("folds") or []) != 4:
@@ -271,6 +276,8 @@ def main() -> int:
     features = args.features.resolve()
     contract = args.source_contract.resolve()
     output_root = args.output_root.resolve()
+    if output_root == repo_root or repo_root in output_root.parents:
+        raise ValueError("M2 evidence output_root must be outside the repository")
     output_root.mkdir(parents=True, exist_ok=True)
 
     if git_output(repo_root, "status", "--short"):
@@ -381,9 +388,6 @@ def main() -> int:
     protocol_source = repo_root / "docs" / "raid-calibration-m2-development.md"
     shutil.copy2(protocol_source, run_dir / "raid-calibration-m2-development.md")
 
-    audit = privacy_audit(run_dir)
-    write_json(run_dir / "privacy-audit.json", audit)
-
     (run_dir / "FINAL_STATUS.md").write_text(
         status_markdown(repository_commit),
         encoding="utf-8",
@@ -403,6 +407,8 @@ def main() -> int:
         "stage_b_status": validated["result"]["stage_b_status"],
     }
     write_json(run_dir / "RUN_SUMMARY.json", internal_summary)
+    audit = privacy_audit(run_dir)
+    write_json(run_dir / "privacy-audit.json", audit)
     manifest_entries = write_evidence_manifest(run_dir)
 
     archive_path = output_root / f"{run_dir.name}.tar.gz"
