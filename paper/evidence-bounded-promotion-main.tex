@@ -1,0 +1,340 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\geometry{margin=1in}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\Wc}{\mathcal W_c}
+\newcommand{\WT}{\mathcal W_T}
+\newcommand{\Vk}{\mathcal V_T}
+\newcommand{\BT}{\mathcal B_T}
+\newcommand{\riskc}{\rho_c}
+
+\title{When Statistical Certificates Cannot Justify Claims:\\
+Evidence-Bounded Promotion for AI Attribution}
+\author{Anonymous draft}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A statistical certificate controls a particular risk functional on a declared
+class of data-generating worlds. It does not automatically license a stronger
+semantic claim, a claim on a broader deployment population, or a claim about a
+different target functional. This paper develops a conservative
+certificate-to-claim interface for reasoning about such promotion steps. The
+central mathematical object is a sharp claim-risk envelope over worlds
+compatible with the realized certificate bounds. We show that this envelope is
+the pointwise least monotone numerical warrant on its feasible domain; practical
+warrants are therefore conservative upper approximations of a canonical object,
+rather than competing definitions. The operational rule is fail closed:
+coverage gaps, incompatible constraints, and failed computations produce an
+unresolved diagnostic rather than a safety conclusion. We use AI attribution as
+a motivating application, where closed-set performance certificates can be
+insufficient for claims about known membership, out-of-distribution status, or
+semantic provenance. The probability algebra used by the interface is
+standard; the contribution is methodological and application-driven rather
+than a claim of a new probability theory or type theory.
+\end{abstract}
+
+\section{Introduction}
+% Drafting target: motivate the negative result and the certificate-to-claim
+% problem. Connect the RAID-style negative result to a general methodological
+% question: when does a valid statistical certificate permit a downstream
+% semantic claim? Do not claim a new general theory.
+
+A recurring failure mode in statistical evaluation is to treat a valid bound
+on one target as permission to assert a stronger claim. A classifier may have a
+well-calibrated closed-set error bound while the downstream statement concerns
+whether a sample belongs to the known family at all. A detector may be
+evaluated on one population while the claim is used on another. In both cases,
+the statistical certificate can remain correct while the promoted claim is
+unsupported.
+
+This paper studies the promotion step itself. The aim is not to replace
+existing work on partial identification, probabilistic program logics, or
+assurance reasoning. Instead, we ask for a narrow operational interface that
+makes three objects explicit: the world class on which a certificate is valid,
+the risk functional it actually bounds, and the downstream claim-risk
+functional that must be controlled before promotion.
+
+Our main mathematical device is a sharp claim-risk envelope over worlds
+compatible with the realized certificate inequalities. This yields a canonical
+least monotone warrant on its feasible domain. Operationally, the interface is
+fail closed: an uncovered deployment world, an empty compatible set, or a
+failed optimization is not interpreted as evidence that the claim is safe.
+
+\section{Setup and Terminology}
+% Full version will consolidate the definitions already audited in
+% docs/certificate-scope-effect-system-v0.2.md and
+% docs/certificate-to-claim-target-typing-candidate.md.
+
+A statistical certificate procedure is represented by
+\[
+\kappa_i
+=
+(E_i,\mathcal W_{\kappa_i}^{A},\rho_i,B_i,\alpha_i),
+\]
+where \(E_i\) is the evidence channel,
+\(\mathcal W_{\kappa_i}^{A}\) is the world class on which the certificate's
+validity assumptions hold, \(\rho_i\) is the certified target risk,
+\(B_i(Z)\) is a data-dependent upper bound, and \(\alpha_i\) is its failure
+budget. Uniform frequentist validity means
+\[
+\inf_{D\in\mathcal W_{\kappa_i}^{A}}
+\Pr_D\!\left[\rho_i(D)\le B_i(Z)\right]
+\ge 1-\alpha_i.
+\]
+
+A downstream claim is represented by
+\[
+c=(C,\Wc,\riskc,\delta_c,\bar\alpha_c),
+\]
+where \(\Wc\) is the deployment world class, \(\riskc\) is the risk of
+asserting the claim, \(\delta_c\) is the tolerated claim risk, and
+\(\bar\alpha_c\) is the maximum allowed false-promotion budget.
+
+The distinction between a certificate risk \(\rho_i\) and the downstream
+claim risk \(\riskc\) is central: a small bound on the former does not by
+itself provide a numerical bound on the latter.
+
+\section{Sharp Envelope and Canonical Least Warrant}
+
+\subsection{Common semantic domain}
+
+Let \(\kappa_1,\ldots,\kappa_m\) be certificates used conjunctively to support
+claim \(c\), and let \(T\) declare an additional warrant scope \(\WT\).
+Define
+\[
+\mathcal W
+=
+\Wc
+\cap
+\WT
+\cap
+\bigcap_{i=1}^{m}\mathcal W_{\kappa_i}^{A}.
+\]
+For the conjunctive rule, operational promotion requires the fail-closed
+coverage condition
+\[
+\boxed{
+\Wc
+\subseteq
+\WT
+\cap
+\bigcap_{i=1}^{m}\mathcal W_{\kappa_i}^{A}.
+}
+\]
+The use of an intersection is essential: every certificate invoked by the
+warrant must be valid on every deployment world on which the downstream claim
+is asserted.
+
+For a candidate vector of upper bounds
+\(b=(b_1,\ldots,b_m)\in[0,1]^m\), define the compatible-world set
+\[
+\Vk(b)
+=
+\left\{
+D\in\mathcal W:
+\rho_i(D)\le b_i
+\text{ for all }i
+\right\}.
+\]
+Define the feasible-bound domain
+\[
+\boxed{
+\BT
+=
+\left\{
+b\in[0,1]^m:
+\Vk(b)\neq\varnothing
+\right\}.
+}
+\]
+
+\begin{definition}[Sharp claim-risk envelope]
+For \(b\in\BT\), define
+\[
+\boxed{
+s_T^\star(b)
+=
+\sup_{D\in\Vk(b)}
+\riskc(D).
+}
+\]
+For \(b\notin\BT\), the operational result is the distinguished non-numeric
+state \(\bot\). No numerical comparison with \(\delta_c\) is permitted in that
+branch.
+\end{definition}
+
+This partial-domain definition is deliberate. Assigning a convenient numeric
+value to an empty compatible set can make a later condition such as
+\(s_T^\star(b)\le\delta_c\) true for the wrong reason. The operational
+interface therefore separates feasibility from risk comparison.
+
+\subsection{Canonical form}
+
+\begin{theorem}[Canonical Least Warrant]
+Assume \(\mathcal W\neq\varnothing\).
+
+\begin{enumerate}[label=(\roman*)]
+\item If \(b\in\BT\) and \(b\le b'\) coordinatewise, then
+\(b'\in\BT\) and
+\[
+s_T^\star(b)\le s_T^\star(b').
+\]
+Thus \(s_T^\star\) is coordinatewise nondecreasing on its feasible-bound
+domain.
+
+\item Let \(g:[0,1]^m\to[0,1]\) be coordinatewise nondecreasing and satisfy
+\[
+\forall D\in\mathcal W:
+\qquad
+\riskc(D)
+\le
+g\!\left(\rho_1(D),\ldots,\rho_m(D)\right).
+\]
+Then, for every \(b\in\BT\),
+\[
+\boxed{
+s_T^\star(b)\le g(b).
+}
+\]
+Hence \(s_T^\star\) is the pointwise least monotone numerical warrant on the
+feasible-bound domain induced by the declared semantic model.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For part (i), if \(b\le b'\), every world satisfying
+\(\rho_i(D)\le b_i\) for all \(i\) also satisfies
+\(\rho_i(D)\le b_i'\) for all \(i\). Therefore
+\[
+\Vk(b)\subseteq\Vk(b').
+\]
+Because \(b\in\BT\), the first set is nonempty, so the second is nonempty as
+well and \(b'\in\BT\). Taking suprema of the same function \(\riskc\) over
+nested nonempty sets gives
+\[
+s_T^\star(b)\le s_T^\star(b').
+\]
+
+For part (ii), fix \(b\in\BT\) and any \(D\in\Vk(b)\). By the defining
+property of \(g\) and coordinatewise monotonicity,
+\[
+\riskc(D)
+\le
+g\!\left(\rho_1(D),\ldots,\rho_m(D)\right)
+\le
+g(b_1,\ldots,b_m).
+\]
+The right-hand side is independent of \(D\). Taking the supremum over
+\(D\in\Vk(b)\) yields
+\[
+s_T^\star(b)\le g(b).
+\]
+\end{proof}
+
+\begin{corollary}[Conservative computable warrant]
+Let \(\widehat s_T\) be a computable numerical function on \(\BT\) such that
+\[
+\widehat s_T(b)\ge s_T^\star(b)
+\qquad
+\forall b\in\BT.
+\]
+Then every \(D\in\Vk(b)\) satisfies
+\[
+\riskc(D)\le\widehat s_T(b).
+\]
+If \(\widehat s_T\) is also coordinatewise nondecreasing on \(\BT\), it is a
+tractable monotone warrant on the feasible domain.
+\end{corollary}
+
+\begin{proof}
+For \(D\in\Vk(b)\),
+\[
+\riskc(D)
+\le
+\sup_{D'\in\Vk(b)}\riskc(D')
+=
+s_T^\star(b)
+\le
+\widehat s_T(b).
+\]
+\end{proof}
+
+The relationship between the semantic optimum and a practical warrant is
+therefore
+\[
+\boxed{
+s_T^\star(b)
+\le
+\widehat s_T(b),
+\qquad b\in\BT.
+}
+\]
+The sharp envelope is canonical; a closed-form, optimization-based, or
+machine-verified \(g_T\) is useful when it provides a conservative and more
+tractable upper approximation.
+
+\subsection{Operational consequence}
+
+The theorem does not turn infeasibility into safety. Runtime promotion must
+first establish \(b\in\BT\). If \(\Vk(b)=\varnothing\), the result is
+\(\bot\), together with a diagnostic such as inconsistent assumptions or
+inconsistent realized bounds. Only after feasibility is established is a
+comparison of \(s_T^\star(b)\), or of a certified conservative upper
+approximation, with \(\delta_c\) semantically meaningful.
+
+\section{Ternary Judgment and Diagnostic Reasons}
+% Planned content: PROMOTE / ABSTAIN / UNRESOLVED as verification outcomes;
+% reason codes remain diagnostics, not a novelty claim and not a third
+% decision-theoretic action unless a loss is explicitly defined.
+
+\section{Fail-Closed Promotion}
+% Planned content: frequentist false-promotion proposition, scope-gaps, empty
+% compatible sets, and examples of fail-open bugs.
+
+\section{Application to AI Attribution}
+% Planned content: closed-set certificate -> known-membership/OOD/provenance
+% non-transfer and executable finite counterworld demonstration.
+
+\section{Relation to Prior Work}
+% Planned content: partial identification; aHL; Eris; BHL; StatWhy;
+% Assurance 2.0/SACM; proxy-evidence world-fiber/counterworld work.
+% Explicitly separate known prior art from the remaining methodological claim.
+
+\section{Limitations and Honest Boundaries}
+This paper does not claim a new probability theorem, a new theory of partial
+identification, or a new type-and-effect system. The sharp-envelope theorem is
+used to put the certificate-to-claim interface in canonical mathematical form.
+The intended contribution is methodological: to make scope, target mismatch,
+feasibility, and fail-closed claim promotion explicit in an AI-attribution
+setting.
+
+\section{Conclusion}
+% Planned closing: Probability is not permission to claim. A certificate
+% licenses only the downstream claims whose scope and target are connected by
+% an explicit validated warrant.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
