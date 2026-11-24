@@ -10,7 +10,9 @@ from cogniprint.stats.certificate_scope import (
     direct_static_compatible,
     find_heterogeneous_composition_witness,
     find_nonpromotion_witness,
+    heterogeneous_compatible_worlds,
     runtime_direct_promotion_allowed,
+    sharp_finite_claim_bound_under_certificates,
     worst_claim_risk_under_certificate,
 )
 
@@ -103,6 +105,83 @@ class CertificateScopeJudgmentTests(unittest.TestCase):
         self.assertAlmostEqual(
             composed_confidence_budget((first, second)),
             0.05,
+        )
+
+
+    def test_heterogeneous_scope_gap_fails_closed(self) -> None:
+        certificate = FiniteCertificate(
+            "partial",
+            "source-risk",
+            frozenset({"covered"}),
+            {"covered": 0.02},
+            0.05,
+            0.02,
+        )
+        claim = FiniteClaim(
+            "deployment",
+            "claim-risk",
+            frozenset({"covered", "uncovered"}),
+            {"covered": 0.04, "uncovered": 0.90},
+            0.10,
+        )
+        with self.assertRaisesRegex(ValueError, "does not cover claim worlds"):
+            heterogeneous_compatible_worlds((certificate,), claim)
+        with self.assertRaisesRegex(ValueError, "does not cover claim worlds"):
+            find_heterogeneous_composition_witness((certificate,), claim)
+        with self.assertRaisesRegex(ValueError, "does not cover claim worlds"):
+            sharp_finite_claim_bound_under_certificates((certificate,), claim)
+
+    def test_sharp_finite_quantitative_warrant_bound(self) -> None:
+        first = FiniteCertificate(
+            "family",
+            "family-risk",
+            frozenset({"w1", "w2", "w3"}),
+            {"w1": 0.02, "w2": 0.02, "w3": 0.30},
+            0.05,
+            0.02,
+        )
+        second = FiniteCertificate(
+            "ood",
+            "ood-risk",
+            frozenset({"w1", "w2", "w3"}),
+            {"w1": 0.03, "w2": 0.03, "w3": 0.01},
+            0.05,
+            0.03,
+        )
+        claim = FiniteClaim(
+            "provenance",
+            "provenance-risk",
+            frozenset({"w1", "w2", "w3"}),
+            {"w1": 0.04, "w2": 0.09, "w3": 0.80},
+            0.10,
+        )
+        self.assertAlmostEqual(
+            sharp_finite_claim_bound_under_certificates((first, second), claim)
+            or 0.0,
+            0.09,
+        )
+        self.assertIsNone(
+            find_heterogeneous_composition_witness((first, second), claim)
+        )
+
+    def test_empty_compatible_set_is_unresolved_not_zero_bound(self) -> None:
+        certificate = FiniteCertificate(
+            "impossible-realized-bound",
+            "risk",
+            frozenset({"w"}),
+            {"w": 0.20},
+            0.10,
+            0.05,
+        )
+        claim = FiniteClaim(
+            "claim",
+            "claim-risk",
+            frozenset({"w"}),
+            {"w": 0.01},
+            0.10,
+        )
+        self.assertIsNone(
+            sharp_finite_claim_bound_under_certificates((certificate,), claim)
         )
 
 
