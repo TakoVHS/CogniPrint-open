@@ -70,7 +70,7 @@ but $\eta(D_0)\neq\eta(D_1)$. Then $\eta$ is not identified by $E$.
 Moreover, for every $n$, the $n$-sample evidence laws coincide, and under
 equal prior weights no binary test based only on $E$ can distinguish
 $D_0$ from $D_1$ with error below $1/2$.
-\end{proposition}
+\end{theorem}
 
 \begin{proof}
 Equality of the one-observation laws implies equality of the product laws for
@@ -288,6 +288,124 @@ non-promotion witnesses and typed composition across heterogeneous statistical
 certificates, yields a useful new object for AI provenance and safety. This
 remains unestablished.
 
+\section{Certificate Scope Judgment (Candidate Interface)}
+\label{sec:csj}
+
+We treat a statistical certificate as carrying an explicit target and scope,
+rather than as an untyped confidence score. A certificate procedure has type
+\[
+\tau(\kappa)
+=
+(E,\mathcal W_\kappa^A,\rho_\kappa,\alpha_\kappa),
+\]
+and emits a data-dependent upper bound $B_\kappa(Z)$. Its frequentist
+validity means
+\[
+\inf_{D\in\mathcal W_\kappa^A}
+\Pr_D\{\rho_\kappa(D)\le B_\kappa(Z)\}
+\ge1-\alpha_\kappa.
+\]
+A downstream claim has type
+\[
+\tau(c)=(C,\mathcal W_c,\rho_c,\delta_c).
+\]
+
+Direct static compatibility requires
+$\mathcal W_c\subseteq\mathcal W_\kappa^A$ and
+$\rho_c=\rho_\kappa$ throughout $\mathcal W_c$. The realized inequality
+$B_\kappa(z)\le\delta_c$ is a runtime discharge condition, not part of the
+static type.
+
+\begin{proposition}[Direct typed-promotion soundness]
+Assume direct static compatibility. If promotion occurs only when
+$B_\kappa(Z)\le\delta_c$, then for every
+$D\in\mathcal W_c$ with $\rho_c(D)>\delta_c$,
+\[
+\Pr_D(\mathrm{PROMOTE})\le\alpha_\kappa.
+\]
+\end{proposition}
+
+\begin{proof}
+On the certificate-validity event,
+$\rho_c(D)=\rho_\kappa(D)\le B_\kappa(Z)$. In an unsafe world
+$\rho_c(D)>\delta_c$, this event cannot coexist with
+$B_\kappa(Z)\le\delta_c$. Hence unsafe promotion implies certificate
+failure, whose probability is at most $\alpha_\kappa$.
+\end{proof}
+
+For a realized certificate bound $b$, define
+\[
+\mathcal V_{\kappa,c}(b)
+=
+\{D\in\mathcal W_c\cap\mathcal W_\kappa^A:
+\rho_\kappa(D)\le b\}.
+\]
+
+\begin{proposition}[Non-promotion witness characterization]
+Assume $\mathcal V_{\kappa,c}(b)$ is nonempty. A world
+$D^\star\in\mathcal V_{\kappa,c}(b)$ with
+$\rho_c(D^\star)>\delta_c$ exists iff
+\[
+\sup_{D\in\mathcal V_{\kappa,c}(b)}\rho_c(D)>\delta_c.
+\]
+\end{proposition}
+
+\begin{proof}
+The forward direction is immediate. For the converse, if every compatible
+world had risk at most $\delta_c$, the supremum could not exceed
+$\delta_c$.
+\end{proof}
+
+This proposition is existential rather than algorithmically constructive.
+Finite world classes can be searched directly; convex or otherwise
+parameterized classes require a valid optimization/separation procedure.
+
+\begin{proposition}[Same-target confidence-budget composition]
+Suppose two certificates are valid on a common world class for the same
+functional $\rho$, with bounds $B_1,B_2$ and failure budgets
+$\alpha_1,\alpha_2$. Then
+\[
+\Pr_D\{\rho(D)\le\min(B_1(Z),B_2(Z))\}
+\ge1-(\alpha_1+\alpha_2)
+\]
+for every world in the common scope.
+\end{proposition}
+
+\begin{proof}
+On the intersection of the two validity events, both bounds hold and hence so
+does their minimum. The union bound controls the complement.
+\end{proof}
+
+There is no generic additional $n^{-1/2}$ improvement and no guarantee of
+strict tightening. Stronger fusion requires extra statistical structure.
+
+For heterogeneous targets, a promotion must instead carry an explicit warrant
+$T$ such that, throughout the claim scope,
+\[
+\bigwedge_i \{\rho_i(D)\le b_i\}
+\Longrightarrow
+\rho_c(D)\le\delta_c.
+\]
+When the certificate failure budgets are $\alpha_i$, this warranted
+composition has unsafe-promotion probability at most $\sum_i\alpha_i$ by
+the same union-bound argument.
+
+\subsection{Difference from assurance and statistical-program verification}
+
+Assurance 2.0, SACM, and machine-checked assurance languages already distinguish
+claims, evidence, assumptions, inferential links, and defeaters; Belief Hoare
+Logic and StatWhy already formalize requirements and interpretations of
+statistical procedures and verify their correct use. We therefore do not claim
+novelty for evidence-to-claim warrants, statistical preconditions, or
+machine-checked argument structure. The narrower object investigated here is a
+certificate-scope judgement in which a realized frequentist certificate carries
+an explicit risk functional, validation/deployment world class, evidence scope,
+and confidence budget, while a downstream semantic claim carries its own target
+risk and tolerance. Promotion across mismatched targets is blocked unless a
+separate identification or transport warrant is supplied, and failure can be
+represented by a compatible partial-identification counterworld. Whether this
+specific combination is new remains under external review.
+
 \section{Conditional-Kernel Representation of Evidence Composition}
 \label{sec:composition}
 
@@ -333,7 +451,7 @@ Therefore
 \{\rho_C(D):
 D\in\mathcal W_E,K_D=K_{\rm obs}\ \mu_{\rm obs}^E\text{-a.s.}\}.
 \]
-\end{theorem}
+\end{proposition}
 
 \begin{proof}
 Inside $\mathcal W_E$, all worlds already share the same $E$-marginal.
