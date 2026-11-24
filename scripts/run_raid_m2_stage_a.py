@@ -392,6 +392,7 @@ def main() -> int:
         status_markdown(repository_commit),
         encoding="utf-8",
     )
+    preliminary_audit = privacy_audit(run_dir)
     internal_summary = {
         "schema": "cogniprint-raid-m2-exact-run-internal-001",
         "status": "PASS",
@@ -403,12 +404,12 @@ def main() -> int:
         "m2_reproducibility_sha256": sha256_file(
             analysis_dir / "m2-reproducibility.json"
         ),
-        "privacy_audit_status": audit["status"],
+        "privacy_audit_status": preliminary_audit["status"],
         "stage_b_status": validated["result"]["stage_b_status"],
     }
     write_json(run_dir / "RUN_SUMMARY.json", internal_summary)
-    audit = privacy_audit(run_dir)
-    write_json(run_dir / "privacy-audit.json", audit)
+    final_audit = privacy_audit(run_dir)
+    write_json(run_dir / "privacy-audit.json", final_audit)
     manifest_entries = write_evidence_manifest(run_dir)
 
     archive_path = output_root / f"{run_dir.name}.tar.gz"
