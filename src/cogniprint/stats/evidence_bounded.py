@@ -281,7 +281,7 @@ def _binomial_cdf(errors: int, trials: int, probability: float) -> float:
     upper_tail = _binomial_tail_probability(
         errors + 1,
         trials,
-        trials=trials,
+        n=trials,
         probability=probability,
     )
     return min(1.0, max(0.0, 1.0 - upper_tail))
