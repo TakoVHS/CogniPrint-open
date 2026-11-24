@@ -162,6 +162,81 @@ def paired_group_bootstrap_delta(
     }
 
 
+def paired_group_bootstrap_mean_delta(
+    values_a: Sequence[float],
+    values_b: Sequence[float],
+    group_ids: Sequence[str],
+    *,
+    resamples: int = 10_000,
+    seed: int = 20261124,
+    confidence: float = 0.95,
+) -> dict[str, float | int | str]:
+    """Cluster bootstrap for paired per-example losses/scores.
+
+    The reported estimand is mean(A) - mean(B). For losses such as NLL or
+    Brier, a negative interval therefore favors system A.
+    """
+    if not (len(values_a) == len(values_b) == len(group_ids)):
+        raise ValueError("paired numeric bootstrap inputs must have equal length")
+    if not values_a:
+        raise ValueError("paired numeric bootstrap inputs are empty")
+    left = [_require_finite_scalar(value, "numeric value A") for value in values_a]
+    right = [_require_finite_scalar(value, "numeric value B") for value in values_b]
+    resamples = _require_positive_int(resamples, "resamples")
+    if isinstance(seed, bool) or not isinstance(seed, int):
+        raise TypeError("seed must be an integer")
+    confidence = _require_finite_scalar(confidence, "confidence")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0,1)")
+
+    grouped: dict[str, list[int]] = defaultdict(list)
+    for index, group_id in enumerate(group_ids):
+        group = str(group_id).strip()
+        if not group:
+            raise ValueError("group IDs must be non-empty")
+        grouped[group].append(index)
+    groups = sorted(grouped)
+    if len(groups) < 2:
+        raise ValueError("paired numeric bootstrap requires at least two lineage groups")
+
+    point = sum(a - b for a, b in zip(left, right)) / len(left)
+    rng = random.Random(seed)
+    deltas: list[float] = []
+    for _ in range(resamples):
+        sampled_groups = [groups[rng.randrange(len(groups))] for _ in groups]
+        indices = [
+            index for group in sampled_groups for index in grouped[group]
+        ]
+        deltas.append(
+            sum(left[index] - right[index] for index in indices) / len(indices)
+        )
+    deltas.sort()
+
+    def quantile(probability: float) -> float:
+        position = probability * (len(deltas) - 1)
+        lower_index = math.floor(position)
+        upper_index = math.ceil(position)
+        if lower_index == upper_index:
+            return deltas[lower_index]
+        weight = position - lower_index
+        return (
+            deltas[lower_index] * (1.0 - weight)
+            + deltas[upper_index] * weight
+        )
+
+    tail = (1.0 - confidence) / 2.0
+    return {
+        "point_delta": point,
+        "ci_lower": quantile(tail),
+        "ci_upper": quantile(1.0 - tail),
+        "confidence": confidence,
+        "resamples": resamples,
+        "seed": seed,
+        "group_count": len(groups),
+        "estimand": "mean_a_minus_mean_b",
+    }
+
+
 @dataclass(frozen=True)
 class DevelopmentClaimThresholds:
     false_known_point_max: float = 0.10
