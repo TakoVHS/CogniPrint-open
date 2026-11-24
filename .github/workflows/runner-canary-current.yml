@@ -1,0 +1,23 @@
+name: Runner Canary Current
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/runner-canary-current.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    name: Current hosted-runner canary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runner marker
+        run: echo RUNNER_EXECUTED
+
+      - name: Python marker
+        run: |
+          python --version
+          echo PYTHON_EXECUTED
