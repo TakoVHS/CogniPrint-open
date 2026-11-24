@@ -287,6 +287,121 @@ claim-admissibility calculus, together with composition and non-promotion
 rules across heterogeneous evidence channels, yields a useful new formal
 object for AI provenance and safety. This remains unestablished.
 
+\section{Sharp Composition of Evidence Channels}
+\label{sec:composition}
+
+The monotonicity statement
+\[
+\mathcal R_C(E,F)\subseteq\mathcal R_C(E)
+\]
+does not explain when the inclusion is strict. The relevant object is the
+conditional law of the added channel given the existing evidence.
+
+Assume standard Borel evidence spaces. Let
+\[
+\mathcal W_E
+=
+\{D\in\mathcal W:\mu_D^E=\mu_{\rm obs}^E\}.
+\]
+Disintegrate the observed joint law as
+\[
+\nu_{\rm obs}^{E,F}(de,df)
+=
+\mu_{\rm obs}^E(de)K_{\rm obs}(df\mid e).
+\]
+For each $D\in\mathcal W_E$, write
+\[
+\mu_D^{E,F}(de,df)
+=
+\mu_{\rm obs}^E(de)K_D(df\mid e).
+\]
+
+\begin{theorem}[Sharp conditional-kernel composition]
+The product-channel compatible worlds are exactly
+\[
+\mathcal W_{E,F}
+=
+\{D\in\mathcal W_E:
+K_D(\cdot\mid e)=K_{\rm obs}(\cdot\mid e)
+\quad \mu_{\rm obs}^E\text{-a.s.}\}.
+\]
+Therefore
+\[
+\mathcal R_C(E,F)
+=
+\{\rho_C(D):
+D\in\mathcal W_E,K_D=K_{\rm obs}\ \mu_{\rm obs}^E\text{-a.s.}\}.
+\]
+\end{theorem}
+
+\begin{proof}
+Inside $\mathcal W_E$, all worlds already share the same $E$-marginal.
+Two joint laws with that common marginal are equal iff their regular
+conditional laws of $F$ given $E$ agree almost surely with respect to that
+marginal. Taking the image of the resulting compatible-world set under
+$\rho_C$ gives the stated identified risk set.
+\end{proof}
+
+For a tolerance $\delta$, define
+\[
+\mathcal U_\delta(E)
+=
+\{D\in\mathcal W_E:\rho_C(D)>\delta\}.
+\]
+
+\begin{corollary}[Exact promotion criterion]
+The product channel makes claim $C$ robustly admissible iff
+\[
+\mathcal U_\delta(E)
+\cap
+\{D:K_D=K_{\rm obs}\ \mu_{\rm obs}^{E}\text{-a.s.}\}
+=
+\varnothing.
+\]
+Thus every unsafe world remaining after the coarse channel must be rejected
+by the observed conditional behavior of the added channel.
+\end{corollary}
+
+\begin{proposition}[Complete conditional redundancy]
+Suppose there is a single Markov kernel $K$ such that
+$K_D=K$ almost surely for every $D\in\mathcal W_E$, and the observed kernel
+is also $K$. Then
+\[
+\mathcal W_{E,F}=\mathcal W_E
+\quad\text{and}\quad
+\mathcal R_C(E,F)=\mathcal R_C(E).
+\]
+\end{proposition}
+
+A deterministic derived channel $F=\phi(E)$ is a special case: its conditional
+law is the world-invariant point mass $\delta_{\phi(e)}$. Renaming or
+deterministically transforming existing evidence therefore cannot create
+identification gain.
+
+We call $F$ \emph{claim-relevant at the observed law} when
+\[
+\mathcal R_C(E,F)\subsetneq\mathcal R_C(E),
+\]
+and $\delta$-\emph{separating} when the coarse set is inadmissible but the
+product set satisfies the tolerance. Statistical independence is neither
+required nor sufficient for either property.
+
+\subsection{Why separate marginals are insufficient}
+
+In general,
+\[
+\mathcal R_C(E,F)
+\subseteq
+\mathcal R_C(E)\cap\mathcal R_C(F),
+\]
+and the inclusion may be strict. Matching the two marginals separately does
+not impose the observed dependence structure between channels. The joint law
+can therefore exclude worlds compatible with each marginal in isolation.
+
+This is one point of contact with sharp-bound and data-fusion problems in
+partial identification, where targets depending on a joint distribution may
+remain unidentified from marginal information alone.
+
 \section{Partial-identification context}
 
 Identified sets and decisions under incomplete identification are classical.
