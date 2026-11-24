@@ -112,3 +112,32 @@ A negative review is useful. Endorsement is not requested.
 ## Claim boundary
 
 This result does not establish authorship, exact model identity, universal AI origin, actor/commissioner identity, intent, legal/forensic provenance or production readiness.
+
+
+## M2.1 post-result diagnostic result
+
+After M2 #1 was fixed, the project disclosed that the written M2 hierarchy had not prospectively enumerated a concrete matched-coverage grid. A separate M2.1 protocol was therefore frozen before running additional diagnostics.
+
+M2.1 status:
+
+`EXECUTED / POST_RESULT_EXPLORATORY`
+
+Key findings:
+
+- held-out unknown conformal **empty-set rate was 0.0 in every fold and representation**;
+- near-zero conformal false-known was almost entirely `UNKNOWN_AMBIGUOUS`, not OOD empty-set rejection;
+- 12D did not show a hidden selective-risk advantage on the exploratory coverage grid;
+- the frozen 60% development-coverage threshold did not guarantee 60% held-out coverage;
+- n-gram calibration-grid optima fell at `T=0.01–0.02`, confirming that the M2 `T=0.05` lower bound was materially restrictive for their cosine-score scale;
+- widening the lower range did not rescue 12D calibration: `T=1` remained better on average than M2/M2.1 fitted temperatures on already-exposed evaluation data;
+- every conformal-calibration record had a unique declared lineage group, so duplicate declared lineages did not explain the ambiguity.
+
+Evidence:
+
+- `docs/raid-m2-1-results-2026-11-24.md`;
+- `evidence/raid-m2-1/2026-11-24/summary.json`;
+- workflow run `45373412957`;
+- diagnostic archive SHA-256:
+  `b9e8aaccb0816761d19de2aaa1d2329c5a29328fa4541037ab1b59936f79559b`.
+
+M2.1 may inform future sealed-study design. It must not be treated as confirmatory evidence or used to overwrite M2 #1.
