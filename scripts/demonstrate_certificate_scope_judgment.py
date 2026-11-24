@@ -19,6 +19,7 @@ from cogniprint.stats.certificate_scope import (
     find_heterogeneous_composition_witness,
     find_nonpromotion_witness,
     runtime_direct_promotion_allowed,
+    sharp_finite_claim_bound_under_certificates,
 )
 
 
@@ -97,6 +98,13 @@ def build_payload() -> dict[str, object]:
         risk_by_world={"w1": 0.04, "w2": 0.40},
         delta=0.10,
     )
+    provenance_warranted = FiniteClaim(
+        name="provenance-warranted-finite",
+        target="provenance-risk",
+        scope=frozenset({"w1", "w2"}),
+        risk_by_world={"w1": 0.04, "w2": 0.09},
+        delta=0.10,
+    )
 
     return {
         "status": "candidate_interface_synthetic_demo_only",
@@ -130,6 +138,18 @@ def build_payload() -> dict[str, object]:
                 (family, ood),
                 provenance,
             ),
+            "union_bound_alpha": composed_confidence_budget((family, ood)),
+        },
+        "finite_quantitative_warrant": {
+            "sharp_claim_bound": sharp_finite_claim_bound_under_certificates(
+                (family, ood),
+                provenance_warranted,
+            ),
+            "counterworld": find_heterogeneous_composition_witness(
+                (family, ood),
+                provenance_warranted,
+            ),
+            "delta": provenance_warranted.delta,
             "union_bound_alpha": composed_confidence_budget((family, ood)),
         },
         "interpretation": (
