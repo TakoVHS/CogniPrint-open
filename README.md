@@ -250,6 +250,7 @@ These boundaries are part of the design. A provenance system becomes more credib
 - [`docs/where-cogniprint-fails.md`](docs/where-cogniprint-fails.md)
 - [`docs/fingerprint-registry-v0.1.md`](docs/fingerprint-registry-v0.1.md)
 - [`docs/current-state-summary.md`](docs/current-state-summary.md)
+- [`docs/scientific-claim-review-m2-2026-11-24.md`](docs/scientific-claim-review-m2-2026-11-24.md)
 - [`docs/evidence-dossier.md`](docs/evidence-dossier.md)
 - [`docs/external-review.md`](docs/external-review.md)
 - [`docs/reviewer-response-template.md`](docs/reviewer-response-template.md)
