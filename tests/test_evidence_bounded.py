@@ -4,6 +4,7 @@ import unittest
 
 from cogniprint.stats.evidence_bounded import (
     certified_correctness_lower_bound,
+    clopper_pearson_lower,
     clopper_pearson_upper,
     conformal_singleton_risk_upper_bound,
     coverage_lower_bound_from_mean_confidence,
@@ -129,6 +130,22 @@ class EvidenceBoundedTheoryTests(unittest.TestCase):
         assert selected is not None
         self.assertIn(selected.threshold, {0.99, 0.90})
         self.assertLessEqual(selected.upper_risk_bound or 1.0, 0.20)
+
+    def test_clopper_pearson_lower_all_success_closed_form(self) -> None:
+        alpha = 0.05
+        trials = 29
+        expected = alpha ** (1.0 / trials)
+        self.assertAlmostEqual(
+            clopper_pearson_lower(trials, trials, alpha) or 0.0,
+            expected,
+            places=12,
+        )
+
+    def test_clopper_pearson_lower_zero_success(self) -> None:
+        self.assertEqual(clopper_pearson_lower(0, 20, 0.05), 0.0)
+
+    def test_clopper_pearson_lower_empty_sample(self) -> None:
+        self.assertIsNone(clopper_pearson_lower(0, 0, 0.05))
 
 
 if __name__ == "__main__":
