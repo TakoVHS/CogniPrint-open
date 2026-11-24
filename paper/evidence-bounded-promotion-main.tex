@@ -31,10 +31,14 @@ Evidence-Bounded Promotion for AI Attribution}
 \begin{document}
 
 \maketitle
+\begingroup
+\renewcommand{\thefootnote}{}
 \footnotetext{A large language model was used as an assistive tool for drafting,
 literature organization, and editorial revision. The human author is
 responsible for independently verifying the definitions, proofs, citations,
 scientific claims, and final text.}
+\addtocounter{footnote}{-1}
+\endgroup
 
 \begin{abstract}
 A statistical certificate controls a particular risk functional on a declared
@@ -76,6 +80,18 @@ assurance reasoning. Instead, we ask for a narrow operational interface that
 makes three objects explicit: the world class on which a certificate is valid,
 the risk functional it actually bounds, and the downstream claim-risk
 functional that must be controlled before promotion.
+
+
+\paragraph{Why this is a machine-learning problem.}
+Modern ML systems are evaluated through task-specific metrics, calibration
+procedures, selective-risk estimates, OOD scores, and benchmark certificates,
+but deployment decisions often concern a semantically different proposition.
+The resulting failure is not that the upstream statistic is necessarily
+incorrect; it is that a benchmark-bounded guarantee is silently promoted across
+a target or population boundary.  AI attribution is one concrete instance:
+closed-set source-family performance can coexist with unresolved open-world
+membership or provenance risk.  The interface below is intended to make that
+promotion boundary auditable.
 
 Our main mathematical device is a sharp claim-risk envelope over worlds
 compatible with the realized certificate inequalities. This yields a canonical
@@ -277,6 +293,14 @@ s_T^\star(b)\le g(b).
 \]
 \end{proof}
 
+\begin{remark}[Role of the theorem]
+The theorem is intentionally elementary: it is a canonicalization result, not
+a claim of a deep new extremal principle.  Its value is that every admissible
+monotone numerical warrant is placed relative to a single sharp object,
+\(s_T^\star\), so a practical implementation can be described unambiguously as
+either exact on the feasible domain or conservative by a stated amount.
+\end{remark}
+
 \begin{corollary}[Conservative computable warrant]
 Let \(\widehat s_T\) be a computable numerical function on \(\BT\) such that
 \[
@@ -347,6 +371,15 @@ For realized bounds \(b_i=B_i(z)\), the fail-closed evaluation order is:
 \item discharge the claim-risk threshold;
 \item discharge the allowed false-promotion budget.
 \end{enumerate}
+
+
+\paragraph{Practitioner interpretation.}
+The framework changes the order of questions asked of a deployed ML score.
+Instead of asking first whether a numerical bound is small, the practitioner
+must ask: \emph{what target does this certificate actually control, on which
+worlds, and what additional argument transports that control to the claim I
+want to make?}  If any of those questions is unanswered, the correct output is
+not a stronger confidence statement but an abstention or unresolved diagnostic.
 
 \textsc{Promote} is returned only if all preceding obligations are discharged.
 \textsc{Abstain} is returned when the semantic problem is well posed but the
