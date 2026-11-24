@@ -363,3 +363,154 @@ must beat TF-IDF.
 
 This audit does not execute real RAID calibration, alter the canonical freeze,
 or authorize Stage B.
+
+
+## 6. Selective prediction, open set and conformal scope
+
+The first paper must keep three uncertainty mechanisms conceptually separate.
+
+### 6.1 Conformal prediction: what is and is not guaranteed
+
+The Stage A implementation uses **class-conditional split conformal**
+prediction sets based on cosine nonconformity. Under the relevant
+within-class exchangeability assumptions, the known-class prediction-set
+coverage has a finite-sample conformal interpretation.
+
+That statement does **not** imply:
+
+- guaranteed correctness when the prediction set happens to be a singleton;
+- guaranteed rejection of an unseen/OOD family;
+- calibrated class probabilities;
+- validity after distribution shift that breaks exchangeability;
+- legal or forensic attribution.
+
+The development evaluator now reports known-class set coverage separately from
+singleton rate/accuracy and held-out unknown false-known/rejection behavior.
+Reference, conformal-calibration and evaluation lineage groups must be disjoint.
+
+Conformal `UNKNOWN_OOD` is therefore an **operational decision label** for an
+empty accepted set, not a theorem that the sample truly comes from an unknown
+generator.
+
+### 6.2 Open-set confidence baseline
+
+Maximum class confidence is retained only as a transparent open-set baseline.
+Its threshold must be frozen using development/calibration evidence before the
+held-out evaluation partition is inspected.
+
+The implementation reports:
+
+- true-known acceptance rate;
+- **false-known rate** on held-out unknown examples;
+- Wilson intervals for both rates;
+- known-vs-unknown AUROC from the ranking score.
+
+`false-known rate` is useful CogniPrint terminology, but the underlying idea is
+not unique to CogniPrint: it is closely related to false acceptance / false
+positive behavior for unknown/OOD inputs in open-set recognition.
+
+A low AUROC or low false-known rate does not by itself establish useful
+closed-set classification. Both open-set and known-class quality must be shown.
+
+### 6.3 Selective risk and AURC
+
+For a confidence-ranked selective classifier with acceptance indicator
+`g(x)`, coverage and selective risk are:
+
+```text
+coverage = accepted / total
+selective_risk = errors_among_accepted / accepted
+```
+
+The development implementation groups exact confidence ties and accepts the
+whole tie together. This prevents arbitrary row ordering from making the
+risk-coverage curve look better or worse.
+
+AURC is reported as a compact summary of the attainable risk-coverage curve,
+but **matched-coverage risk and the full curve remain primary**. Raw AURC can
+be affected by the underlying full-coverage error rate, so it must not be used
+to hide a substantially weaker classifier.
+
+### 6.4 Bayesian reject rule: subordinate to Claim Firewall
+
+For a top-class posterior probability `p`, symmetric claim loss
+`C_wrong`, correct-claim loss `C_correct`, and abstention cost `C_abstain`,
+the expected loss of making the claim is:
+
+```text
+p * C_correct + (1 - p) * C_wrong
+```
+
+Claiming is preferred to abstaining when this expected loss does not exceed
+`C_abstain`. With `C_correct = 0` and `C_wrong = 1`, the familiar
+threshold is:
+
+```text
+p >= 1 - C_abstain
+```
+
+This is a **decision-theory sub-layer**, not a replacement for evidence
+admissibility. Claim Firewall remains upstream: authorship, actor/commissioner,
+intent/responsibility, legal/forensic conclusions, OOD status, uncalibrated
+scores or other locked claims cannot be unlocked merely by choosing a favorable
+cost parameter.
+
+### 6.5 Paper 1 metric hierarchy
+
+**Primary probability metrics**
+
+- held-out NLL;
+- held-out multiclass Brier;
+- paired lineage-group confidence intervals for their differences.
+
+**Primary selective/open-world metrics**
+
+- risk at prospectively specified matched coverage values;
+- coverage;
+- held-out unknown false-known rate with interval;
+- held-out unknown rejection rate.
+
+**Secondary summaries/diagnostics**
+
+- AURC;
+- top-label ECE;
+- macro classwise ECE;
+- reliability diagrams;
+- known-vs-unknown AUROC.
+
+The paper must publish a negative or mixed outcome unchanged. There is no
+requirement that 12D rank above the n-gram baselines on any of these metrics.
+
+## 7. Corrected execution protocol for the RAID development study
+
+The historical 351/149 RAID Pilot A split must **not** be reused as
+`train = calibration`. Temperature fitting and any confidence/abstention
+threshold selection need a lineage-disjoint development/calibration role.
+
+A defensible development run therefore uses, within Stage A-visible material:
+
+```text
+reference/train
+    -> fit representation-specific classifier
+probability-calibration
+    -> fit T only
+conformal-calibration
+    -> fit conformal nonconformity distribution only
+threshold-development
+    -> choose any max-confidence/selective policy thresholds
+held-out Stage-A evaluation
+    -> metrics only; no tuning
+```
+
+Where sample size does not support all roles, the correct outcome is
+`INSUFFICIENT DEVELOPMENT EVIDENCE` rather than quietly fitting on train or
+test.
+
+The first real run should compare the same frozen scoring/classifier family for
+12D, word n-gram and character n-gram representations. Any alternative such as
+logistic regression must be frozen prospectively and applied consistently to
+all three representations.
+
+The study protocol must not contain language such as "the 12D curve should be
+lower". The admissible statement is: **the ordering is unknown before
+evaluation**.
