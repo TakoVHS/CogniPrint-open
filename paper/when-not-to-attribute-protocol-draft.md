@@ -5,6 +5,8 @@
 **Scientific readiness:** `descriptive_only`  
 **Relationship to Challenge 001:** Stage A development only; Stage B remains `NOT_AUTHORISED_TO_START`.
 
+**Executable M2 development protocol:** [`docs/raid-calibration-m2-development.md`](../docs/raid-calibration-m2-development.md). Real pinned RAID M2 remains `NOT EXECUTED`.
+
 ## Abstract
 
 Text-source attribution systems are often evaluated primarily by closed-set classification metrics even when deployment requires a more basic decision: whether the available evidence supports making an attribution at all. CogniPrint's fixed Stage A RAID pilot exposed a useful limitation of its initial compact representation: on a five-class, 500-record development benchmark, a 12-dimensional nearest-centroid profile achieved macro-F1 0.535883, while word 1–2 hashed TF-IDF achieved 0.595220. Rather than treating this negative comparison as a reason to optimize the feature set against the same held-out labels, this note specifies a follow-on evaluation centered on probabilistic quality, abstention and open-world error. The proposed study compares frozen 12D, word n-gram and character n-gram representations under matched classifier/scoring procedures and lineage-disjoint calibration/evaluation partitions. Primary outcomes are held-out negative log-likelihood, multiclass Brier score, selective risk at matched coverage, and false-known behavior on held-out unknown sources. ECE, classwise ECE, AURC and reliability diagrams are secondary diagnostics. Class-conditional split conformal prediction provides prediction sets for known classes under explicit exchangeability assumptions; it is not presented as a guarantee of singleton correctness or unseen-source rejection. No empirical M2 ordering is claimed in this draft.
