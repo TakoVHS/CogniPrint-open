@@ -163,32 +163,75 @@ def compose_same_target(
     )
 
 
-def find_heterogeneous_composition_witness(
+def _require_claim_scope_coverage(
     certificates: tuple[FiniteCertificate, ...],
     claim: FiniteClaim,
-) -> str | None:
-    """Find a world satisfying every certificate bound but violating the claim.
-
-    Absence of a witness in a finite enumerated world class is sufficient for
-    that finite model only; it is not a universal proof for larger world
-    classes.
-    """
+) -> None:
+    """Fail closed unless every certificate covers the full claim scope."""
 
     if not certificates:
         raise ValueError("at least one certificate is required")
 
-    common = set(claim.scope)
     for certificate in certificates:
-        common.intersection_update(certificate.scope)
+        missing = claim.scope.difference(certificate.scope)
+        if missing:
+            raise ValueError(
+                f"certificate {certificate.name!r} does not cover claim worlds: "
+                f"{sorted(missing)}"
+            )
 
-    for world in sorted(common):
+
+def heterogeneous_compatible_worlds(
+    certificates: tuple[FiniteCertificate, ...],
+    claim: FiniteClaim,
+) -> frozenset[str]:
+    """Claim worlds satisfying all realized certificate inequalities.
+
+    This function deliberately requires full claim-scope coverage. Silently
+    intersecting scopes would turn an uncovered deployment world into an
+    apparently harmless absence of a witness.
+    """
+
+    _require_claim_scope_coverage(certificates, claim)
+    return frozenset(
+        world
+        for world in claim.scope
         if all(
             float(certificate.risk_by_world[world]) <= certificate.bound
             for certificate in certificates
-        ) and float(claim.risk_by_world[world]) > claim.delta:
+        )
+    )
+
+
+def sharp_finite_claim_bound_under_certificates(
+    certificates: tuple[FiniteCertificate, ...],
+    claim: FiniteClaim,
+) -> float | None:
+    """Sharp finite-world claim-risk envelope under realized certificate bounds.
+
+    The returned value is the maximum downstream claim risk among all declared
+    claim worlds that satisfy every realized certificate inequality. It is a
+    finite-world quantitative warrant. None means the realized constraints
+    leave no compatible world; callers should treat that case as unresolved
+    rather than silently promoting.
+    """
+
+    worlds = heterogeneous_compatible_worlds(certificates, claim)
+    if not worlds:
+        return None
+    return max(float(claim.risk_by_world[world]) for world in worlds)
+
+
+def find_heterogeneous_composition_witness(
+    certificates: tuple[FiniteCertificate, ...],
+    claim: FiniteClaim,
+) -> str | None:
+    """Find a fully covered world satisfying every bound but violating claim."""
+
+    for world in sorted(heterogeneous_compatible_worlds(certificates, claim)):
+        if float(claim.risk_by_world[world]) > claim.delta:
             return world
     return None
-
 
 def composed_confidence_budget(
     certificates: tuple[FiniteCertificate, ...],
