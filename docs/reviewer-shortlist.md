@@ -1,94 +1,218 @@
 # Independent methodological reviewer shortlist
 
-Status: outreach planning only. Inclusion here does not imply endorsement, participation, or affiliation with CogniPrint.
+Status: outreach planning only.
 
-## Selection criteria
+Inclusion here does not imply endorsement, participation, affiliation or agreement with CogniPrint.
 
-Prefer reviewers with recent work in at least one of:
+## Review target after M2/M2.1
 
-- AI-generated text detection;
-- stylometry or interpretable text features;
-- human–AI coauthoring detection;
-- uncertainty calibration / abstention;
-- adversarial robustness and distribution shift;
-- synthetic-content provenance or trustworthy AI evaluation.
+The request is no longer primarily:
 
-Avoid asking anyone to “support” the project. The request is for criticism, failure modes, and methodological corrections.
+> Is the proposed benchmark a good idea?
 
-## Priority targets
+The useful question is now:
 
-### 1. HACo-Det research team — fine-grained human–AI coauthoring
+> Given the executed negative/mixed M1/M2 evidence and the post-result M2.1 failure analysis, is the interpretation scientifically sound, and what must be redesigned before any sealed Stage B study is worth running?
 
-Paper: *HACo-Det: A Study Towards Fine-Grained Machine-Generated Text Detection under Human-AI Coauthoring*, ACL 2025.
+Priority expertise:
 
-Authors: Zhixiong Su, Yichen Wang, Herun Wan, Zhaohan Zhang, Minnan Luo.
+- calibration and proper scoring rules;
+- selective prediction / abstention;
+- conformal prediction-set usefulness;
+- open-set / OOD failure;
+- AI-generated text detection under distribution shift;
+- evidence-grounded decision support;
+- statistical dependence and evaluation design.
 
-Why relevant: the paper directly studies word- and sentence-level human/AI coauthored text and reports that fine-grained detection remains far from solved. This is closely aligned with CogniPrint's proposed human–AI intervention track.
+Do not ask anyone to “support”, “validate” or “endorse” CogniPrint.
 
-Public reference: https://aclanthology.org/2025.acl-long.1069/
+Ask for criticism.
 
-Suggested ask: critique the intervention-map protocol, labeling strategy, context-window assumptions, and whether the proposed pilot can produce a meaningful negative result.
+## Priority 1 — classification-to-evidence gap in AI-text detection
 
-### 2. MoSEs research team — stylometry, uncertainty, conditional thresholds
+### Jiatao Li, Mao Ye, Xinyu Hu, Cheng Peng, Xunjian Yin, Xiaojun Wan
 
-Paper: *MoSEs: Uncertainty-Aware AI-Generated Text Detection via Mixture of Stylistics Experts with Conditional Thresholds*, EMNLP 2025.
+Paper:
 
-Authors include Junxi Wu, Jinpeng Wang, Zheng Liu, Bin Chen, Dongjian Hu, Hao Wu, Shu-Tao Xia.
+*When AI-Text Detectors Become Evidence: Rethinking Detection for Human Decisions* — Findings of EMNLP 2026.
 
-Why relevant: CogniPrint currently uses interpretable statistical/stylometric signals and corpus-relative thresholds. MoSEs is directly relevant to uncertainty-aware thresholding and stylistics-aware detection.
+Public reference:
 
-Public reference: https://aclanthology.org/2025.emnlp-main.294/
+https://aclanthology.org/2026.findings-emnlp.1539/
 
-Suggested ask: critique calibration, conditional thresholds, reference-corpus design, and the danger of treating a static threshold as a transferable scientific boundary.
+Why this team is unusually relevant:
 
-### 3. Pin-Yu Chen — trustworthy AI / robustness / interpretable detection context
+The work explicitly argues that detector outputs are often used as **evidence**
+rather than merely classifier labels, and that score-only interfaces can invite
+overtrust and turn false positives into accusations.
 
-Current public role: Principal Research Scientist and Manager at IBM Research; research interests include trustworthy AI, adversarial robustness, AI testing, and generative AI.
+This is directly aligned with CogniPrint's current evidence-first direction and
+Claim Firewall.
 
-Why relevant: the model-fingerprint programme must survive adversarial transformations, distribution shift, and open-world conditions rather than optimize only closed-set accuracy. Recent work coauthored by Pin-Yu Chen also studies interpretable signals for AI-generated text detection.
+Suggested reviewer question:
 
-Public profile: https://research.ibm.com/people/pin-yu-chen
+> Does the M1/M2/M2.1 evidence justify our decision to treat the current system
+> as evidence/abstention research rather than a source-attribution detector, and
+> are we still over-interpreting any statistical output?
 
-Suggested ask: critique the robustness track, open-world abstention requirement, calibration, and whether the proposed falsification criteria are strong enough.
+Priority: **highest**.
 
-## Methodology references, not endorsement targets
+## Priority 2 — uncertainty-aware stylistic AI-text detection
 
-### NIST GenAI Text 2026
+### MoSEs research team
 
-NIST's current text evaluation explicitly evaluates text discriminators using discrimination and probability-quality metrics such as ROC-AUC and Brier score. CogniPrint should use this as evaluation context, not claim NIST compatibility or approval.
+Authors:
 
-Reference: https://ai-challenges.nist.gov/text-2026
+Junxi Wu, Jinpeng Wang, Zheng Liu, Bin Chen, Dongjian Hu, Hao Wu, Shu-Tao Xia.
 
-### NIST synthetic-content transparency report
+Paper:
 
-NIST treats detection, provenance, authentication, watermarking, and related transparency methods as complementary approaches. This supports CogniPrint's separation between content-derived evidence and provenance records.
+*MoSEs: Uncertainty-Aware AI-Generated Text Detection via Mixture of Stylistics
+Experts with Conditional Thresholds* — EMNLP 2025.
 
-Reference: https://doi.org/10.6028/NIST.AI.100-4
+Public reference:
 
-### C2PA
+https://aclanthology.org/2025.emnlp-main.294/
 
-C2PA provides a standards context for cryptographically bound content provenance. CogniPrint should treat such provenance as a separate evidence channel rather than infer it from style.
+Why relevant:
 
-Reference: https://spec.c2pa.org/
+CogniPrint M2 exposed weak max-confidence OOD behavior, poor generalisation of a
+development-coverage threshold, and representation-dependent score scales.
+
+MoSEs explicitly studies stylistic modeling, uncertainty and conditional
+thresholds.
+
+Suggested reviewer question:
+
+> Are our max-confidence threshold failure, score-scale problem and current
+> abstention design being interpreted correctly, and what probability/threshold
+> methodology would you preregister before a sealed evaluation?
+
+Priority: **highest**.
+
+## Priority 3 — temperature scaling and conformal interaction
+
+### Lahav Dabah and Tom Tirer
+
+Paper:
+
+*On Temperature Scaling and Conformal Prediction of Deep Classifiers* — ICML
+2025.
+
+Public reference:
+
+https://proceedings.mlr.press/v267/dabah25a.html
+
+Why relevant:
+
+M2/M2.1 exposed an interaction between score scaling, temperature scaling and
+very large conformal prediction sets:
+
+- n-gram M2 fits hit the temperature lower bound;
+- M2.1 showed substantially smaller diagnostic temperatures;
+- 12D calibration-selected temperatures generalised worse than `T=1`;
+- conformal outputs were almost entirely ambiguous rather than empty-set OOD
+  rejections.
+
+Suggested reviewer question:
+
+> Is our use of scalar temperature scaling on cosine-centroid score vectors
+> methodologically defensible, and how should calibration and conformal-set
+> efficiency be separated in a future sealed design?
+
+Priority: **high**.
+
+## Priority 4 — context-aware thresholding for synthetic-text detection
+
+### Haorong Li, Ruitao Ni, Haihui Yang, Shiping Gao, Yang Liu, Xiaojun Quan
+
+Paper:
+
+*Adaptive Boundaries: Context-Aware Detection for Synthetic Text* — EMNLP 2026.
+
+Public reference:
+
+https://aclanthology.org/2026.emnlp-main.1649/
+
+Why relevant:
+
+The paper explicitly addresses fixed-boundary failures across topics, styles and
+model variants and studies calibration with context-aware thresholding.
+
+Suggested reviewer question:
+
+> Does the failure of our frozen global coverage/threshold policy indicate that
+> a static confidence boundary is the wrong object, or would context-aware
+> thresholding merely add degrees of freedom that our current Stage A sample
+> cannot support?
+
+Priority: **high**.
+
+## Secondary target — human–AI coauthoring track
+
+### HACo-Det research team
+
+Paper:
+
+*HACo-Det: A Study Towards Fine-Grained Machine-Generated Text Detection under
+Human-AI Coauthoring* — ACL 2025.
+
+Authors:
+
+Zhixiong Su, Yichen Wang, Herun Wan, Zhaohan Zhang, Minnan Luo.
+
+Reference:
+
+https://aclanthology.org/2025.acl-long.1069/
+
+Why relevant:
+
+This remains useful for the proposed human–AI intervention track, but it is not
+the first reviewer target for the immediate M2 calibration/open-set problem.
+
+## Secondary context — robustness and shortcut control
+
+A recent EMNLP 2026 paper, *Shortcut-Controlled Evaluation for AI-Generated Text
+Detection*, reports that simple surface shortcuts can produce strong benchmark
+classification performance.
+
+Reference:
+
+https://aclanthology.org/2026.emnlp-main.2177/
+
+This is relevant context for deciding whether any compact surface-profile
+representation should be interpreted as source evidence rather than benchmark
+signal.
 
 ## Outreach order
 
-1. Send a compact reviewer request to one human–AI coauthoring specialist.
-2. Send a separate request to one uncertainty/stylometry specialist.
-3. Send a robustness-focused request to one trustworthy-AI researcher.
-4. Do not mass-email large lists.
-5. Preserve declines/referrals but do not count them as completed methodological review.
-6. Count the gate only after a substantive independent critique is archived with permission.
+1. Contact **one** Priority-1 evidence/decision-support researcher or team.
+2. Contact **one** Priority-2 uncertainty/stylometry researcher or team.
+3. Contact **one** Priority-3 calibration/conformal researcher or team.
+4. Only if there is no response, add Priority-4.
+5. Do not mass-email.
+6. Do not ask for endorsement.
+7. Ask one or two narrow methodological questions, not “please review my whole project”.
+8. Preserve decline/referral responses but do not count them as methodological review.
+9. Count the review gate only after a substantive independent critique is received and preserved with an appropriate permission boundary.
 
-## Reviewer bundle
+## Minimum reviewer bundle
 
-Send only the minimum useful bundle:
+Send:
 
-- `docs/grant-one-pager.md`
-- `docs/current-state-summary.md`
-- `docs/model-fingerprint-benchmark-v0.1.md`
-- `docs/external-review.md`
-- `docs/reviewer-response-template.md`
-- repository URL
+1. `reviewer-bundle/executive-summary.md`
+2. `reviewer-bundle/m2-results.md`
+3. `reviewer-bundle/limitations.md`
+4. `reviewer-bundle/reviewer-questions.md`
+5. `docs/scientific-claim-review-m2-2026-11-24.md`
+6. repository URL
 
-The full manuscript and evidence dossier can be provided if requested.
+Optional on request:
+
+- full M2/M2.1 protocols and machine-readable summaries;
+- manuscript draft;
+- exact workflow/evidence hashes.
+
+Do **not** lead with a grant one-pager.
+
+The immediate request is methodological criticism of executed evidence.
