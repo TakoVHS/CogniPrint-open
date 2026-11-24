@@ -1,0 +1,200 @@
+"""Finite-world prototype of Certificate Scope Judgment.
+
+This module is a machine-checkable prototype for the candidate interface. It
+does not establish novelty and does not replace the population-level theory.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Mapping
+
+
+def _probability(value: float, name: str) -> float:
+    value = float(value)
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"{name} must be in [0, 1]")
+    return value
+
+
+def _validate_scope_map(
+    scope: frozenset[str],
+    values: Mapping[str, float],
+    name: str,
+) -> None:
+    missing = scope.difference(values)
+    if missing:
+        raise ValueError(f"{name} missing worlds: {sorted(missing)}")
+    for world in scope:
+        _probability(float(values[world]), f"{name}[{world}]")
+
+
+@dataclass(frozen=True)
+class FiniteCertificate:
+    """A realized upper-bound certificate over a finite world class."""
+
+    name: str
+    target: str
+    scope: frozenset[str]
+    risk_by_world: Mapping[str, float]
+    bound: float
+    alpha: float
+
+    def __post_init__(self) -> None:
+        _probability(self.bound, "bound")
+        _probability(self.alpha, "alpha")
+        _validate_scope_map(self.scope, self.risk_by_world, "risk_by_world")
+
+
+@dataclass(frozen=True)
+class FiniteClaim:
+    """A downstream claim with its own target risk and tolerance."""
+
+    name: str
+    target: str
+    scope: frozenset[str]
+    risk_by_world: Mapping[str, float]
+    delta: float
+
+    def __post_init__(self) -> None:
+        _probability(self.delta, "delta")
+        _validate_scope_map(self.scope, self.risk_by_world, "risk_by_world")
+
+
+@dataclass(frozen=True)
+class SameTargetComposition:
+    target: str
+    scope: frozenset[str]
+    bound: float
+    alpha: float
+
+
+def direct_static_compatible(
+    certificate: FiniteCertificate,
+    claim: FiniteClaim,
+) -> bool:
+    """Check direct target/scope compatibility.
+
+    Direct compatibility is deliberately strict:
+    - the claim scope must be contained in the certificate scope;
+    - the target identifiers must match;
+    - finite-world target values must agree throughout the claim scope.
+    """
+
+    if not claim.scope.issubset(certificate.scope):
+        return False
+    if certificate.target != claim.target:
+        return False
+    return all(
+        float(certificate.risk_by_world[world])
+        == float(claim.risk_by_world[world])
+        for world in claim.scope
+    )
+
+
+def runtime_direct_promotion_allowed(
+    certificate: FiniteCertificate,
+    claim: FiniteClaim,
+) -> bool:
+    """Return whether the realized direct promotion discharges its threshold."""
+
+    return (
+        direct_static_compatible(certificate, claim)
+        and certificate.bound <= claim.delta
+    )
+
+
+def certificate_compatible_worlds(
+    certificate: FiniteCertificate,
+    claim: FiniteClaim,
+) -> frozenset[str]:
+    """Worlds satisfying both scopes and the realized certificate inequality."""
+
+    common = certificate.scope.intersection(claim.scope)
+    return frozenset(
+        world
+        for world in common
+        if float(certificate.risk_by_world[world]) <= certificate.bound
+    )
+
+
+def find_nonpromotion_witness(
+    certificate: FiniteCertificate,
+    claim: FiniteClaim,
+) -> str | None:
+    """Return one compatible world where the downstream claim is unsafe."""
+
+    for world in sorted(certificate_compatible_worlds(certificate, claim)):
+        if float(claim.risk_by_world[world]) > claim.delta:
+            return world
+    return None
+
+
+def worst_claim_risk_under_certificate(
+    certificate: FiniteCertificate,
+    claim: FiniteClaim,
+) -> float | None:
+    """Finite-world supremum used by the witness characterization."""
+
+    worlds = certificate_compatible_worlds(certificate, claim)
+    if not worlds:
+        return None
+    return max(float(claim.risk_by_world[world]) for world in worlds)
+
+
+def compose_same_target(
+    first: FiniteCertificate,
+    second: FiniteCertificate,
+) -> SameTargetComposition:
+    """Baseline union-bound composition for two same-target certificates."""
+
+    if first.target != second.target:
+        raise ValueError("same-target composition requires matching targets")
+
+    scope = first.scope.intersection(second.scope)
+    if not scope:
+        raise ValueError("certificate scopes do not overlap")
+
+    return SameTargetComposition(
+        target=first.target,
+        scope=frozenset(scope),
+        bound=min(first.bound, second.bound),
+        alpha=min(1.0, first.alpha + second.alpha),
+    )
+
+
+def find_heterogeneous_composition_witness(
+    certificates: tuple[FiniteCertificate, ...],
+    claim: FiniteClaim,
+) -> str | None:
+    """Find a world satisfying every certificate bound but violating the claim.
+
+    Absence of a witness in a finite enumerated world class is sufficient for
+    that finite model only; it is not a universal proof for larger world
+    classes.
+    """
+
+    if not certificates:
+        raise ValueError("at least one certificate is required")
+
+    common = set(claim.scope)
+    for certificate in certificates:
+        common.intersection_update(certificate.scope)
+
+    for world in sorted(common):
+        if all(
+            float(certificate.risk_by_world[world]) <= certificate.bound
+            for certificate in certificates
+        ) and float(claim.risk_by_world[world]) > claim.delta:
+            return world
+    return None
+
+
+def composed_confidence_budget(
+    certificates: tuple[FiniteCertificate, ...],
+) -> float:
+    """Union-bound failure budget for warranted heterogeneous composition."""
+
+    if not certificates:
+        raise ValueError("at least one certificate is required")
+    return min(1.0, sum(certificate.alpha for certificate in certificates))
