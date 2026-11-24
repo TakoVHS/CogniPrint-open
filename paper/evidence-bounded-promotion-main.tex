@@ -109,7 +109,7 @@ separate.
 \item It identifies the sharp compatible-world envelope as the canonical least
 monotone numerical warrant on the feasible domain and proves the corresponding
 minimality statement.
-\item It gives a fail-closed promotion rule with explicit unresolved
+\item It instantiates a fail-closed promotion workflow with explicit unresolved
 diagnostics and a frequentist false-promotion bound obtained from standard
 certificate coverage and the union bound.
 \item It instantiates the framework on an AI-attribution counterexample showing
@@ -118,9 +118,10 @@ known-membership or provenance claim.
 \end{enumerate}
 The first three items are presented as a methodological organization of
 existing statistical and formal ideas, not as claims that partial
-identification, union-bound reasoning, or assurance logic are new.  The
-intended takeaway is narrower: a valid statistical number has semantic force
-only for the target and deployment scope that its evidence actually controls.
+identification, union-bound reasoning, high-confidence safety tests,
+reject-option learning, or assurance logic are new.  The intended takeaway is
+narrower: a valid statistical number has semantic force only for the target and
+deployment scope that its evidence actually controls.
 
 \section{Setup and Terminology}
 % Full version will consolidate the definitions already audited in
@@ -600,6 +601,25 @@ separation-logic resources and supports richer compositional reasoning
 \citep{AguirreEtAl2024}.  These works rule out any broad novelty claim for
 confidence/error budgets as effects or resources.
 
+\paragraph{High-confidence safe learning and rejection.}
+Seldonian algorithms let users specify one or more behavioral constraints with
+failure probabilities and return a distinguished ``No Solution Found'' outcome
+when a candidate cannot pass the corresponding high-confidence safety tests
+\citep{ThomasEtAl2019Seldonian}.  Selective classification has a still older
+tradition of trading coverage for risk through an explicit reject option
+\citep{ElYanivWiener2010}.  Consequently, neither high-confidence acceptance,
+multiple confidence-constrained obligations, fail-closed refusal, nor
+abstention is claimed here as a new primitive.  Our \textsc{Unresolved} status
+is a verification diagnostic rather than a claim to have invented a new reject
+action.
+
+\paragraph{Probabilistic contracts.}
+Assume/guarantee contract frameworks for stochastic systems already separate
+environmental assumptions from guarantees and support satisfaction,
+refinement, and compositional reasoning \citep{DelahayeCaillaudLegay2011}.
+This is direct prior art against treating assumption/guarantee separation or
+composition itself as a contribution of the present work.
+
 \paragraph{Verification of statistical programs.}
 Belief Hoare Logic formalizes requirements and beliefs associated with
 statistical hypothesis testing and provides a sound program logic
@@ -633,21 +653,21 @@ prior art rather than contributions of the present paper.
 
 \paragraph{Position of this paper.}
 The remaining contribution is deliberately operational and application-driven.
-We organize multiple statistical certificates as explicitly typed obligations:
-each certificate names a validity world class and certified target, the
-downstream claim names its own target and deployment scope, conjunctive
-deployment coverage is checked before numerical feasibility, and the sharp
-claim-risk envelope is numeric only on the nonempty feasible-bound domain.
-The runtime interface then distinguishes \textsc{Promote},
-\textsc{Abstain}, and \textsc{Unresolved} and carries diagnostic reasons for
-scope, feasibility, or computation failures, while marginal certificate
-failure budgets yield a conservative false-promotion budget.  The reviewed
-Zhu source does not formulate these elements as this same multi-certificate
-runtime interface; we use that observation only to delimit the present
-methodological organization, not as a priority claim.  The AI-attribution
-application and development pilot make the ML consequence concrete.  We do not
-present this work as a new probability theory, a new theory of partial
-identification, or a new type system.
+We specialize the surrounding ideas to one recurring ML audit question:
+whether heterogeneous statistical certificates license a semantically
+different deployment claim.  Each certificate therefore names both a validity
+world class and a certified target; the downstream claim separately names its
+target and deployment scope; conjunctive coverage is checked before numerical
+feasibility; and the sharp claim-risk envelope is numeric only on the nonempty
+feasible-bound domain.  The runtime then carries distinct diagnostics for
+scope, feasibility, and warrant-computation failures.  Seldonian methods,
+selective classification, probabilistic contracts, probabilistic program
+logics, partial identification, assurance arguments, and Zhu's proxy-evidence
+calculus each cover important ingredients of this design.  We therefore claim
+only the usefulness of this particular certificate-to-semantic-claim
+organization and its AI-attribution instantiation, not historical priority for
+fail-closed reasoning, abstention, confidence budgets, assumptions/guarantees,
+or sharp compatible-world envelopes.
 
 \section{Limitations and Honest Boundaries}
 
