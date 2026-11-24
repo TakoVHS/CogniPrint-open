@@ -264,6 +264,54 @@ def clopper_pearson_upper(
     return (low + high) / 2.0
 
 
+
+def clopper_pearson_lower(
+    success_count: int,
+    trial_count: int,
+    alpha: float = 0.05,
+) -> float | None:
+    """Exact one-sided Clopper-Pearson lower confidence bound.
+
+    For X ~ Binomial(n, p), returns L such that the one-sided confidence
+    statement p >= L has coverage at least 1-alpha.
+
+    Returns None when trial_count == 0 because no nontrivial lower bound can
+    be learned from an empty sample.
+    """
+
+    if not isinstance(success_count, int) or not isinstance(trial_count, int):
+        raise TypeError("success_count and trial_count must be integers")
+    if trial_count < 0:
+        raise ValueError("trial_count must be non-negative")
+    if success_count < 0 or success_count > trial_count:
+        raise ValueError("success_count must lie in [0, trial_count]")
+    alpha = _probability(alpha, "alpha")
+    if alpha in (0.0, 1.0):
+        raise ValueError("alpha must lie strictly between 0 and 1")
+    if trial_count == 0:
+        return None
+    if success_count == 0:
+        return 0.0
+    if success_count == trial_count:
+        return alpha ** (1.0 / trial_count)
+
+    # Solve P_{p=L}(X >= success_count) = alpha.
+    # The binomial survival probability is monotone increasing in p.
+    low = 0.0
+    high = 1.0
+    for _ in range(80):
+        mid = (low + high) / 2.0
+        survival = 1.0 - _binomial_cdf(
+            success_count - 1,
+            trial_count,
+            mid,
+        )
+        if survival < alpha:
+            low = mid
+        else:
+            high = mid
+    return (low + high) / 2.0
+
 def fixed_threshold_risk_certificate(
     confidences: Sequence[float],
     correct: Sequence[bool],
