@@ -206,12 +206,13 @@ This is **not** the Claim Firewall itself. It is a downstream reject-option calc
 - held-out multiclass Brier;
 - paired lineage-group confidence intervals for their differences.
 
-### Primary selective/open-world outcomes
+### Intended primary selective/open-world outcomes
 
-- selective risk at matched predeclared coverage points;
-- coverage;
-- false-known rate on held-out unknowns with interval;
-- unknown rejection rate.
+The written M2 protocol intended to treat matched-coverage selective risk as a primary outcome together with coverage, false-known rate and unknown rejection.
+
+A post-run audit found that no concrete matched-coverage grid had been prospectively enumerated and persisted before the first real M2 run. Therefore **M2 does not claim a primary matched-coverage result**. A later M2.1 post-result protocol froze an exploratory coverage grid explicitly for failure analysis.
+
+The preserved M2 primary/open-world evidence is limited to the outputs that were actually frozen and persisted, including the pre-frozen threshold policy, false-known behavior and proper-score outcomes.
 
 ### Secondary outcomes
 
@@ -262,6 +263,71 @@ The conformal layer produced very low false-known singleton rates on held-out fa
 
 The result therefore supports **claim narrowing and abstention** rather than stronger source-attribution claims.
 
+## 16. M2.1 post-result failure analysis
+
+After M2 was frozen and inspected, a separate protocol was written **before additional diagnostic execution**:
+
+[`docs/raid-m2-1-post-result-diagnostics.md`](../docs/raid-m2-1-post-result-diagnostics.md)
+
+M2.1 is explicitly `POST_RESULT_EXPLORATORY`. It cannot replace M2 #1.
+
+The diagnostic run produced four important clarifications.
+
+### Conformal ambiguity, not OOD rejection
+
+For held-out unknown examples, the conformal empty-set rate was `0.0` in every representation and fold.
+
+Four-fold mean unknown outcomes were:
+
+| Representation | Empty set | Ambiguous set | Singleton false-known |
+| --- | ---: | ---: | ---: |
+| CogniPrint 12D | 0.0000 | 0.9975 | 0.0025 |
+| Character 3–5 | 0.0000 | 1.0000 | 0.0000 |
+| Word 1–2 | 0.0000 | 0.9950 | 0.0050 |
+
+Thus the near-zero M2 conformal false-known result was almost entirely due to multi-class ambiguity, not successful empty-set OOD rejection.
+
+### Exploratory selective risk
+
+At the M2.1-frozen exploratory coverage grid, 12D did not reveal a hidden selective advantage.
+
+| Target coverage | 12D risk | Char 3–5 risk | Word 1–2 risk |
+| ---: | ---: | ---: | ---: |
+| 0.25 | 0.4626 | **0.2300** | 0.2512 |
+| 0.50 | 0.4546 | 0.3887 | **0.3037** |
+| 0.60 | 0.4928 | 0.4293 | **0.3842** |
+| 0.75 | 0.5476 | 0.4976 | **0.4199** |
+| 0.90 | 0.5883 | 0.5163 | **0.4566** |
+| 1.00 | 0.6049 | 0.5292 | **0.4623** |
+
+These are descriptive post-result diagnostics, not confirmatory M2 outcomes.
+
+### Temperature-scale diagnosis
+
+The n-gram score scale was much narrower than the 12D score scale. The M2.1 calibration grid selected `T=0.01–0.02` for the n-gram representations, below the M2 lower bound `0.05`, and the exposed evaluation proper-score diagnostics improved accordingly.
+
+For 12D, the exploratory grid selected `T=0.5` in all folds, but mean exposed-evaluation NLL remained worse than the uncalibrated `T=1` result:
+
+```text
+T=1 NLL:       1.277792
+M2 fitted NLL: 1.348983
+M2.1 T=.5 NLL: 1.323997
+```
+
+Therefore the 12D calibration failure is not explained by the same lower-bound restriction.
+
+### Effective lineage structure
+
+Every conformal-calibration record in the M2.1 audit had its own declared lineage group; largest records per lineage group was `1`.
+
+Duplicate declared lineages therefore did not explain the extreme conformal ambiguity, although exchangeability remains an assumption rather than a proven property.
+
+Full diagnostic evidence is recorded in:
+
+[`docs/raid-m2-1-results-2026-11-24.md`](../docs/raid-m2-1-results-2026-11-24.md)
+
+The scientific effect of M2.1 is further claim narrowing, not a stronger attribution claim.
+
 ## References
 
 - Gneiting, T. & Raftery, A. E. (2007). Strictly Proper Scoring Rules, Prediction, and Estimation. *JASA*.
@@ -273,4 +339,4 @@ The result therefore supports **claim narrowing and abstention** rather than str
 
 ## Current status
 
-This document is a research protocol/manuscript draft with the first real pinned M2 result incorporated. M2 is **EXECUTED / DEVELOPMENT_ONLY / PRE-FREEZE**. The result does not create a DOI, peer review, external endorsement, Stage B authorization or scientific feature unlock.
+This document is a research protocol/manuscript draft with the first real pinned M2 result and the separately labelled M2.1 post-result failure analysis incorporated. M2 remains **EXECUTED / DEVELOPMENT_ONLY / PRE-FREEZE**; M2.1 remains **POST_RESULT_EXPLORATORY**. Neither creates a DOI, peer review, external endorsement, Stage B authorization or scientific feature unlock.
