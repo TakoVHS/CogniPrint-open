@@ -1,12 +1,6 @@
 name: RAID M2.1 Post-Result Diagnostics
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/raid-m2-1-exploratory.yml"
-      - "src/cogniprint/benchmarks/raid_m2_1.py"
-      - "scripts/analyze_raid_m2_1_diagnostics.py"
-      - "docs/raid-m2-1-post-result-diagnostics.md"
   workflow_dispatch:
 
 permissions:
