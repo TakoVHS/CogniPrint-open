@@ -83,6 +83,29 @@ least monotone warrant on its feasible domain. Operationally, the interface is
 fail closed: an uncovered deployment world, an empty compatible set, or a
 failed optimization is not interpreted as evidence that the claim is safe.
 
+
+\paragraph{Contributions.}
+The paper makes four deliberately limited contributions.
+\begin{enumerate}[label=(\arabic*)]
+\item It gives a certificate-to-claim formulation that keeps certificate
+validity, deployment scope, certified target risk, and downstream claim risk
+separate.
+\item It identifies the sharp compatible-world envelope as the canonical least
+monotone numerical warrant on the feasible domain and proves the corresponding
+minimality statement.
+\item It gives a fail-closed promotion rule with explicit unresolved
+diagnostics and a frequentist false-promotion bound obtained from standard
+certificate coverage and the union bound.
+\item It instantiates the framework on an AI-attribution counterexample showing
+how a correct closed-set certificate can fail to justify a stronger
+known-membership or provenance claim.
+\end{enumerate}
+The first three items are presented as a methodological organization of
+existing statistical and formal ideas, not as claims that partial
+identification, union-bound reasoning, or assurance logic are new.  The
+intended takeaway is narrower: a valid statistical number has semantic force
+only for the target and deployment scope that its evidence actually controls.
+
 \section{Setup and Terminology}
 % Full version will consolidate the definitions already audited in
 % docs/certificate-scope-effect-system-v0.2.md and
