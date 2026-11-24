@@ -70,7 +70,7 @@ but $\eta(D_0)\neq\eta(D_1)$. Then $\eta$ is not identified by $E$.
 Moreover, for every $n$, the $n$-sample evidence laws coincide, and under
 equal prior weights no binary test based only on $E$ can distinguish
 $D_0$ from $D_1$ with error below $1/2$.
-\end{theorem}
+\end{proposition}
 
 \begin{proof}
 Equality of the one-observation laws implies equality of the product laws for
@@ -282,12 +282,13 @@ comparison, and unrestricted OOD impossibility have substantial prior
 literature. Likewise, finite-sample selective-risk control is established in
 RCPS, Learn-then-Test, Conformal Risk Control, LEC, and related work.
 
-Accordingly, the novelty question is narrower: whether an auditable
-claim-admissibility calculus, together with composition and non-promotion
-rules across heterogeneous evidence channels, yields a useful new formal
-object for AI provenance and safety. This remains unestablished.
+Accordingly, the remaining novelty question is narrower: whether a formal
+certificate-to-claim target-mismatch interface, with machine-checkable
+non-promotion witnesses and typed composition across heterogeneous statistical
+certificates, yields a useful new object for AI provenance and safety. This
+remains unestablished.
 
-\section{Sharp Composition of Evidence Channels}
+\section{Conditional-Kernel Representation of Evidence Composition}
 \label{sec:composition}
 
 The monotonicity statement
@@ -316,7 +317,7 @@ For each $D\in\mathcal W_E$, write
 \mu_{\rm obs}^E(de)K_D(df\mid e).
 \]
 
-\begin{theorem}[Sharp conditional-kernel composition]
+\begin{proposition}[Conditional-kernel representation]
 The product-channel compatible worlds are exactly
 \[
 \mathcal W_{E,F}
@@ -349,7 +350,7 @@ For a tolerance $\delta$, define
 \{D\in\mathcal W_E:\rho_C(D)>\delta\}.
 \]
 
-\begin{corollary}[Exact promotion criterion]
+\begin{corollary}[Robust admissibility under composition]
 The product channel makes claim $C$ robustly admissible iff
 \[
 \mathcal U_\delta(E)
@@ -361,6 +362,10 @@ The product channel makes claim $C$ robustly admissible iff
 Thus every unsafe world remaining after the coarse channel must be rejected
 by the observed conditional behavior of the added channel.
 \end{corollary}
+
+This corollary is a set-containment restatement of robust feasibility over the
+compatible-world set. We use it operationally, but do not claim it as a new
+general theorem.
 
 \begin{proposition}[Complete conditional redundancy]
 Suppose there is a single Markov kernel $K$ such that
