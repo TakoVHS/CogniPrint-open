@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
+import os
+import subprocess
+import sys
+import tempfile
 import unittest
+from pathlib import Path
 
 from cogniprint.benchmarks.raid_m2 import (
     DEFAULT_MACHINE_FAMILIES,
@@ -20,6 +26,9 @@ from cogniprint.benchmarks.raid_m2_1 import (
     temperature_sensitivity_profile,
 )
 from cogniprint.fingerprint import CognitiveFingerprint
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+M2_1_SCRIPT = REPO_ROOT / "scripts" / "analyze_raid_m2_1_diagnostics.py"
 
 
 def make_text(label: str, index: int) -> str:
@@ -71,6 +80,149 @@ def make_records(per_class: int = 80) -> list[dict]:
                 }
             )
     return records
+
+
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def selection_manifest_sha256(records: list[dict]) -> str:
+    selection = [
+        {
+            "source_record_id": record.get("source_record_id"),
+            "source_id": record.get("source_id"),
+            "model_family": record.get("model_family"),
+            "domain": record.get("domain"),
+            "text_sha256": record.get("text_sha256"),
+            "prompt_sha256": record.get("prompt_sha256"),
+            "lineage_id": record.get("lineage_id"),
+        }
+        for record in sorted(
+            records,
+            key=lambda item: str(item.get("source_record_id") or ""),
+        )
+    ]
+    encoded = json.dumps(
+        selection,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def write_cli_fixture(root: Path, per_class: int = 80) -> tuple[Path, Path, Path, str]:
+    labels = ("human", *DEFAULT_MACHINE_FAMILIES)
+    rows: list[dict[str, str]] = []
+    features: list[dict] = []
+    for label in labels:
+        for index in range(per_class):
+            text = make_text(label, index)
+            prompt = "" if label == "human" else f"Explain diagnostic example {index}"
+            source_id = f"source-{label}-{index}"
+            row = {
+                "id": f"{label}-{index}",
+                "adv_source_id": f"adv-{label}-{index}",
+                "source_id": source_id,
+                "model": label,
+                "decoding": "" if label == "human" else "sampling",
+                "repetition_penalty": "" if label == "human" else "no",
+                "attack": "none",
+                "domain": "news",
+                "prompt": prompt,
+                "generation": text,
+            }
+            rows.append(row)
+            fingerprint = CognitiveFingerprint(text, language="en")
+            features.append(
+                {
+                    "source_record_id": row["id"],
+                    "source_id": source_id,
+                    "adv_source_id": row["adv_source_id"],
+                    "model_family": label,
+                    "domain": "news",
+                    "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+                    "prompt_sha256": (
+                        hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+                        if prompt else None
+                    ),
+                    "lineage_id": f"source_id:{source_id}",
+                    "character_count": len(text),
+                    "token_count": len(fingerprint.words),
+                    "features_normalized": fingerprint.normalized_feature_dict(),
+                    "readiness_boundary": "descriptive_only",
+                }
+            )
+
+    source = root / "source.csv"
+    with source.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+    feature_path = root / "features.jsonl"
+    feature_path.write_text(
+        "".join(json.dumps(record, sort_keys=True) + "\n" for record in features),
+        encoding="utf-8",
+    )
+    contract = root / "contract.json"
+    contract.write_text(
+        json.dumps(
+            {
+                "sha256": sha256_file(source),
+                "byte_size": source.stat().st_size,
+                "intended_use": "STAGE_A_DEVELOPMENT_ONLY",
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return source, feature_path, contract, selection_manifest_sha256(features)
+
+
+def run_m2_1_cli(
+    source: Path,
+    features: Path,
+    contract: Path,
+    selection_sha256: str,
+    output_dir: Path,
+) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env["PYTHONPATH"] = (
+        f"{REPO_ROOT / 'src'}{os.pathsep}{env.get('PYTHONPATH', '')}"
+    ).rstrip(os.pathsep)
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    return subprocess.run(
+        [
+            sys.executable,
+            str(M2_1_SCRIPT),
+            "--features",
+            str(features),
+            "--input-file",
+            str(source),
+            "--expected-source-sha256",
+            sha256_file(source),
+            "--expected-features-sha256",
+            sha256_file(features),
+            "--expected-selection-manifest-sha256",
+            selection_sha256,
+            "--source-contract",
+            str(contract),
+            "--output-dir",
+            str(output_dir),
+            "--conformal-alpha",
+            "0.20",
+            "--char-dimensions",
+            "512",
+            "--word-dimensions",
+            "256",
+        ],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+    )
 
 
 class RaidM21DiagnosticsTests(unittest.TestCase):
@@ -163,6 +315,44 @@ class RaidM21DiagnosticsTests(unittest.TestCase):
             profile["best_grid_temperature"],
             M2_1_TEMPERATURE_GRID,
         )
+
+    def test_cli_is_deterministic_and_does_not_persist_raw_text(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            source, features, contract, selection_sha = write_cli_fixture(root)
+            output_dir = root / "out"
+            completed = run_m2_1_cli(
+                source,
+                features,
+                contract,
+                selection_sha,
+                output_dir,
+            )
+            self.assertEqual(
+                completed.returncode,
+                0,
+                msg=completed.stdout + completed.stderr,
+            )
+            result = json.loads(
+                (output_dir / "m2-1-diagnostics.json").read_text()
+            )
+            reproducibility = json.loads(
+                (output_dir / "m2-1-reproducibility.json").read_text()
+            )
+            self.assertEqual(result["status"], "POST_RESULT_EXPLORATORY")
+            self.assertTrue(reproducibility["match"])
+            self.assertFalse(result["raw_text_persisted"])
+            self.assertFalse(result["raw_prompt_persisted"])
+
+            serialized = "\n".join(
+                path.read_text(encoding="utf-8")
+                for path in output_dir.iterdir()
+                if path.is_file()
+            )
+            self.assertNotIn('"_text"', serialized)
+            self.assertNotIn('"generation"', serialized)
+            self.assertNotIn('"prompt"', serialized)
+            self.assertNotIn("Personal note", serialized)
 
     def test_full_m2_1_is_four_fold_exploratory_and_raw_text_free(self) -> None:
         result = evaluate_raid_m2_1(
