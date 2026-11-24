@@ -285,3 +285,9 @@ Reaching this milestone does **not** automatically unlock model-family attributi
 - `REQUIRES_MORE_EVIDENCE`.
 
 The goal of the milestone is not to manufacture a positive result. It is to create a result whose scope cannot be made prettier after the data are known.
+
+A Stage A claim review has already been performed against executed M1/M2/M2.1 evidence:
+
+`docs/scientific-claim-review-m2-2026-11-24.md`
+
+It keeps readiness at `descriptive_only`, rejects stronger attribution/OOD/calibration claims contradicted by current evidence, and does not substitute for the future post-Stage-B Scientific Claim Review.
