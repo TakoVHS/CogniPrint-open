@@ -1,17 +1,15 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lmodern}
-\usepackage{geometry}
+% Mandatory TMLR submission style, vendored unchanged from
+% https://github.com/JmlrOrg/tmlr-style-file
+\usepackage{tmlr}
+
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{microtype}
 \usepackage{hyperref}
+\usepackage{url}
 \usepackage{enumitem}
 \usepackage{booktabs}
-
-\geometry{margin=1in}
-\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}[definition]{Theorem}
@@ -33,6 +31,10 @@ Evidence-Bounded Promotion for AI Attribution}
 \begin{document}
 
 \maketitle
+\footnotetext{A large language model was used as an assistive tool for drafting,
+literature organization, and editorial revision. The human author is
+responsible for independently verifying the definitions, proofs, citations,
+scientific claims, and final text.}
 
 \begin{abstract}
 A statistical certificate controls a particular risk functional on a declared
@@ -620,7 +622,7 @@ not a small number.  This separation between certificate validity, semantic
 warrant, and operational permission is the central methodological claim of the
 paper.
 
-\bibliographystyle{plain}
+\bibliographystyle{tmlr}
 \bibliography{references}
 
 \end{document}
