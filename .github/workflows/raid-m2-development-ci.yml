@@ -8,8 +8,10 @@ on:
       - "src/cogniprint/benchmarks/ngram.py"
       - "src/cogniprint/benchmarks/development_methods.py"
       - "src/cogniprint/benchmarks/development_statistics.py"
+      - "scripts/analyze_raid_calibration_m2.py"
       - "tests/test_raid_calibration_m2.py"
       - "tests/test_raid_ngram_baselines.py"
+      - "docs/raid-calibration-m2-development.md"
       - "pyproject.toml"
   workflow_dispatch:
 
@@ -39,14 +41,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .
 
-      - name: Compile M2 modules
-        run: |
-          python -m py_compile             src/cogniprint/benchmarks/raid_m2.py             src/cogniprint/benchmarks/ngram.py             tests/test_raid_calibration_m2.py
+      - name: Compile M2 modules and CLI
+        run: python -m py_compile src/cogniprint/benchmarks/raid_m2.py src/cogniprint/benchmarks/ngram.py scripts/analyze_raid_calibration_m2.py tests/test_raid_calibration_m2.py
 
-      - name: Run M2 contract tests
-        run: |
-          python -m unittest discover             -s tests             -p "test_raid_calibration_m2.py"             -v
+      - name: Run M2 contract and CLI tests
+        run: python -m unittest discover -s tests -p "test_raid_calibration_m2.py" -v
 
       - name: Run n-gram regression tests
-        run: |
-          python -m unittest discover             -s tests             -p "test_raid_ngram_baselines.py"             -v
+        run: python -m unittest discover -s tests -p "test_raid_ngram_baselines.py" -v
