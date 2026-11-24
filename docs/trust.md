@@ -1,6 +1,6 @@
 # CogniPrint Trust & Claim Status
 
-Status date: 2026-07-26
+Status date: 2026-11-24
 
 This page is the canonical public trust summary for CogniPrint. It is not a marketing page and it does not expand scientific readiness beyond `descriptive_only`.
 
@@ -60,27 +60,40 @@ This means CogniPrint currently supports reproducible measurement and evidence s
 
 ### GitHub Actions
 
-`NOT_EXECUTED`
+`PASS / ACTIVE`
 
-A minimal Runner Canary was created with no checkout, dependencies, cache, matrix or secrets. The job was created, but GitHub reported `steps: []`; neither the shell canary nor `python --version` executed. A control rerun after GitHub reported Actions operational produced the same outcome.
+The historical hosted-runner `steps: []` blocker is resolved.
 
-Therefore the project must not describe those runs as:
+Fresh minimal canary on 24 November 2026:
 
-- tests failed;
-- tests passed;
-- partially validated.
+- workflow: `Runner Canary Current`;
+- run id: `45371785458`;
+- conclusion: `success`;
+- log marker: `RUNNER_EXECUTED`;
+- Python reported `3.14.4`;
+- log marker: `PYTHON_EXECUTED`.
 
-The correct statement is:
+Issue #30 is closed as completed.
 
-> CI execution: NOT_EXECUTED — runner did not reach the first executable step.
+Current hosted-runner evidence also includes successful Stage A Methods, RAID M2 Development, RAID Pilot Adapter and Public Release workflows.
 
-### Local exact-snapshot execution
+### Real pinned RAID M2 execution
 
-`NOT_EXECUTED`
+The first real pinned RAID M2 development run completed successfully.
 
-The current local execution environment could not resolve/fetch `github.com`, so it could not obtain an exact repository snapshot for the requested Python 3.10/3.11/3.12 execution matrix. This is not a local PASS or FAIL.
+Primary run:
 
-Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the runner/Python versions, commit SHA, job logs and test counts are preserved.
+- workflow run: `45370233451`;
+- exact source/features/selection/source-contract identity gates: PASS;
+- selected records: `500`;
+- deterministic repeated result: PASS;
+- privacy audit: PASS;
+- evidence archive SHA-256:
+  `93c2cdb6c05919fb3ba348c948c73a836358da633352e566c243dd6c8a1e2352`.
+
+A later independent external run `45371006757` reproduced the persisted `m2-results.json` byte-for-byte.
+
+This is Stage A development evidence only. It is not sealed Stage B evidence and does not change `descriptive_only`.
 
 ## Attribution Challenge 001 — pre-freeze state
 
@@ -111,7 +124,7 @@ The Development Exposure Registry already quarantines:
 - CogniPrint `public-benchmark-v1.1`;
 - the already specified RAID `raid/train` Pilot A matrix.
 
-A Stage A public-benchmark materializer exists, but a real materialized Stage A manifest has **not yet been executed/preserved** because the available runners remain unavailable.
+A Stage A public-benchmark materializer exists, and prior local exact-snapshot evidence preserved a 140-record development manifest. RAID M1/M2 development evidence has also executed. These development-visible artifacts remain quarantined from sealed Stage B.
 
 ### Stage A / Stage B boundary
 
@@ -137,7 +150,7 @@ content_hash_overlap = 0
 
 Duplicate sample/content identifiers inside a stage also block the gate. Prompt-hash overlap is reported separately and its policy must be fixed in the frozen protocol.
 
-No real A/B leakage report exists yet.
+No final candidate Stage A/Stage B leakage report for the eventual frozen Challenge 001 design exists yet. Historical Stage A development split checks do not substitute for that final pre-freeze gate.
 
 ### Research Lock 001
 
@@ -204,6 +217,15 @@ Machine-readable limitations already include states such as:
 - `UNSUPPORTED_CLAIM`.
 
 The public failure charter is `docs/where-cogniprint-fails.md`.
+
+M2 exposed additional concrete failures that are now part of the trust state:
+
+- current 12D did not lead aggregate M2 point estimates;
+- scalar temperature scaling worsened held-out 12D NLL in all four folds;
+- max-confidence open-set ranking remained weak;
+- conformal prediction was so conservative that near-zero false-known singleton behavior coexisted with very low known singleton rates.
+
+These findings narrow claims; they do not unlock attribution.
 
 ## High-stakes boundary
 
