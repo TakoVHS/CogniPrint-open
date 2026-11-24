@@ -369,3 +369,206 @@ Until external mathematical review:
 - do not call the admissible set a lattice ideal unless lattice closure is
   actually proved;
 - do not use exposed Stage A records to tune a new theory demonstration.
+
+
+## 13. Identified-set claim admissibility
+
+The clean object is the **identified risk set**, rather than a point estimate of
+a latent target.
+
+Let \\(\rho_C(D)\in[0,1]\\) be the population error risk associated with
+claim \\(C\\). For an observed evidence law \\(\mu_{\mathrm{obs}}^E\\),
+define
+
+\\[
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E)
+=
+\{
+\rho_C(D):
+D\in\mathcal W,
+\mu_D^E=\mu_{\mathrm{obs}}^E
+\}.
+\\]
+
+### Definition 13.1 — Robust evidence admissibility
+
+Claim \\(C\\) is robustly admissible at tolerance \\(\delta\\) under
+evidence \\(E\\) when
+
+\\[
+\sup \mathcal R_C(E;\mu_{\mathrm{obs}}^E)
+\le
+\delta.
+\\]
+
+This is a worst-case statement over all worlds that remain observationally
+compatible with the declared evidence and world class.
+
+### Proposition 13.2 — Plug-in non-certification under partial identification
+
+Suppose
+
+\\[
+r_{\mathrm{safe}}
+\le
+\delta
+<
+r_{\mathrm{unsafe}}
+\\]
+
+and both values lie in
+\\(\mathcal R_C(E;\mu_{\mathrm{obs}}^E)\\).
+
+Then a plug-in value \\(\hat r\le\delta\\) computed only from
+\\(E\\) cannot by itself certify robust admissibility.
+
+#### Proof
+
+By definition of the identified risk set there exist observationally
+compatible worlds with claim risk \\(r_{\mathrm{safe}}\\) and
+\\(r_{\mathrm{unsafe}}\\). The same evidence law is therefore compatible
+with a world violating the tolerance. Hence
+\\(\sup\mathcal R_C>\delta\\), so robust admissibility fails.
+\\(\square\\)
+
+This replaces the stronger but incorrect claim that *every* point estimator
+"systematically underestimates" risk. A point estimator can equal the
+supremum; the problem is that a non-worst-case plug-in value does not certify
+the unidentified remainder.
+
+### Theorem 13.3 — No-data-at-the-same-channel impossibility
+
+Let \\(D_0,D_1\in\mathcal W\\) satisfy
+
+\\[
+\mu_{D_0}^{E}=\mu_{D_1}^{E},
+\\]
+
+while
+
+\\[
+\rho_C(D_0)\le\delta<\rho_C(D_1).
+\\]
+
+For any sample size \\(n\\) and any decision rule
+
+\\[
+\varphi_n:
+\mathcal Z^{n}\to\{\mathrm{CLAIM},\mathrm{ABSTAIN}\}
+\\]
+
+based only on \\(n\\) i.i.d. observations from channel \\(E\\),
+
+\\[
+\Pr_{D_0}(\varphi_n=\mathrm{CLAIM})
+=
+\Pr_{D_1}(\varphi_n=\mathrm{CLAIM}).
+\\]
+
+Consequently, if the rule is \\(\alpha\\)-sound in the unsafe world,
+
+\\[
+\Pr_{D_1}(\varphi_n=\mathrm{CLAIM})\le\alpha,
+\\]
+
+then it can claim in the safe observationally equivalent world with probability
+at most \\(\alpha\\) as well.
+
+#### Proof
+
+The equality of one-observation evidence laws implies equality of the
+\\(n\\)-fold product laws for every \\(n\\). Therefore every
+\\(E^n\\)-measurable decision rule has the same distribution under the two
+worlds. \\(\square\\)
+
+This is stronger and cleaner than saying that a finite-sample identified set
+must literally contain the infinite-sample identified set for every realized
+sample. Sampling uncertainty and population non-identification are distinct
+objects.
+
+### Proposition 13.4 — Channel-refinement monotonicity
+
+Let \\(E'=(E,F)\\) be a product/refined channel with observed joint law
+\\(\nu_{\mathrm{obs}}^{E,F}\\), and let
+\\(\mu_{\mathrm{obs}}^E\\) be its \\(E\\)-marginal. Then
+
+\\[
+\mathcal R_C(E';\nu_{\mathrm{obs}}^{E,F})
+\subseteq
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E).
+\\]
+
+#### Proof
+
+Every world matching the observed joint law automatically matches its
+\\(E\\)-marginal. Hence the world set compatible with \\(E'\\) is a
+subset of the world set compatible with \\(E\\). Taking the image through
+\\(\rho_C\\) preserves set inclusion. \\(\square\\)
+
+If \\(F=\phi(E)\\) is a deterministic transformation of the existing
+channel, then the product carries no additional information beyond \\(E\\)
+and the identified risk set need not shrink at all.
+
+We call a refinement **claim-relevant** when the inclusion above is strict for
+the target claim. This avoids the misleading term "channel independence":
+statistical independence is neither necessary nor sufficient for identification
+gain.
+
+### 13.5 Exact camouflage example
+
+For known/unknown mixture fraction \\(\pi\\), known acceptance
+\\(a_K\\), and unknown acceptance \\(a_U\\), the risk of falsely
+claiming known-set membership among accepted observations is
+
+\\[
+\rho_{K}(\pi)
+=
+\frac{\pi a_U}
+{(1-\pi)a_K+\pi a_U}.
+\\]
+
+Under exact camouflage, \\(a_U=a_K>0\\), so
+
+\\[
+\rho_K(\pi)=\pi.
+\\]
+
+If the world class only restricts
+\\(\pi\in[\pi_L,\pi_U]\\), then the sharp identified risk interval is
+
+\\[
+\mathcal R_K
+=
+[\pi_L,\pi_U].
+\\]
+
+An illustrative refining channel with
+\\(a_K=0.95\\), \\(a_U=0.05\\), and
+\\(\pi\in[0,0.5]\\) instead yields
+
+\\[
+\mathcal R_K=[0,0.05].
+\\]
+
+These rates are synthetic assumptions, not measured CogniPrint OOD
+performance.
+
+### 13.6 Why the proposed bootstrap is rejected
+
+A bootstrap that leaves \\(\pi\\) unrestricted on \\([0,1]\\) while
+recomputing \\(\sup_{\pi}\rho_K(\pi)\\) returns the same supremum in
+every resample. It does not learn the unidentified quantity and must not be
+presented as a confidence interval for the identified set.
+
+Finite-sample inference for partially identified sets is a separate problem;
+classical references include Imbens & Manski (2004), Romano & Shaikh (2008),
+and Stoye (2009).
+
+### 13.7 No sample-size theorem is claimed yet
+
+The proposed formula involving a generic Hausdorff rate \\(r_n\\) is not
+established. Structural non-identification already gives a sharper statement:
+if a safe and unsafe world are observationally equivalent through \\(E\\),
+no amount of same-channel data can distinguish them. A genuine finite-sample
+lower bound would require a specified statistical model, loss, separation
+metric, and confidence criterion.
