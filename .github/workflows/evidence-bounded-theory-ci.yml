@@ -1,0 +1,51 @@
+name: Evidence-Bounded Theory CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/evidence-bounded-theory-ci.yml"
+      - "src/cogniprint/stats/evidence_bounded.py"
+      - "tests/test_evidence_bounded.py"
+      - "scripts/analyze_evidence_bounded_synthetic.py"
+      - "docs/evidence-bounded-inference-theory-v0.1.md"
+      - "docs/evidence-bounded-inference-paper-plan.md"
+      - "paper/evidence-bounded-inference-theory-draft.tex"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  theory:
+    name: Evidence-Bounded theory / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Compile theory code
+        run: |
+          python -m py_compile             src/cogniprint/stats/evidence_bounded.py             tests/test_evidence_bounded.py             scripts/analyze_evidence_bounded_synthetic.py
+
+      - name: Run theory unit tests
+        run: |
+          python -m unittest discover             -s tests             -p "test_evidence_bounded.py"             -v
+
+      - name: Run synthetic demonstration
+        run: python scripts/analyze_evidence_bounded_synthetic.py
