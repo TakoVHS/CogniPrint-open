@@ -40,6 +40,7 @@ on:
       - "paper/tmlr.sty"
       - "paper/tmlr.bst"
       - "paper/TMLR_STYLE_LICENSE"
+      - "paper/human-verification-checklist.md"
       - "pyproject.toml"
   workflow_dispatch:
 
@@ -195,7 +196,8 @@ jobs:
             texlive-latex-base \
             texlive-latex-recommended \
             texlive-latex-extra \
-            texlive-fonts-recommended
+            texlive-fonts-recommended \
+            lmodern
 
       - name: Compile TMLR manuscript
         working-directory: paper
