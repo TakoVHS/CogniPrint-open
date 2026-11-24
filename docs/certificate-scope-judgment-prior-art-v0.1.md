@@ -162,3 +162,112 @@ with:
 - counterworld rejection witness.
 
 Novelty remains **UNESTABLISHED**.
+
+
+## 9. Approximate Hoare Logic and probabilistic error budgets
+
+Barthe, Gaboardi, Grégoire, Hsu, and Strub (ICALP 2016) introduced
+Approximate Hoare Logic (aHL), whose judgments carry an explicit failure
+probability and whose sequential/conjunctive composition rules use the union
+bound. This directly overlaps any claim that additive confidence/error budgets
+inside a formal judgment are new.
+
+**Consequence:** the \(\alpha\)-accounting component of CSJ is prior art at the
+level of probabilistic program logic. CogniPrint must not present
+\(\sum_i\alpha_i\) bookkeeping as a new effect algebra.
+
+Relevant reference:
+
+- G. Barthe, M. Gaboardi, B. Grégoire, J. Hsu, P.-Y. Strub,
+  *A Program Logic for Union Bounds*, ICALP 2016,
+  DOI 10.4230/LIPIcs.ICALP.2016.107.
+
+## 10. Error Credits / higher-order probabilistic error reasoning
+
+Eris (ICFP 2024 Distinguished Paper) treats error-probability bounds as
+first-class separation-logic resources ("error credits") for higher-order
+probabilistic programs. This is a stronger collision with any broad claim that
+confidence/error probability can newly be treated as a compositional effect or
+resource.
+
+**Consequence:** the potentially distinct part of CSJ is not probability-budget
+tracking itself. It must live in the certificate-to-semantic-claim boundary:
+target functionals, deployment world classes, transport/warrant obligations,
+and counterworld rejection.
+
+Relevant reference:
+
+- A. Aguirre et al., *Error Credits: Resourceful Reasoning about Error Bounds
+  for Higher-Order Probabilistic Programs*, PACMPL / ICFP 2024,
+  DOI 10.1145/3674635.
+
+## 11. Proxy Evidence Certificates / counterworld realization (2026 preprint)
+
+A high-risk novelty collision was identified after the first CSJ audit:
+
+- Yaohui Zhu, *Proxy Evidence Certificates and World-Model Validation:
+  Evidence Fibers, Sharp Envelopes, and Counterworld Realization*,
+  Zenodo preprint, published June 11, 2026,
+  DOI 10.5281/zenodo.20646079.
+
+The public record states that the paper:
+
+- studies whether proxy evidence is sufficient to certify a deployment target;
+- uses an evidence-fiber principle over worlds compatible with the evidence;
+- computes sharp target images/envelopes of those fibers;
+- identifies evidence refinements/audits;
+- turns positive residual width into executable counterworlds.
+
+This is uncomfortably close to CogniPrint's
+
+\[
+\text{Evidence}
+\to
+\text{compatible worlds}
+\to
+\text{claim-risk image}
+\to
+\text{counterworld}.
+\]
+
+The record is a preprint rather than peer-reviewed publication, so it is not
+treated as external validation of those results. It is nevertheless prior art
+for novelty purposes and must be cited and compared before any novelty claim.
+
+**Consequence:** "counterworld witness" by itself is no longer a strong novelty
+candidate. The remaining question must be narrower, for example whether an
+explicit **quantitative warrant judgment** connects heterogeneous frequentist
+certificates to a downstream semantic claim in a way not already present in
+that preprint or in probabilistic program logics.
+
+## 12. Revised novelty boundary
+
+The current candidate should be described as an **effect-style indexed
+certificate-to-claim judgment**, not yet as a new type-and-effect system.
+
+A full type-system claim would require, at minimum:
+
+1. a term/calculus syntax;
+2. static typing/effect judgments;
+3. a semantics for term evaluation or certificate composition;
+4. structural rules/subtyping or weakening stated precisely;
+5. a soundness theorem connecting judgments to that semantics;
+6. ideally, a preservation/progress-style theorem or another appropriate
+   metatheoretic invariant.
+
+The next defensible formal object is therefore a quantitative warrant
+
+\[
+T=(\mathcal W_T,g_T),
+\]
+
+with coordinatewise monotone \(g_T\) satisfying
+
+\[
+\rho_c(D)
+\le
+g_T(\rho_1(D),\ldots,\rho_m(D))
+\]
+
+on its declared world class. This avoids relying on an underspecified
+target-name entailment relation.
