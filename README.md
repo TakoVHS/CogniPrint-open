@@ -65,6 +65,54 @@ Implemented research components include:
 
 The current release is intentionally labelled **`descriptive_only`**. Broader attribution and lineage claims remain unvalidated.
 
+## Executed Stage A evidence
+
+CogniPrint now has real development-stage RAID evidence, including unfavorable results that are preserved rather than hidden.
+
+### Historical M1
+
+On the fixed RAID Pilot A closed-set comparison:
+
+- CogniPrint 12D macro-F1: `0.535883`;
+- character 3–5 hashed TF-IDF: `0.578782`;
+- word 1–2 hashed TF-IDF: `0.595220`.
+
+The tested lexical baselines outperformed the compact 12D representation.
+
+### M2 — calibration, abstention and open-set development
+
+The first real pinned M2 run completed on 24 November 2026 with exact source/features/selection/source-contract hash gates and a separate external repeat that reproduced the persisted result byte-for-byte.
+
+Aggregate four-fold point estimates:
+
+| Representation | Macro-F1 | NLL | Brier | AURC | False-known |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| CogniPrint 12D cosine centroid | 0.382981 | 1.348983 | 0.710081 | 0.511947 | 0.657500 |
+| Character 3–5 hashed TF-IDF | 0.447966 | 1.241039 | 0.673324 | 0.338034 | **0.485000** |
+| Word 1–2 hashed TF-IDF | **0.515231** | **1.234877** | **0.670327** | **0.303210** | 0.512500 |
+
+The result is **negative/mixed**, not a 12D win.
+
+Additional findings:
+
+- scalar temperature scaling worsened held-out 12D NLL in all four folds;
+- both n-gram representations hit the frozen lower temperature bound `T=0.05`;
+- max-confidence open-set ranking remained weak;
+- conformal prediction was extremely conservative and rarely emitted singleton known-class claims.
+
+Correct interpretation:
+
+> Current evidence favors abstention and claim narrowing rather than stronger source attribution.
+
+Records:
+
+- [M2 protocol](docs/raid-calibration-m2-development.md)
+- [M2 result](docs/raid-m2-results-2026-11-24.md)
+- [machine-readable summary](evidence/raid-m2/2026-11-24/summary.json)
+- [reviewer-facing result](reviewer-bundle/m2-results.md)
+
+These are Stage A development results. Challenge 001 Stage B remains `NOT_AUTHORISED_TO_START`.
+
 ## Evidence-gated research programme
 
 Capabilities are intended to unlock only after dedicated benchmark evidence.
