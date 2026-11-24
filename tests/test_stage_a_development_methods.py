@@ -16,6 +16,7 @@ from cogniprint.benchmarks.development_methods import (  # noqa: E402
     UNKNOWN_OOD,
     classwise_expected_calibration_error,
     conformal_decision,
+    evaluate_class_conditional_conformal,
     evaluate_surface_baseline,
     evaluate_temperature,
     expected_calibration_error,
@@ -30,9 +31,13 @@ from cogniprint.benchmarks.development_methods import (  # noqa: E402
 )
 from cogniprint.benchmarks.development_statistics import (  # noqa: E402
     DevelopmentClaimThresholds,
+    area_under_risk_coverage,
+    bayes_reject_decision,
     evaluate_claim_narrowing,
+    open_set_confidence_metrics,
     paired_group_bootstrap_delta,
     paired_group_bootstrap_mean_delta,
+    selective_risk_curve,
     wilson_interval,
 )
 
@@ -255,6 +260,78 @@ class StageADevelopmentMethodsTests(unittest.TestCase):
                 vector,
                 evidence_sufficient="yes",  # type: ignore[arg-type]
             )
+
+    def test_conformal_evaluation_rejects_evaluation_lineage_overlap(self) -> None:
+        reference, calibration = self.reference_and_calibration()
+        evaluation = [
+            record("a", "eval-a", [2.0, 0.0]),
+            record("b", "ac1", [0.0, 2.0]),
+        ]
+        with self.assertRaisesRegex(ValueError, "both"):
+            evaluate_class_conditional_conformal(
+                reference,
+                calibration,
+                evaluation,
+                vector,
+                alpha=0.2,
+            )
+
+    def test_conformal_evaluation_separates_set_coverage_from_ood_rejection(self) -> None:
+        reference, calibration = self.reference_and_calibration()
+        evaluation = [
+            record("a", "eval-a", [2.0, 0.0]),
+            record("b", "eval-b", [0.0, 2.0]),
+            record("unseen", "eval-u", [10.0, 10.0]),
+        ]
+        report = evaluate_class_conditional_conformal(
+            reference,
+            calibration,
+            evaluation,
+            vector,
+            alpha=0.2,
+        )
+        self.assertEqual(report["known_total"], 2)
+        self.assertEqual(report["unknown_total"], 1)
+        self.assertFalse(report["singleton_claim_guarantee"])
+        self.assertFalse(report["ood_rejection_guarantee"])
+        self.assertIn("within-class exchangeability", report["coverage_guarantee_scope"])
+
+    def test_selective_risk_curve_is_tie_preserving(self) -> None:
+        truth = ["a", "b", "a", "b"]
+        predictions = ["a", "a", "a", "b"]
+        confidences = [0.9, 0.9, 0.6, 0.2]
+        curve = selective_risk_curve(truth, predictions, confidences)
+        self.assertEqual(curve[0]["accepted"], 2)
+        self.assertAlmostEqual(curve[0]["coverage"], 0.5)
+        self.assertAlmostEqual(curve[0]["selective_risk"], 0.5)
+        summary = area_under_risk_coverage(truth, predictions, confidences)
+        self.assertGreaterEqual(summary["aurc"], 0.0)
+        self.assertLessEqual(summary["aurc"], 1.0)
+        self.assertAlmostEqual(summary["full_coverage_risk"], 0.25)
+
+    def test_open_set_metrics_use_frozen_threshold_and_report_auc(self) -> None:
+        result = open_set_confidence_metrics(
+            [0.95, 0.91, 0.80, 0.60],
+            [0.85, 0.40, 0.30, 0.20],
+            frozen_threshold=0.9,
+        )
+        self.assertAlmostEqual(result["true_known_rate"], 0.5)
+        self.assertAlmostEqual(result["false_known_rate"], 0.0)
+        self.assertGreater(result["known_vs_unknown_auroc"], 0.5)
+        self.assertEqual(
+            result["threshold_semantics"],
+            "pre_frozen_max_confidence_baseline",
+        )
+
+    def test_bayes_reject_rule_matches_symmetric_threshold(self) -> None:
+        claim = bayes_reject_decision(0.81, abstain_cost=0.2)
+        abstain = bayes_reject_decision(0.79, abstain_cost=0.2)
+        self.assertAlmostEqual(claim["threshold"], 0.8)
+        self.assertTrue(claim["claim"])
+        self.assertFalse(abstain["claim"])
+        self.assertTrue(claim["policy_gate_required"])
+        with self.assertRaisesRegex(ValueError, "between"):
+            bayes_reject_decision(0.9, abstain_cost=1.2)
 
     def test_temperature_calibration_is_deterministic_and_improves_nll(
         self,
