@@ -8,19 +8,23 @@ on:
       - "src/cogniprint/stats/claim_promotion.py"
       - "src/cogniprint/stats/identified_sets.py"
       - "src/cogniprint/stats/evidence_composition.py"
+      - "src/cogniprint/stats/finite_sample_composition.py"
       - "tests/test_evidence_bounded.py"
       - "tests/test_claim_promotion.py"
       - "tests/test_identified_sets.py"
       - "tests/test_evidence_composition.py"
+      - "tests/test_finite_sample_composition.py"
       - "scripts/analyze_evidence_bounded_synthetic.py"
       - "scripts/demonstrate_claim_promotion_nonidentifiability.py"
       - "scripts/demonstrate_identified_set_admissibility.py"
       - "scripts/demonstrate_evidence_channel_composition.py"
+      - "scripts/demonstrate_finite_sample_composition.py"
       - "docs/evidence-bounded-inference-theory-v0.1.md"
       - "docs/evidence-bounded-finite-sample-baseline-v0.1.md"
       - "docs/claim-promotion-identifiability-v0.1.md"
       - "docs/claim-promotion-partial-identification-literature-map.md"
       - "docs/evidence-channel-sharp-composition-v0.1.md"
+      - "docs/finite-sample-composition-certificate-v0.1.md"
       - "docs/evidence-bounded-inference-paper-plan.md"
       - "paper/evidence-bounded-inference-theory-draft.tex"
       - "paper/claim-promotion-identifiability-draft.tex"
@@ -60,14 +64,17 @@ jobs:
             src/cogniprint/stats/claim_promotion.py \
             src/cogniprint/stats/identified_sets.py \
             src/cogniprint/stats/evidence_composition.py \
+            src/cogniprint/stats/finite_sample_composition.py \
             tests/test_evidence_bounded.py \
             tests/test_claim_promotion.py \
             tests/test_identified_sets.py \
             tests/test_evidence_composition.py \
+            tests/test_finite_sample_composition.py \
             scripts/analyze_evidence_bounded_synthetic.py \
             scripts/demonstrate_claim_promotion_nonidentifiability.py \
             scripts/demonstrate_identified_set_admissibility.py \
-            scripts/demonstrate_evidence_channel_composition.py
+            scripts/demonstrate_evidence_channel_composition.py \
+            scripts/demonstrate_finite_sample_composition.py
 
       - name: Run evidence-bounded unit tests
         run: |
@@ -97,6 +104,13 @@ jobs:
             -p "test_evidence_composition.py" \
             -v
 
+      - name: Run finite-sample composition unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_finite_sample_composition.py" \
+            -v
+
       - name: Run baseline synthetic demonstration
         run: python scripts/analyze_evidence_bounded_synthetic.py
 
@@ -113,6 +127,11 @@ jobs:
       - name: Run sharp composition demonstration
         run: |
           python scripts/demonstrate_evidence_channel_composition.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Run finite-sample composition demonstration
+        run: |
+          python scripts/demonstrate_finite_sample_composition.py \
             --output-dir "$RUNNER_TEMP/claim-promotion"
 
       - name: Upload claim-promotion demonstration
