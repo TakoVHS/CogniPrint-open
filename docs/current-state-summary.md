@@ -1,14 +1,15 @@
 # CogniPrint current state
 
-CogniPrint is an MIT-licensed research framework for constructing compact statistical fingerprints of text and building reproducible evidence about synthetic-language production processes without collapsing measurement, inference, external provenance, and uncertainty into one verdict.
+Status date: 24 November 2026.
+
+CogniPrint is an MIT-licensed research framework for constructing compact statistical fingerprints of text and building reproducible evidence about synthetic-language production processes without collapsing measurement, inference, external provenance and uncertainty into one verdict.
 
 ## Current scientific status
 
 - Scientific readiness: `descriptive_only`
 - Research mode: `PROOF_MODE`
 - Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`
-- CI evidence status: `NOT_EXECUTED`
-- Local exact-snapshot execution: `NOT_EXECUTED`
+- Hosted-runner execution: `PASS / ACTIVE`
 - External methodological reviews: `0/1`
 - Release line: `v0.1.2`
 - DOI: pending direct public Zenodo verification
@@ -16,185 +17,219 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 
 The current public release supports reproducible **measurement and evidence structuring**, not validated source attribution.
 
+## Hosted-runner status
+
+The historical GitHub Actions `steps: []` blocker is resolved.
+
+Fresh minimal canary on 24 November 2026:
+
+- workflow: `Runner Canary Current`;
+- run id: `45371785458`;
+- conclusion: `success`;
+- log contains `RUNNER_EXECUTED`;
+- log contains `PYTHON_EXECUTED`;
+- Python reported `3.14.4`.
+
+Issue #30 is closed as completed.
+
+Current hosted workflows also execute successfully for:
+
+- Stage A Methods CI on Python 3.10 / 3.11 / 3.12;
+- RAID M2 Development CI on Python 3.10 / 3.11 / 3.12;
+- RAID Pilot Adapter CI;
+- Public Release CI;
+- real pinned RAID M2 external evidence execution.
+
+This resolves an infrastructure blocker only. It does not unlock a scientific claim.
+
 ## Implemented measurement core
 
 CogniPrint currently provides:
 
 - a documented 12-dimensional text profile `φ(T)`;
 - profile comparison with Euclidean distance and cosine similarity;
-- corpus-relative exploratory thresholds/diagnostics;
-- perturbation analysis for measuring profile change under edits;
+- corpus-relative exploratory diagnostics;
+- perturbation analysis;
 - corpus aggregation and dispersion summaries;
 - entropy and word/character n-gram diagnostics;
-- reproducibility, validation, benchmark, and evidence artifacts.
+- reproducibility, validation, benchmark and evidence artifacts.
 
 ## Implemented trust/evidence foundation
 
-The repository contains implementation-level primitives for the next research layer:
+The repository contains:
 
-- **Evidence Schema v1** with four explicit truth classes: `OBSERVED`, `INFERRED`, `ATTESTED`, `UNKNOWN`;
-- **Claim Firewall v1** that keeps model-family attribution disabled by default until minimum-evidence, in-distribution, calibration and explicit research gates are satisfied;
-- exact-model identity is not inferred from prose; under the current policy it may only be represented as a validated external `ATTESTED` statement;
-- authorship, actor/commissioner, intent/responsibility and legal/forensic conclusions remain blocked as content-only claims;
-- machine-readable limitations such as `SHORT_TEXT`, `OUT_OF_DISTRIBUTION`, `UNCALIBRATED_SCORE`, `NO_EXTERNAL_PROVENANCE`, `CONFLICTING_PROVENANCE` and `UNSUPPORTED_CLAIM`;
-- **Provenance Conflict Engine** that preserves disagreement between authorised statistical inference and validated external provenance rather than silently choosing one source as truth;
-- deterministic `.cogcase` manifest/integrity primitives with SHA-256, file-set validation and tamper detection;
-- `.cogcase` signing is **not implemented**: v0.1 accepts only `UNSIGNED` and rejects a fake signed status;
-- Data Constitution for licensing, PII minimisation, benchmark contamination, lineage and reference-registry governance;
-- evaluation contracts for calibration, OOD, generator/temporal/domain/language holdouts, human-edit survival and model-to-model rewrite tests;
-- an independent sealed-challenge evaluator that is separate from fitting/threshold tuning and binds prediction/label artifacts by SHA-256;
-- eight golden mathematical evaluator fixtures covering perfect, all-wrong, missing-class, all-unknown, known-as-unknown, unknown-as-known, single-class and imbalanced behavior;
-- a canonical public trust/claim-unlock contract at `docs/trust.md`.
+- **Evidence Schema v1** with `OBSERVED`, `INFERRED`, `ATTESTED`, `UNKNOWN`;
+- **Claim Firewall v1** that keeps attribution disabled until explicit evidence/calibration/OOD gates are satisfied;
+- exact-model identity blocked as content-only inference;
+- authorship, actor/commissioner, intent/responsibility and legal/forensic conclusions blocked as content-only claims;
+- machine-readable limitation states;
+- provenance-conflict handling;
+- deterministic `.cogcase` manifest/integrity primitives;
+- Data Constitution and benchmark governance;
+- calibration/OOD/holdout evaluation contracts;
+- an independent sealed-challenge evaluator architecture;
+- Research Lock tooling for deterministic integrity binding.
 
-These are evidence/research controls. They do **not** make current attribution scientifically validated.
+These are research controls, not validation that source attribution works.
 
-## Implemented Challenge 001 integrity controls
+## Stage A evidence already executed
 
-Challenge 001 now has explicit pre-freeze controls:
+Stage A is development-only and is not blind Challenge 001 evidence.
 
-- physically separated namespaces for Stage A development, frozen protocol artifacts and sealed Stage B evaluation;
-- a blinded-sample schema that forbids direct ground-truth/model-family fields;
-- a separate revealed-label schema for post-prediction label reveal;
-- schema-enforced Stage A/Stage B visibility and reference-membership invariants;
-- a **Development Exposure Registry** that quarantines already inspected/used corpora from sealed Stage B;
-- `public-benchmark-v1.1` and the already specified RAID `raid/train` Pilot A matrix are development-visible and cannot later be represented as sealed Stage B evidence;
-- a Stage A public-benchmark materializer that hashes already released files into development-only blinded manifest records;
-- a machine-readable leakage audit that blocks freeze on sample/content overlap or duplicate identifiers/content hashes;
-- **Research Lock 001** tooling that can bind the exact frozen protocol/evaluator/config/manifests/reference files to one deterministic SHA-256.
+### Historical RAID M1
 
-The Research Lock is an integrity binding, **not** a digital signature or scientific-validity certificate. Its final file set and final hash do not exist yet because the protocol remains `PRE-FREEZE`.
+The fixed M1 comparison remains:
 
-No real Stage A manifest, real A/B leakage report, frozen Research Lock, sealed Stage B corpus, or Challenge 001 result is currently claimed.
+- CogniPrint 12D macro-F1: `0.535883`;
+- character 3–5 hashed TF-IDF: `0.578782`;
+- word 1–2 hashed TF-IDF: `0.595220`.
+
+Both tested lexical baselines outperformed 12D on that fixed closed-set task.
+
+### RAID M2 — calibration, abstention and open-set development
+
+The first real pinned M2 run completed on 24 November 2026.
+
+All historical input gates passed before metrics were produced:
+
+- authoritative `train_none.csv` byte size: `801662741`;
+- source SHA-256:
+  `c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4`;
+- regenerated features SHA-256:
+  `13faba4a3efaa1c7f88761722f146b7eb654fd08e4b833f2d7768a0ff45646ca`;
+- selected-record manifest SHA-256:
+  `30685ed738c3f1f1074a1f89a67a504f0c9d0607b958894e385172623591f6cb`;
+- source-contract SHA-256:
+  `e0efa8ddf06861e0fbfd2ccb76313e9451986592b5d007a7cb71d30503fd9948`;
+- selected records: exactly `500`.
+
+Primary external run:
+
+- workflow run: `45370233451`;
+- evidence archive SHA-256:
+  `93c2cdb6c05919fb3ba348c948c73a836358da633352e566c243dd6c8a1e2352`.
+
+An independent repeat external run `45371006757` reproduced the persisted `m2-results.json` byte-for-byte.
+
+Persisted result SHA-256:
+
+`1fb39616725c90470e5dbc35ff7f4211190448e9bb1505c256d5febeba275dc3`
+
+### M2 aggregate result
+
+| Representation | Macro-F1 | NLL | Brier | AURC | False-known |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| CogniPrint 12D cosine centroid | 0.382981 | 1.348983 | 0.710081 | 0.511947 | 0.657500 |
+| Character 3–5 hashed TF-IDF | 0.447966 | 1.241039 | 0.673324 | 0.338034 | **0.485000** |
+| Word 1–2 hashed TF-IDF | **0.515231** | **1.234877** | **0.670327** | **0.303210** | 0.512500 |
+
+The first real M2 result is **negative/mixed**, not a 12D win.
+
+Important findings:
+
+- lexical baselines have stronger aggregate point estimates on the principal tested metrics;
+- all predeclared per-fold 95% paired proper-score bootstrap intervals include zero;
+- scalar temperature scaling worsened held-out 12D NLL in all four folds;
+- both n-gram temperature fits repeatedly hit the lower bound `T=0.05`;
+- max-confidence open-set ranking remained weak;
+- conformal prediction was extremely conservative, with near-zero false-known singleton behavior but very low known singleton rates.
+
+Correct scientific interpretation:
+
+> Current evidence favors abstention and claim narrowing rather than stronger source attribution.
+
+Full records:
+
+- `docs/raid-calibration-m2-development.md`;
+- `docs/raid-m2-results-2026-11-24.md`;
+- `evidence/raid-m2/2026-11-24/summary.json`;
+- `reviewer-bundle/m2-results.md`.
+
+## Reproducibility and privacy state
+
+The real M2 evidence path verifies:
+
+- exact source/features/selection/source-contract identity;
+- deterministic repeated calculation;
+- raw source not persisted;
+- raw prompts not persisted;
+- raw generations not persisted;
+- recoverable vocabulary not persisted;
+- evidence archive and sidecar hashes.
+
+This is engineering/research reproducibility evidence, not independent scientific replication by another group.
+
+## Challenge 001 integrity controls
+
+Challenge 001 has explicit pre-freeze controls:
+
+- physically separated Stage A development and sealed Stage B namespaces;
+- blinded Stage B sample schema;
+- separate revealed-label schema;
+- Development Exposure Registry;
+- Stage A/Stage B visibility invariants;
+- machine-readable leakage audit;
+- Research Lock 001 tooling.
+
+Already inspected RAID/public benchmark material remains development-visible and cannot later be represented as sealed Stage B evidence.
+
+The final Research Lock hash does not yet exist because the protocol remains `PRE-FREEZE`.
 
 ## Proof mode / feature freeze
 
-CogniPrint is under a **no-new-feature rule until Evidence Milestone 001 / Challenge 001**.
+The no-new-headline-feature rule remains active.
 
 Allowed work is limited to:
 
 1. correctness/security fixes;
 2. reproducibility;
 3. test/runner infrastructure;
-4. Stage A development calibration needed to finalise the pre-registered protocol;
-5. preregistration and research-freeze work;
+4. Stage A diagnostics needed to freeze the protocol;
+5. preregistration/freeze work;
 6. benchmark integrity/sealing;
-7. corrections needed to keep public claims aligned with evidence.
+7. corrections required to keep public claims aligned with evidence;
+8. external methodological review preparation.
 
-New detector families, new headline capabilities, decorative dashboards and additional regulatory/provenance integrations are deferred unless they are required to repair correctness or reproducibility.
+Post-result tuning must not overwrite M2. Any score-scale/temperature/conformal diagnostic is a separate exploratory protocol.
 
-The pre-freeze contract is `RESEARCH_FREEZE_001.md`. It is intentionally marked `PRE-FREEZE` until Stage A has fixed the remaining numerical/operational choices and exact model/source families, corpus/reference versions, sample strata, minimum-evidence rules, OOD/calibration methods, exclusions, thresholds and external preregistration are fixed.
+## Stage B remains blocked
 
-## CI / execution evidence status
+Stage B is **not authorised to start**.
 
-GitHub Actions CI: **`NOT_EXECUTED`**.
+Before Stage B, the project still needs:
 
-A minimal Runner Canary with no checkout, dependencies, cache, matrix or secrets was created specifically to isolate runner startup. Its job was created, but GitHub reported `steps: []`; neither the shell canary nor `python --version` executed. A control rerun after GitHub reported Actions operational produced the same `steps: []` result.
+1. final candidate Stage A/Stage B manifests;
+2. leakage-audit PASS for the frozen candidate;
+3. frozen numerical/operational choices;
+4. final Research Lock 001;
+5. external timestamped preregistration;
+6. sealed corpus/reference/split custody;
+7. frozen predictions before label reveal;
+8. independent post-reveal evaluation;
+9. public failure analysis;
+10. Scientific Claim Review.
 
-Therefore this is not evidence that tests passed or failed.
+The executed M2 cannot be reused as sealed Stage B evidence.
 
-Correct public wording:
+## External methodological review
 
-> CI execution: NOT_EXECUTED — GitHub-hosted runner did not reach the first executable step.
+External methodological review remains `0/1`.
 
-Local exact-snapshot execution is also **`NOT_EXECUTED`** in the current execution environment because that environment could not resolve/fetch `github.com`; it therefore could not obtain an exact repository snapshot for the requested Python 3.10/3.11/3.12 matrix.
+The reviewer packet now includes the actual M1/M2 negative/mixed results rather than only proposed protocols.
 
-Issue #30 closes only after the trust/evaluator tests actually execute on a functioning runner and the exact commit, Python versions, job logs and test counts are preserved.
+A critical or negative independent review can satisfy the review definition. Endorsement is not required.
 
-## Stage A — development calibration
-
-Stage A is **development-only** and is not blind Challenge 001 evidence.
-
-It exists to fix pre-freeze choices such as:
-
-- minimum-evidence / length bins;
-- source-family feasibility;
-- OOD/UNKNOWN methodology;
-- calibration procedure and binning;
-- feature stability;
-- sample-count/strata feasibility;
-- exclusion mechanics;
-- evaluator sanity.
-
-Anything used for these choices becomes development-visible. It may not later be relabelled as sealed Stage B simply because a particular script did not consume every record.
-
-Before freeze, the real candidate Stage A and Stage B manifests must pass the leakage gate with at least:
-
-```text
-sample_id_overlap = 0
-content_hash_overlap = 0
-```
-
-Prompt overlap is reported separately and its policy must be frozen before Stage B.
+Closing the review counter alone does not change `descriptive_only`.
 
 ## External-provenance / regulatory interfaces
 
-Documented interfaces include:
+Documented interfaces still include:
 
-- C2PA / Content Credentials bridge contract and validation-state model;
-- Article-50-oriented transparency evidence mapping that explicitly does **not** claim EU AI Act compliance or certification;
-- NIST AI RMF / Generative AI Profile mapping that explicitly does **not** claim NIST certification/approval.
+- C2PA / Content Credentials bridge contract;
+- Article-50-oriented transparency mapping with explicit non-certification boundary;
+- NIST AI RMF mapping with explicit non-certification boundary.
 
 The C2PA runtime reader/validator is not yet implemented or validated.
-
-## Flagship research target — Attribution Challenge 001
-
-Stage B is currently **not authorised to start**.
-
-The required order is:
-
-1. obtain real execution evidence on a functioning runner;
-2. execute Stage A development calibration without using future Stage B samples;
-3. materialise Stage A and candidate Stage B manifests and obtain a leakage-audit PASS;
-4. complete and freeze `RESEARCH_FREEZE_001.md`;
-5. create/preserve the final Research Lock 001 hash;
-6. complete external timestamped preregistration (issue #28);
-7. seal corpus/reference/split artifacts and keep ground truth unavailable to prediction code;
-8. generate and hash frozen predictions before label reveal;
-9. reveal labels and evaluate with the independent evaluator without post-reveal fitting/tuning;
-10. publish failure analysis and a separate Scientific Claim Review.
-
-The frozen-design direction includes:
-
-- leakage-safe lineage grouping;
-- transparent length/surface/n-gram baselines;
-- held-out unseen generators;
-- `UNKNOWN / OUT_OF_DISTRIBUTION / INSUFFICIENT EVIDENCE`;
-- Brier/ECE and selective-risk reporting where calibrated outputs exist;
-- false-known rate as a first-class open-world safety metric;
-- domain/temporal/generalisation checks;
-- translation, human-edit and model-to-model rewrite stress tracks;
-- explicit falsification criteria and public failure reporting;
-- independent post-reveal evaluation.
-
-No Challenge 001 result is currently claimed.
-
-## Evidence Milestone 001
-
-Evidence Milestone 001 is reached only when all of these exist together:
-
-- timestamped preregistration;
-- actually executed reproducible test suite;
-- frozen/sealed blind benchmark;
-- frozen predictions and SHA-256;
-- revealed labels and SHA-256 after prediction freeze;
-- independent evaluator output;
-- calibration metrics where calibrated outputs are claimed;
-- OOD/UNKNOWN metrics including false-known rate;
-- published failure analysis;
-- immutable integrity-verifiable evidence bundle;
-- external methodological review requested against the actual results.
-
-Reaching the milestone does **not** automatically change `descriptive_only`. A separate Scientific Claim Review must classify each proposed public claim as `ALLOW`, `ALLOW_WITH_SCOPE`, `REJECT`, or `REQUIRES_MORE_EVIDENCE`.
-
-## What the research is trying to reach
-
-The longer programme remains evidence-gated:
-
-1. **Model-family candidates:** benchmark-bounded probabilistic source-family inference with UNKNOWN/OOD.
-2. **Human–AI intervention mapping:** controlled regime-change/segment research without converting change points into authorship claims.
-3. **Cross-model generation lineage:** controlled multi-stage production-chain research only after lower-level gates succeed.
-4. **Provenance fusion:** combine content-derived measurements with C2PA/provider/log/revision attestations while preserving evidence class and conflict state.
-5. **Portable evidence cases:** reproducible, eventually signed `.cogcase` artifacts after a real cryptographic signing implementation is reviewed.
 
 ## Critical boundary
 
@@ -204,30 +239,34 @@ CogniPrint does **not** currently establish from text alone:
 - a unique/exact source model;
 - definitive AI origin;
 - generation-lineage reconstruction;
-- who commissioned or requested generation;
+- who commissioned/requested generation;
 - intent or responsibility;
 - legal status;
 - forensic provenance suitable for high-stakes decisions.
 
-Content-derived signals can support bounded hypotheses. Claims about actors, tools, workflow history or legal effect require independent evidence appropriate to the specific claim.
+Content-derived signals can support bounded research hypotheses. Claims about actors, tools, workflow history or legal effect require independent evidence appropriate to the specific claim.
 
 ## Open gates
 
 - external methodological review: `0/1`;
-- DOI reference not directly publicly verified;
-- CI execution: `NOT_EXECUTED` — issue #30;
-- local exact-snapshot execution: `NOT_EXECUTED` in the current environment;
-- real Stage A manifest/calibration outputs: not yet executed;
-- real A/B leakage audit: not yet executed;
+- DOI reference: not directly publicly verified;
 - Challenge 001 research freeze: `PRE-FREEZE`;
-- final Research Lock 001: not yet generated;
+- final candidate Stage A/Stage B leakage audit: open;
+- final Research Lock 001: not generated;
 - Challenge 001 external preregistration: open issue #28;
+- Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`;
 - C2PA runtime validation: open issue #26;
-- real detached `.cogcase` signatures: open issue #27;
-- QVAC runtime demo remains HOLD;
-- Auto Drive CID upload/retrieval round-trip remains HOLD;
-- OTF practitioner discovery remains NO-GO until real user evidence exists.
+- detached `.cogcase` signatures: open issue #27;
+- independent external replication: not completed.
+
+Resolved:
+
+- hosted-runner execution blocker: issue #30 **closed**;
+- real RAID M1 development evidence: executed;
+- real pinned RAID M2 development evidence: executed and independently repeated at the engineering level.
 
 ## Positioning
 
-CogniPrint should be understood as an **evidence-first cognitive-provenance research programme**. Its moat is not a headline AI score; it is the attempt to make every conclusion state whether it is observed, inferred, externally attested, or unknown — with reproducibility, scope and failure conditions preserved alongside the result.
+CogniPrint should be understood as an **evidence-first cognitive-provenance research programme**.
+
+Its scientific value is not a headline AI score. It is the discipline of preserving what was measured, what was inferred, what failed, what remains unknown, and which claims the evidence still does not justify.
