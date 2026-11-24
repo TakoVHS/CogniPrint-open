@@ -402,6 +402,100 @@ This is one point of contact with sharp-bound and data-fusion problems in
 partial identification, where targets depending on a joint distribution may
 remain unidentified from marginal information alone.
 
+\section{Finite-Sample Product-Gate Certificate}
+\label{sec:finite-composition}
+
+The population composition criterion assumes the relevant evidence laws are
+known. For a practically useful but deliberately narrower finite-sample
+problem, fix a product gate $A=A(E,F)$ before inspecting validation labels.
+
+Let
+\[
+a_K=\Pr(A=1\mid K),
+\qquad
+a_U=\Pr(A=1\mid U),
+\]
+for the declared known and unknown components, and suppose deployment unknown
+prevalence satisfies
+\[
+\pi\le\pi_U.
+\]
+The risk of falsely claiming known-set membership among accepted observations is
+\[
+\rho(\pi,a_K,a_U)
+=
+\frac{\pi a_U}
+{(1-\pi)a_K+\pi a_U}.
+\]
+
+Assume independent or otherwise valid i.i.d. validation samples from the
+declared known and unknown components:
+\[
+X_K\sim\mathrm{Binomial}(n_K,a_K),
+\qquad
+X_U\sim\mathrm{Binomial}(n_U,a_U).
+\]
+The essential assumption is transportability of these component acceptance
+rates to the declared deployment world class.
+
+Let $L_K$ be a one-sided Clopper--Pearson lower confidence bound for $a_K$ at
+tail level $\alpha/2$, and let $U_U$ be the corresponding upper bound for
+$a_U$.
+
+\begin{proposition}[Exact fixed-gate finite-sample certificate]
+With probability at least $1-\alpha$,
+\[
+\boxed{
+\rho
+\le
+B_{1-\alpha}
+=
+\frac{\pi_U U_U}
+{(1-\pi_U)L_K+\pi_U U_U}
+}
+\]
+whenever the denominator is positive.
+\end{proposition}
+
+\begin{proof}
+By the one-sided exact binomial guarantees and the union bound,
+$a_K\ge L_K$ and $a_U\le U_U$ jointly with probability at least
+$1-\alpha$. The function $\rho(\pi,a_K,a_U)$ is increasing in
+$\pi$ and $a_U$ and decreasing in $a_K$, so its maximum over
+$\pi\le\pi_U$, $a_K\ge L_K$, and $a_U\le U_U$ is attained at
+$(\pi_U,L_K,U_U)$.
+\end{proof}
+
+For a predeclared finite family of $m$ product gates, assigning each of the
+$2m$ one-sided component bounds level $\alpha/(2m)$ yields simultaneous
+coverage at least $1-\alpha$ by Bonferroni. Gate selection may then be
+performed within that frozen family without invalidating the simultaneous
+confidence event.
+
+\subsection{Sampling versus structural uncertainty}
+
+Increasing $n_K$ and $n_U$ contracts the Clopper--Pearson contribution, but it
+does not learn the deployment prevalence restriction $\pi\le\pi_U$.
+Consequently the certificate converges toward a structural floor rather than
+toward zero in general.
+
+If $\pi_U=1$, robust known-membership certification is vacuous for any gate
+that can accept unknown observations. Likewise, validation against one
+unknown reference distribution does not certify arbitrary unseen unknown
+distributions unless the world class contains a defensible transportability or
+envelope assumption.
+
+\subsection{Why we do not estimate the conditional kernel here}
+
+For a fixed product gate, the claim risk depends only on aggregate acceptance
+rates $a_K$ and $a_U$. Estimating the marginal law of $E$ and the conditional
+kernel $K(F\mid E)$ separately adds nuisance estimation without improving this
+specific certificate.
+
+A binned conditional-kernel analysis becomes relevant when gates are adapted
+across evidence bins or when the kernel itself is the scientific target. That
+is a separate finite-sample problem and is not claimed solved here.
+
 \section{Partial-identification context}
 
 Identified sets and decisions under incomplete identification are classical.
@@ -454,6 +548,17 @@ More on Confidence Intervals for Partially Identified Parameters.
 I. Gilboa and D. Schmeidler.
 Maxmin Expected Utility with Non-Unique Prior.
 \emph{Journal of Mathematical Economics}, 18(2):141--153, 1989.
+
+\bibitem{cht2007}
+V. Chernozhukov, H. Hong, and E. Tamer.
+Estimation and Confidence Regions for Parameter Sets in Econometric Models.
+\emph{Econometrica}, 75(5):1243--1284, 2007.
+
+\bibitem{kaidosantos2014}
+H. Kaido and A. Santos.
+Asymptotically Efficient Estimation of Models Defined by Convex Moment
+Inequalities.
+\emph{Econometrica}, 82(1):387--413, 2014.
 
 \end{thebibliography}
 
