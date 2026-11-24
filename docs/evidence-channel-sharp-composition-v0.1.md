@@ -1,6 +1,6 @@
-# Sharp Composition of Evidence Channels v0.1
+# Conditional-Kernel Representation of Evidence Composition v0.1
 
-Status: **THEORY_DRAFT / NOVELTY_UNESTABLISHED / NOT_PEER_REVIEWED**
+Status: **STANDARD REPRESENTATION / OPERATIONAL COROLLARY / NOVELTY NOT CLAIMED**
 
 Related:
 - Draft PR #84
@@ -77,7 +77,7 @@ K_D(df\mid e).
 Conditional kernels are understood up to
 \(\mu_{\rm obs}^{E}\)-almost-sure equality.
 
-## 4. Theorem — sharp conditional-kernel composition
+## 4. Proposition — conditional-kernel representation
 
 The worlds compatible with the product channel are exactly
 
@@ -121,7 +121,7 @@ This result is an exact characterization, not yet a novelty claim. It is
 closely related to classical disintegration, experiment comparison, and
 partial-identification reasoning.
 
-## 5. Corollary — exact admissibility criterion
+## 5. Corollary — robust admissibility under composition
 
 For tolerance \(\delta\), define the unsafe coarse-fiber worlds
 
@@ -147,6 +147,9 @@ Equivalently: **every unsafe world left by the first channel must be rejected
 by the observed conditional behavior of the second channel.**
 
 This is both necessary and sufficient relative to the declared world class.
+
+This criterion is not claimed as a novel theorem: it is the robust-feasibility
+condition written over the product-channel compatible-world set.
 
 ## 6. Corollary — strict worst-case gain
 
