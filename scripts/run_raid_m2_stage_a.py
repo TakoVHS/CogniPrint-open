@@ -230,7 +230,7 @@ def build_archive(run_dir: Path, archive_path: Path) -> None:
                 )
 
 
-def status_markdown(repository_commit: str, archive_name: str, archive_sha256: str) -> str:
+def status_markdown(repository_commit: str) -> str:
     return "\n".join(
         [
             "# CogniPrint RAID M2 exact Stage A run",
@@ -245,8 +245,9 @@ def status_markdown(repository_commit: str, archive_name: str, archive_sha256: s
             f"Seed: {SEED}",
             f"Conformal alpha: {CONFORMAL_ALPHA}",
             f"Minimum known coverage: {MINIMUM_KNOWN_COVERAGE}",
-            f"Archive: {archive_name}",
-            f"Archive SHA-256: {archive_sha256}",
+            "",
+            "Archive SHA-256 is deliberately stored outside this bundle in a "
+            "sidecar file to avoid self-referential hashing.",
             "",
             "Boundary: Stage A development evidence only. This run does not "
             "authorize Stage B or establish exact model identity, AI origin, "
@@ -255,7 +256,6 @@ def status_markdown(repository_commit: str, archive_name: str, archive_sha256: s
             "",
         ]
     )
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -383,41 +383,54 @@ def main() -> int:
 
     audit = privacy_audit(run_dir)
     write_json(run_dir / "privacy-audit.json", audit)
-    manifest_entries = write_evidence_manifest(run_dir)
 
-    archive_path = output_root / f"{run_dir.name}.tar.gz"
-    build_archive(run_dir, archive_path)
-    archive_sha = sha256_file(archive_path)
     (run_dir / "FINAL_STATUS.md").write_text(
-        status_markdown(repository_commit, archive_path.name, archive_sha),
+        status_markdown(repository_commit),
         encoding="utf-8",
     )
-    manifest_entries = write_evidence_manifest(run_dir)
-    build_archive(run_dir, archive_path)
-    archive_sha = sha256_file(archive_path)
-
-    final = {
-        "schema": "cogniprint-raid-m2-exact-run-001",
+    internal_summary = {
+        "schema": "cogniprint-raid-m2-exact-run-internal-001",
         "status": "PASS",
         "repository_commit": repository_commit,
-        "evidence_manifest_entries": manifest_entries,
-        "archive": archive_path.name,
-        "archive_sha256": archive_sha,
         "m2_result_sha256": sha256_file(analysis_dir / "m2-results.json"),
-        "m2_role_manifest_sha256": sha256_file(analysis_dir / "m2-role-manifest.json"),
+        "m2_role_manifest_sha256": sha256_file(
+            analysis_dir / "m2-role-manifest.json"
+        ),
         "m2_reproducibility_sha256": sha256_file(
             analysis_dir / "m2-reproducibility.json"
         ),
         "privacy_audit_status": audit["status"],
         "stage_b_status": validated["result"]["stage_b_status"],
     }
-    write_json(run_dir / "RUN_SUMMARY.json", final)
-    write_evidence_manifest(run_dir)
+    write_json(run_dir / "RUN_SUMMARY.json", internal_summary)
+    manifest_entries = write_evidence_manifest(run_dir)
+
+    archive_path = output_root / f"{run_dir.name}.tar.gz"
     build_archive(run_dir, archive_path)
+    archive_sha = sha256_file(archive_path)
+
+    external_summary = {
+        "schema": "cogniprint-raid-m2-exact-run-archive-001",
+        "status": "PASS",
+        "repository_commit": repository_commit,
+        "evidence_manifest_entries": manifest_entries,
+        "archive": archive_path.name,
+        "archive_sha256": archive_sha,
+        "run_directory": run_dir.name,
+    }
+    summary_path = output_root / f"{run_dir.name}.summary.json"
+    write_json(summary_path, external_summary)
+    sha_path = output_root / f"{run_dir.name}.sha256"
+    sha_path.write_text(
+        f"{archive_sha}  {archive_path.name}\n",
+        encoding="utf-8",
+    )
 
     print(run_dir)
     print(archive_path)
-    print(sha256_file(archive_path))
+    print(summary_path)
+    print(sha_path)
+    print(archive_sha)
     return 0
 
 
