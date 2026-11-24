@@ -339,3 +339,39 @@ No values from synthetic CI fixtures are scientific M2 outcomes.
 
 No DOI, preregistration, Stage B authorization, attribution claim expansion or
 external methodological review follows from this protocol alone.
+
+
+## Exact local execution
+
+The real M2 run must be executed from a clean checkout of the reviewed commit,
+with the historical local evidence files available outside the repository.
+
+Example:
+
+```bash
+python scripts/run_raid_m2_stage_a.py \
+  --input-file /absolute/path/to/train_none.csv \
+  --features /absolute/path/to/features.jsonl \
+  --source-contract /absolute/path/to/RAID_SOURCE_CONTRACT_001.json \
+  --output-root /absolute/path/outside/CogniPrint-open
+```
+
+The wrapper hard-codes and verifies the historical source, feature, selection
+manifest and source-contract SHA-256 values before analysis. It also requires a
+clean Git worktree and refuses an output directory inside the repository.
+
+Expected outputs are:
+
+- a timestamped evidence directory;
+- a raw-text-free `.tar.gz` archive;
+- an external `.summary.json` containing the final archive SHA-256;
+- an external `.sha256` sidecar;
+- internal M2 results, role manifest, reproducibility record, privacy audit,
+  exact repository state, protocol snapshot, test logs and evidence hash
+  manifest.
+
+The archive SHA-256 is intentionally stored outside the archive to avoid
+self-referential hashing.
+
+Running this wrapper successfully is the next admissible real-evidence step.
+It still produces Stage A development evidence only.
