@@ -7,7 +7,7 @@ not estimate calibration quality, fit models, or authorize scientific claims.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import comb
+from math import exp, lgamma, log
 from typing import Iterable, Sequence
 
 
@@ -200,11 +200,63 @@ class ThresholdRiskCertificate:
     per_threshold_alpha: float
 
 
+def _logsumexp(values: Sequence[float]) -> float:
+    """Stable log(sum(exp(values))) for a non-empty sequence."""
+
+    if not values:
+        raise ValueError("values must be non-empty")
+    maximum = max(values)
+    if maximum == float("-inf"):
+        return maximum
+    return maximum + log(sum(exp(value - maximum) for value in values))
+
+
+def _binomial_logpmf(k: int, n: int, probability: float) -> float:
+    """Stable log PMF for Binomial(n, probability)."""
+
+    probability = _probability(probability, "probability")
+    if k < 0 or k > n:
+        return float("-inf")
+    if probability == 0.0:
+        return 0.0 if k == 0 else float("-inf")
+    if probability == 1.0:
+        return 0.0 if k == n else float("-inf")
+
+    return (
+        lgamma(n + 1)
+        - lgamma(k + 1)
+        - lgamma(n - k + 1)
+        + k * log(probability)
+        + (n - k) * log(1.0 - probability)
+    )
+
+
+def _binomial_tail_probability(
+    start: int,
+    stop: int,
+    n: int,
+    probability: float,
+) -> float:
+    """Stable inclusive binomial probability over integer range [start, stop]."""
+
+    if start > stop:
+        return 0.0
+    logs = [
+        _binomial_logpmf(k, n, probability)
+        for k in range(start, stop + 1)
+    ]
+    log_total = _logsumexp(logs)
+    if log_total == float("-inf"):
+        return 0.0
+    return min(1.0, max(0.0, exp(log_total)))
+
+
 def _binomial_cdf(errors: int, trials: int, probability: float) -> float:
     """Return P[X <= errors] for X ~ Binomial(trials, probability).
 
-    This direct implementation avoids adding a SciPy dependency. It is intended
-    for calibration-set certificate sizes, not for massive-n numerical work.
+    The implementation chooses the numerically smaller tail and evaluates it
+    in log space. This avoids overflow from explicit binomial coefficients at
+    validation sizes in the thousands.
     """
 
     if errors < 0:
@@ -212,12 +264,27 @@ def _binomial_cdf(errors: int, trials: int, probability: float) -> float:
     if errors >= trials:
         return 1.0
     probability = _probability(probability, "probability")
-    return sum(
-        comb(trials, k)
-        * (probability ** k)
-        * ((1.0 - probability) ** (trials - k))
-        for k in range(errors + 1)
+    if probability == 0.0:
+        return 1.0
+    if probability == 1.0:
+        return 0.0
+
+    mean = trials * probability
+    if errors < mean:
+        return _binomial_tail_probability(
+            0,
+            errors,
+            trials,
+            probability,
+        )
+
+    upper_tail = _binomial_tail_probability(
+        errors + 1,
+        trials,
+        trials=trials,
+        probability=probability,
     )
+    return min(1.0, max(0.0, 1.0 - upper_tail))
 
 
 def clopper_pearson_upper(
