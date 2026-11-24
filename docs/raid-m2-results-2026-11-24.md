@@ -279,6 +279,41 @@ These values are weak and close to chance-level ranking in aggregate. M2 does
 not support a claim that maximum calibrated class probability is a reliable
 OOD detector here.
 
+## Protocol deviations / incomplete selective output
+
+A post-run audit identified one important mismatch between the written M2
+metric hierarchy and the persisted executable output.
+
+The protocol described **selective risk at prospectively specified matched
+coverage points** as a primary selective outcome. The executed M2 result
+persisted:
+
+- the complete confidence ordering internally during calculation;
+- AURC;
+- full-coverage risk;
+- the separately frozen max-confidence threshold policy;
+
+but it did **not** persist risk values at an explicit set of matched coverage
+points.
+
+Moreover, the protocol did not freeze a concrete list of matched coverage
+values before the real result was observed.
+
+Therefore:
+
+- no post hoc coverage grid may be retroactively labelled a primary M2 outcome;
+- AURC remains the persisted secondary selective summary;
+- any matched-coverage table computed now must be labelled exploratory/post hoc;
+- the already frozen minimum-known-coverage threshold policy at `0.60` may be
+  reported in a follow-up diagnostic, but it does not retroactively repair the
+  missing prospectively enumerated coverage grid.
+
+This deviation does not change the stored M2 metrics, but it narrows what can
+be claimed from the selective-prediction part of M2.
+
+A separate M2.1 exploratory protocol is used for the missing diagnostics rather
+than altering the M2 #1 record.
+
 ## Scientific conclusion
 
 The first real M2 result is **negative / mixed**, not a 12D win.
