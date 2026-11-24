@@ -418,6 +418,7 @@ def evaluate_class_conditional_conformal(
     known_singleton_correct = 0
     known_empty = 0
     known_ambiguous = 0
+    known_insufficient = 0
     unknown_total = 0
     unknown_false_known = 0
     unknown_rejected = 0
@@ -442,6 +443,8 @@ def evaluate_class_conditional_conformal(
                     known_singleton_correct += 1
             elif decision == UNKNOWN_OOD:
                 known_empty += 1
+            elif decision == UNKNOWN_INSUFFICIENT_EVIDENCE:
+                known_insufficient += 1
             else:
                 known_ambiguous += 1
         else:
@@ -474,6 +477,9 @@ def evaluate_class_conditional_conformal(
         ),
         "known_ambiguous_set_rate": (
             known_ambiguous / known_total if known_total else None
+        ),
+        "known_insufficient_evidence_rate": (
+            known_insufficient / known_total if known_total else None
         ),
         "unknown_total": unknown_total,
         "unknown_false_known_rate": (
