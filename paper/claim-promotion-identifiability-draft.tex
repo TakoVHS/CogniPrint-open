@@ -1,0 +1,178 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\title{Claim Promotion Under Incomplete Evidence:\\
+Identifiability Limits Beyond Closed-Set Risk Certificates}
+\author{Roman Adriashkin\\Independent Researcher\\CogniPrint Research Initiative}
+\date{Theory draft v0.1 --- November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Finite-sample selective-risk methods can certify a prediction rule relative to
+a specified target distribution, but such a certificate need not identify a
+different provenance, open-set, or semantic claim. We formalize this gap using
+evidence channels and observational equivalence. If two admissible worlds
+induce the same evidence-channel law while a claim-relevant target functional
+differs, then the target is not identified by that evidence; no evidence-only
+test can distinguish the worlds, even with arbitrarily many i.i.d. samples.
+We give a closed-channel camouflage construction, a finite Blackwell-style
+garbling example, and a claim-poset formulation of admissibility. The results
+are a theory draft: their relationship to existing identification, comparison
+of experiments, and OOD-impossibility literature remains under external
+review, and no novelty claim is made here.
+\end{abstract}
+
+\section{Setup}
+
+Let $\Theta$ be a latent source-state space and let a world $D$ be a
+probability law over $\mathcal X\times\Theta$. An evidence channel is a
+measurable map $e:\mathcal X\to\mathcal Z$. For a channel family $E$, write
+$\mu_D^E$ for its induced observation law.
+
+A claim event is a set $C\subseteq\Theta$. Define the world-level target
+\[
+\eta_C(D)=\Pr_D(\Theta\in C).
+\]
+For a fixed acceptance rule $g$, define when well-posed
+\[
+\eta_{C,g}(D)=\Pr_D(\Theta\in C\mid g(X)=1).
+\]
+
+\begin{definition}[Evidence identifiability]
+A target functional $\eta$ is identified by evidence $E$ over a world class
+$\mathcal W$ if
+\[
+\mu_D^E=\mu_{D'}^E
+\quad\Longrightarrow\quad
+\eta(D)=\eta(D')
+\]
+for all $D,D'\in\mathcal W$.
+\end{definition}
+
+\section{Observational-equivalence impossibility}
+
+\begin{theorem}[Claim non-identifiability from observational equivalence]
+Suppose $D_0,D_1\in\mathcal W$ satisfy
+\[
+\mu_{D_0}^E=\mu_{D_1}^E
+\]
+but $\eta(D_0)\neq\eta(D_1)$. Then $\eta$ is not identified by $E$.
+Moreover, for every $n$, the $n$-sample evidence laws coincide, and under
+equal prior weights no binary test based only on $E$ can distinguish
+$D_0$ from $D_1$ with error below $1/2$.
+\end{theorem}
+
+\begin{proof}
+Equality of the one-observation laws implies equality of the product laws for
+every i.i.d. sample size. Therefore every evidence-measurable statistic has the
+same distribution under the two worlds. The target cannot be a function of
+the evidence law. The total variation distance between the two evidence
+experiments is zero, so the optimal equal-prior binary testing error is
+$(1-\mathrm{TV})/2=1/2$.
+\end{proof}
+
+\section{Closed-channel non-transfer construction}
+
+Let $e_{\rm closed}(X)$ contain only a closed-set predictor output. Let
+$D_0$ be a known-only world and let $g$ depend only on this channel. Construct
+$D_\pi$ by mixing a fraction $\pi$ of unknown observations whose
+$e_{\rm closed}$ law is identical to the known-channel law.
+
+Then
+\[
+\mu_{D_\pi}^{e_{\rm closed}}
+=
+\mu_{D_0}^{e_{\rm closed}}.
+\]
+The unknown fraction among accepted examples is $\pi$. If every accepted
+unknown is an error for the known-family prediction and the known-only
+selective risk is $r_0$, then
+\[
+R_{\rm sel}^{D_\pi}(g)
+=
+\pi+(1-\pi)r_0.
+\]
+
+A finite-sample certificate calibrated for $D_0$ remains a statement about
+$D_0$ under its assumptions. It is not a certificate for $D_\pi$ merely
+because the closed-channel marginal is unchanged.
+
+\section{Claim promotion principle}
+
+If a proposed claim target $\eta_C$ is not identified by the available
+evidence $E$ over the declared world class, then an $E$-measurable risk
+certificate cannot by itself identify $C$.
+
+A valid promotion therefore requires at least one of: (i) a defensible
+restriction of the world class, (ii) an evidence refinement that breaks the
+relevant observational equivalence, or (iii) narrowing the claim to a target
+that is identified.
+
+\section{Claim poset}
+
+Claims are ordered by logical implication:
+\[
+C\preceq C'
+\quad\Longleftrightarrow\quad
+C'\subseteq C,
+\]
+so $C'$ is stronger. For example, exact known-family membership is stronger
+than known-set membership. Known-set and unknown-set membership are
+incompatible, not consecutive levels.
+
+If error tolerances are monotone with logical strength, any certified stronger
+claim induces a certified weaker claim. Thus admissible claims form a down-set
+of the claim poset. Calling the set a lattice ideal requires additional
+closure conditions.
+
+\section{Blackwell connection}
+
+The full observation experiment Blackwell-dominates any deterministic
+compression of it because the latter is a garbling. This connection must be
+used relative to a specified experiment family.
+
+For a finite example, let $X=\{a,b,c,d\}$. Under known state $K$, put mass
+$1/2$ on $a,b$; under unknown state $U$, put mass $1/2$ on $c,d$. Define a
+compressed channel by
+\[
+e(a)=e(c)=z_1,\qquad e(b)=e(d)=z_2.
+\]
+The compressed laws under $K$ and $U$ are identical, whereas the full supports
+are disjoint. Full $X$ identifies $K$ versus $U$ perfectly; the compressed
+channel contains no information for the equal-prior binary decision problem.
+
+This example shows that closed-channel compression \emph{can} destroy
+claim-relevant information. It does not prove that every real closed-set score
+is insufficient for every open-set task.
+
+\section{Relation to prior work}
+
+The underlying ideas of observational equivalence, identification, Blackwell
+comparison, and unrestricted OOD impossibility have substantial prior
+literature. Likewise, finite-sample selective-risk control is established in
+RCPS, Learn-then-Test, Conformal Risk Control, LEC, and related work.
+
+Accordingly, the novelty question is narrower: whether an auditable
+claim-admissibility calculus, together with composition and non-promotion
+rules across heterogeneous evidence channels, yields a useful new formal
+object for AI provenance and safety. This remains unestablished.
+
+\section{Conclusion}
+
+\[
+\boxed{
+\text{A valid risk certificate for one target does not identify a different
+claim without assumptions or evidence that identify that claim.}
+}
+\]
+
+\end{document}
