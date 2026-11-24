@@ -35,6 +35,11 @@ on:
       - "docs/evidence-bounded-inference-paper-plan.md"
       - "paper/evidence-bounded-inference-theory-draft.tex"
       - "paper/claim-promotion-identifiability-draft.tex"
+      - "paper/evidence-bounded-promotion-main.tex"
+      - "paper/references.bib"
+      - "paper/tmlr.sty"
+      - "paper/tmlr.bst"
+      - "paper/TMLR_STYLE_LICENSE"
       - "pyproject.toml"
   workflow_dispatch:
 
@@ -170,5 +175,51 @@ jobs:
         with:
           name: claim-promotion-identifiability-demo
           path: ${{ runner.temp }}/claim-promotion
+          retention-days: 14
+          if-no-files-found: error
+
+
+  manuscript:
+    name: TMLR manuscript / LaTeX
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended
+
+      - name: Compile TMLR manuscript
+        working-directory: paper
+        run: |
+          latexmk \
+            -pdf \
+            -interaction=nonstopmode \
+            -halt-on-error \
+            evidence-bounded-promotion-main.tex
+
+      - name: Reject unresolved citations or references
+        working-directory: paper
+        run: |
+          if grep -E \
+            "LaTeX Warning: (Citation|Reference).*undefined|There were undefined references|There were undefined citations" \
+            evidence-bounded-promotion-main.log; then
+            echo "Unresolved citation/reference detected"
+            exit 1
+          fi
+
+      - name: Upload compiled manuscript
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-bounded-promotion-tmlr-draft
+          path: paper/evidence-bounded-promotion-main.pdf
           retention-days: 14
           if-no-files-found: error
