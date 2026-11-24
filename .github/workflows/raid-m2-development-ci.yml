@@ -9,6 +9,7 @@ on:
       - "src/cogniprint/benchmarks/development_methods.py"
       - "src/cogniprint/benchmarks/development_statistics.py"
       - "scripts/analyze_raid_calibration_m2.py"
+      - "scripts/run_raid_m2_stage_a.py"
       - "tests/test_raid_calibration_m2.py"
       - "tests/test_raid_ngram_baselines.py"
       - "docs/raid-calibration-m2-development.md"
@@ -42,7 +43,7 @@ jobs:
           python -m pip install -e .
 
       - name: Compile M2 modules and CLI
-        run: python -m py_compile src/cogniprint/benchmarks/raid_m2.py src/cogniprint/benchmarks/ngram.py scripts/analyze_raid_calibration_m2.py tests/test_raid_calibration_m2.py
+        run: python -m py_compile src/cogniprint/benchmarks/raid_m2.py src/cogniprint/benchmarks/ngram.py scripts/analyze_raid_calibration_m2.py scripts/run_raid_m2_stage_a.py tests/test_raid_calibration_m2.py
 
       - name: Run M2 contract and CLI tests
         run: python -m unittest discover -s tests -p "test_raid_calibration_m2.py" -v
