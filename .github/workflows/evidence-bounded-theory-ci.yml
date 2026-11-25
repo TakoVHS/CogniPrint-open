@@ -20,6 +20,7 @@ on:
       - "tests/test_known_membership_break_even.py"
       - "tests/test_known_membership_dev.py"
       - "tests/test_known_membership_plan_integrity.py"
+      - "tests/test_markdown_math_integrity.py"
       - "tests/test_theory_manuscript_structure.py"
       - "scripts/analyze_evidence_bounded_synthetic.py"
       - "scripts/demonstrate_claim_promotion_nonidentifiability.py"
@@ -30,6 +31,8 @@ on:
       - "scripts/known_membership_break_even.py"
       - "scripts/run_known_membership_dev.py"
       - "paper/known-membership-certificates-study-plan-v0.2.md"
+      - "paper/**/*.md"
+      - "docs/**/*.md"
       - "docs/evidence-bounded-inference-theory-v0.1.md"
       - "docs/evidence-bounded-finite-sample-baseline-v0.1.md"
       - "docs/claim-promotion-identifiability-v0.1.md"
@@ -96,6 +99,7 @@ jobs:
             tests/test_known_membership_break_even.py \
             tests/test_known_membership_dev.py \
             tests/test_known_membership_plan_integrity.py \
+            tests/test_markdown_math_integrity.py \
             tests/test_theory_manuscript_structure.py \
             scripts/analyze_evidence_bounded_synthetic.py \
             scripts/demonstrate_claim_promotion_nonidentifiability.py \
@@ -181,6 +185,13 @@ jobs:
           python -m unittest discover \
             -s tests \
             -p "test_known_membership_plan_integrity.py" \
+            -v
+
+      - name: Validate repository-wide Markdown math integrity
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_markdown_math_integrity.py" \
             -v
 
       - name: Run known-membership arithmetic reference
