@@ -444,10 +444,14 @@ def render(summary: dict) -> str:
             "| --- | --- | --- |",
         ]
         for pair, row in summary["transport_pairs"].items():
+            lift50_text = (
+                "n/a" if row["lift50"] is None else f"{row['lift50']:.2f}"
+            )
+            exceedance_text = (
+                ", ".join(str(v) for v in row["exceedances"]) or "none"
+            )
             lines.append(
-                f"| {pair} | "
-                f"{'n/a' if row['lift50'] is None else f'{row['lift50']:.2f}'} | "
-                f"{', '.join(str(v) for v in row['exceedances']) or 'none'} |"
+                f"| {pair} | {lift50_text} | {exceedance_text} |"
             )
 
     lines += [
