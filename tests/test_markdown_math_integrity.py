@@ -30,7 +30,9 @@ LOST_COMMAND_PATTERNS = (
     re.compile(r"(?<!\\)frac\s*\{"),
     re.compile(r"(?<!\\)rho_[A-Za-z{]"),
     re.compile(r"(?<!\\)kappa_[A-Za-z{]"),
-    re.compile(r"(?<!\\)(?:varnothing|vdash|subseteq|notin|neq|leq|geq)\b"),
+    re.compile(
+        r"(?<![A-Za-z\\])(?:varnothing|vdash|subseteq|notin|neq|leq|geq)\b"
+    ),
 )
 
 
