@@ -1,4 +1,4 @@
-# M1 RAID pilot — privacy-preserving n-gram baselines
+# M1 RAID pilot — raw-text-non-persisting n-gram baselines
 
 Status: executed local Stage A development evidence on Wednesday, July 29, 2026. Readiness remains `descriptive_only`, research mode remains `PROOF_MODE`, research status remains `PRE-FREEZE`, and Challenge 001 Stage B remains `NOT_AUTHORISED_TO_START`.
 
@@ -34,7 +34,13 @@ with SHA-256:
 
 `9f7a0c39f24ee71539cb74d896d204e4220261dc1ddfa2343b44d2ac72a04a82`
 
-## Privacy-preserving design
+## Raw-text non-persistence design
+
+Feature hashing is not treated as a privacy guarantee: hashed n-gram features
+can be vulnerable to dictionary or inversion-style attacks when the candidate
+vocabulary is constrained. The bounded claim here is only that this pipeline
+does not persist raw source text, token lists, n-gram strings, or a recoverable
+vocabulary.
 
 The analyzer streams the pinned raw CSV and rehydrates only the 500 selected source rows. Every selected generation is verified against the persisted `text_sha256`; prompts are verified by hash where present.
 
