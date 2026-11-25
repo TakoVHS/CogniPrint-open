@@ -1,6 +1,6 @@
-# CogniPrint — cognitive provenance for synthetic language
+# CogniPrint — descriptive text statistics and evidence-bounded claims
 
-**CogniPrint is an open-source research framework for measuring statistical fingerprints in text and testing what evidence survives across human-and-model production chains.**
+**CogniPrint is an open-source research framework for measuring compact, interpretable text-statistics profiles and testing which claims those measurements can and cannot support.**
 
 The long-term research question is larger than binary “AI vs. human” detection:
 
@@ -14,9 +14,9 @@ Current scientific readiness remains **`descriptive_only`**.
 
 A digital artifact may pass through several models, human editors, translation systems, agents, and publishing tools before it reaches a user.
 
-In that environment, “AI-generated” can become a very incomplete description. The trust problem shifts toward **cognitive provenance**: understanding measurable production traces while keeping content-derived inference separate from authenticated provenance records.
+In that environment, “AI-generated” can become a very incomplete description. The research problem is to understand measurable text statistics while keeping content-derived inference separate from authenticated provenance records.
 
-CogniPrint uses the fingerprint metaphor carefully. A fingerprint here is a reproducible statistical profile or reference distribution — not a unique biological-style identifier and not proof of a particular model or person.
+The project name is historical shorthand. Scientifically, the implemented object is a reproducible statistical profile or reference distribution — not a unique biological-style fingerprint and not proof of a particular model or person.
 
 The project asks:
 
