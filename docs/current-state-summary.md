@@ -40,6 +40,39 @@ Current Challenge 001 disposition:
 No numeric Stage B parameter may be selected from exposed M2/M2.1 evaluation
 outcomes.
 
+## Known-membership redesign — RAID development screen
+
+A real Stage-A development screen was completed on 25 November 2026 using the
+pinned RAID source, word 1--2 TF-IDF, multinomial logistic regression, common
+source-group roles, exact one-sided Clopper--Pearson bounds, and the mandatory
+accept-all reference.
+
+Evidence:
+
+- workflow run: `45581653607`;
+- artifact id: `15006638080`;
+- artifact digest:
+  `sha256:d59a8be6a071e1827dcce3c9a57e12eadf10f239d15edd988b2f61bd2f4562c8`;
+- full interpretation:
+  `paper/known-membership-raid-dev-result-v0.1.md`.
+
+Result:
+
+- at the fixed useful-coverage screen (L_K\ge0.5), held-out-family lift over
+  the accept-all reference ranged from approximately 0.86 to 1.00;
+- no held-out family achieved meaningful detector lift;
+- every family returned `ABSTAIN` for (pi_U\in\{0.20,0.30,0.50\});
+- the apparently larger unconstrained MPT/Mistral lift occurs only at very low
+  certified known acceptance.
+
+Scientific disposition:
+
+`NEGATIVE DEVELOPMENT VIABILITY SCREEN / REDESIGN REQUIRED / DO NOT FREEZE
+CONFIRMATORY STUDY`
+
+The optional transport stress test was not run after the primary viability
+screen failed. No confirmatory corpus was accessed.
+
 ## Hosted-runner status
 
 The historical GitHub Actions `steps: []` blocker is resolved.
