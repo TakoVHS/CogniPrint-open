@@ -108,12 +108,17 @@ def certificate_compatible_worlds(
     certificate: FiniteCertificate,
     claim: FiniteClaim,
 ) -> frozenset[str]:
-    """Worlds satisfying both scopes and the realized certificate inequality."""
+    """Claim worlds satisfying the realized certificate inequality.
 
-    common = certificate.scope.intersection(claim.scope)
+    Full claim-scope coverage is required. Silently intersecting certificate
+    and claim scopes can drop an uncovered unsafe deployment world and create a
+    spuriously favorable downstream risk bound.
+    """
+
+    _require_claim_scope_coverage((certificate,), claim)
     return frozenset(
         world
-        for world in common
+        for world in claim.scope
         if float(certificate.risk_by_world[world]) <= certificate.bound
     )
 
