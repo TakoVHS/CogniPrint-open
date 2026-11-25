@@ -337,7 +337,7 @@ def markdown_report(result: dict[str, Any]) -> str:
         ("Word 1–2 hashed TF-IDF", result["word_1_2_hashed_tfidf"]["metrics"]),
     ]
     lines = [
-        "# CogniPrint M1 RAID pilot — privacy-preserving n-gram baselines",
+        "# CogniPrint M1 RAID pilot — raw-text-non-persisting n-gram baselines",
         "",
         f"Readiness boundary: `{result['readiness_boundary']}`",
         f"Research mode: `{result['research_mode']}`",
