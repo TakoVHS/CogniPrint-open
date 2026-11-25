@@ -1,0 +1,94 @@
+name: RAID Known-Membership Development (Stage A only)
+
+# DEVELOPMENT ONLY. RAID is already exposed to the research process.
+# This workflow answers a design-screen question and must never be described as
+# confirmatory evidence or used to tune a future confirmatory protocol.
+
+on:
+  workflow_dispatch:
+    inputs:
+      per_family:
+        description: "Common source groups per family"
+        default: "3000"
+        required: true
+      transport:
+        description: "Run f->g transport stress test (slow)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  known-membership-dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      RAID_URL: https://dataset.raid-bench.xyz/train_none.csv
+      EXPECTED_SOURCE_SHA256: c5467bca6fc7f5c728c676450c7f84ce401df6c6ccc6d82c47e3b5f3c6d6fce4
+      EXPECTED_SOURCE_SIZE: "801662741"
+      PER_FAMILY: ${{ github.event_name == 'workflow_dispatch' && inputs.per_family || '3000' }}
+      TRANSPORT: ${{ github.event_name == 'workflow_dispatch' && inputs.transport || false }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . "scikit-learn>=1.4" "numpy>=1.26" "scipy>=1.11"
+
+      - name: Run synthetic E2E first
+        run: |
+          python -m unittest discover             -s tests             -p "test_known_membership_dev.py"             -v
+
+      - name: Download pinned RAID train_none.csv
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="$RUNNER_TEMP/train_none.csv"
+          curl --location --fail --retry 6 --retry-all-errors --retry-delay 5             --connect-timeout 30 --output "$SOURCE" "$RAID_URL"
+          test "$(stat -c%s "$SOURCE")" = "$EXPECTED_SOURCE_SIZE"
+          echo "$EXPECTED_SOURCE_SHA256  $SOURCE" | sha256sum -c -
+
+      - name: Run Stage-A development screen
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXTRA=""
+          if [ "$TRANSPORT" = "true" ]; then EXTRA="--transport"; fi
+          python scripts/run_known_membership_dev.py             --input-file "$RUNNER_TEMP/train_none.csv"             --expected-sha256 "$EXPECTED_SOURCE_SHA256"             --per-family "$PER_FAMILY"             --output-dir "$RUNNER_TEMP/km-dev"             $EXTRA
+
+      - name: Verify bounded, text-free outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import pathlib
+
+          out = pathlib.Path(os.environ["RUNNER_TEMP"]) / "km-dev"
+          summary = json.loads(
+              (out / "known-membership-dev-summary.json").read_text()
+          )
+          assert summary["raw_text_persisted"] is False
+          assert "STAGE_A_DEVELOPMENT_ONLY" in summary["status"]
+          size = sum(p.stat().st_size for p in out.iterdir())
+          assert size < 5_000_000, f"output unexpectedly large: {size}"
+          print("output bytes:", size)
+          PY
+          sha256sum "$RUNNER_TEMP"/km-dev/*             | tee "$RUNNER_TEMP/km-dev.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: known-membership-dev-stage-a
+          path: |
+            ${{ runner.temp }}/km-dev
+            ${{ runner.temp }}/km-dev.sha256
+          retention-days: 30
+          if-no-files-found: error

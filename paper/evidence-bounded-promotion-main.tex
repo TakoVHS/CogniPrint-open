@@ -1,0 +1,709 @@
+\documentclass[10pt]{article}
+
+% Mandatory TMLR submission style, vendored unchanged from
+% https://github.com/JmlrOrg/tmlr-style-file
+\usepackage{tmlr}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\Wc}{\mathcal W_c}
+\newcommand{\WT}{\mathcal W_T}
+\newcommand{\Vk}{\mathcal V_T}
+\newcommand{\BT}{\mathcal B_T}
+\newcommand{\riskc}{\rho_c}
+
+\title{Auditing Statistical Certificate Promotion in AI Attribution:\\
+Scope, Feasibility, and Claim-Risk Bounds}
+\author{Anonymous draft}
+\date{}
+
+\begin{document}
+
+\maketitle
+\begingroup
+\renewcommand{\thefootnote}{}
+\footnotetext{A large language model was used as an assistive tool for drafting,
+literature organization, and editorial revision. The human author is
+responsible for independently verifying the definitions, proofs, citations,
+scientific claims, and final text.}
+\addtocounter{footnote}{-1}
+\endgroup
+
+\begin{abstract}
+A statistical certificate controls a particular risk functional on a declared
+class of data-generating worlds. It does not automatically license a different
+semantic target or a broader deployment population. This paper presents an
+audit formulation for such certificate-to-claim promotion steps. After an
+explicit scope-coverage check, realized certificate bounds define a set of
+compatible deployment worlds and a sharp worst-case claim risk on the nonempty
+feasible domain. We prove the elementary fact that this sharp envelope is the
+least coordinatewise-monotone \emph{feasible-domain} warrant consistent with
+the declared world model. The feasibility branch is treated as a
+specification/inconsistency diagnostic rather than as the source of the
+frequentist guarantee. Under fixed, pre-specified claims and measurable
+procedures, ordinary certificate coverage plus a union bound controls unsafe
+promotion. We use AI attribution to show why closed-set evaluation quantities
+do not by themselves certify open-world membership or provenance claims. The
+mathematics is intentionally standard; the proposed contribution is an
+ML-facing audit pattern that makes target, scope, feasibility, and confidence
+obligations explicit.
+\end{abstract}
+
+\section{Introduction}
+% Reviewer-facing boundaries are recorded in paper/referee-audit-v0.2.md,
+% paper/zhu-overlap-audit-v0.2.md, paper/novelty-boundary-v0.4.md,
+% paper/referee-audit-v0.3.md, and
+% paper/ai-adversarial-review-disposition-2026-11-25.md.
+
+A recurring deployment error is to treat a valid statistical guarantee as if it
+automatically transferred to a different target or population.  A classifier
+may have a valid closed-set error guarantee while the downstream statement
+concerns whether a sample belongs to the known family at all.  A risk-control
+procedure may be valid for one sampling regime while the deployed claim is made
+under a different population.  In both cases the upstream result can remain
+correct while the downstream claim is unsupported.
+
+This paper does not propose a new risk-control algorithm.  Rather, it studies a
+review question that sits between an upstream statistical guarantee and a
+downstream claim: \emph{what exactly must be true before the former can be used
+as evidence for the latter?}  The formulation keeps separate the certified
+risk target, the world class on which the certificate is valid, the downstream
+claim-risk target, the deployment scope, and the confidence budget.
+
+\paragraph{Why this is a machine-learning problem.}
+Modern ML systems are evaluated through task-specific losses, calibration,
+selective prediction, conformal or other risk-control procedures, OOD scores,
+and benchmark-specific guarantees.  Those procedures can be statistically
+valid while a deployment decision asks a semantically different question.
+AI attribution is one concrete instance: closed-set source-family performance
+does not by itself settle open-world membership or provenance.  The purpose of
+the audit below is to make that semantic promotion step explicit, not to
+replace the upstream methods.
+
+\paragraph{Contributions and limits.}
+The paper makes three deliberately modest contributions.
+\begin{enumerate}[label=(\arabic*)]
+\item It gives an ML-facing audit schema that records, separately, the
+certificate target, certificate validity scope, downstream claim target,
+deployment scope, risk tolerance, and confidence budget.
+\item It gives a small formal sanity-check for that schema: after scope
+coverage, the compatible-world sharp envelope is the least monotone
+feasible-domain warrant, and standard union-bound reasoning controls unsafe
+promotion for fixed pre-specified claims.
+\item It applies the audit to AI attribution, including a synthetic
+target-mismatch counterexample and development-stage RAID evidence showing why
+closed-set benchmark quantities should not be silently promoted into
+open-world provenance claims.
+\end{enumerate}
+None of the ingredients above is claimed as historically new in isolation.
+Partial identification, risk-controlling prediction sets, Learn-then-Test,
+conformal risk control, Seldonian methods, selective prediction,
+assume/guarantee contracts, probabilistic program logics, assurance arguments,
+and proxy-evidence world models already cover important parts of this space.
+The question for this paper is therefore usefulness of the explicit audit
+organization in an ML setting, not priority over those literatures.
+
+\section{Setup and Terminology}
+
+A statistical certificate procedure is represented by
+\[
+\kappa_i
+=
+(E_i,\mathcal W_{\kappa_i}^{A},\rho_i,B_i,\alpha_i),
+\]
+where \(E_i\) is the evidence channel,
+\(\mathcal W_{\kappa_i}^{A}\) is the world class on which the certificate's
+validity assumptions hold,
+\(\rho_i:\mathcal W_{\kappa_i}^{A}\to[0,1]\) is the certified target
+risk, \(B_i(Z)\) is a measurable data-dependent upper bound, and
+\(\alpha_i\in[0,1]\) is its failure budget. Uniform frequentist validity
+means
+\[
+\inf_{D\in\mathcal W_{\kappa_i}^{A}}
+\Pr_D\!\left[\rho_i(D)\le B_i(Z)\right]
+\ge 1-\alpha_i.
+\]
+Here a world \(D\) specifies both the sampling law governing the certificate
+data \(Z\) and the deployment quantities to which the declared risk
+functionals refer.  Consequently, using the same world index across validation
+and deployment already encodes a transport assumption; the framework does not
+solve that assumption automatically.
+
+A downstream claim is represented by
+\[
+c=(C,\Wc,\riskc,\delta_c,\bar\alpha_c),
+\]
+where \(\riskc:\Wc\to[0,1]\) is the risk of asserting the claim,
+\(\delta_c\in[0,1]\) is the tolerated claim risk, and
+\(\bar\alpha_c\in[0,1]\) is the maximum allowed false-promotion budget.
+
+The distinction between a certificate risk \(\rho_i\) and the downstream
+claim risk \(\riskc\) is central: a small bound on the former does not by
+itself provide a numerical bound on the latter.  The claim, the set of
+certificates, their declared scopes, \(\delta_c\), and the warrant procedure
+are treated as fixed before observing the certificate data unless a separate
+selection correction is supplied.
+
+\section{Scope Audit and Sharp Claim-Risk Envelope}
+
+\subsection{Static scope coverage}
+
+Let \(\kappa_1,\ldots,\kappa_m\) be certificates used conjunctively to
+support claim \(c\), and let \(T\) have a declared warrant-validity scope
+\(\WT\).  Before any numerical use, require
+\[
+\boxed{
+\Wc
+\subseteq
+\WT
+\cap
+\bigcap_{i=1}^{m}\mathcal W_{\kappa_i}^{A}.
+}
+\]
+This is a transport/coverage assumption, not a consequence of confidence
+level.  Its role is to prevent an unsupported deployment world from
+disappearing through a silent scope intersection.
+
+Once this coverage condition holds, every invoked risk functional and warrant
+assumption is defined throughout \(\Wc\).  The numerical compatible-world
+analysis can therefore be written directly over the deployment scope:
+for \(b=(b_1,\ldots,b_m)\in[0,1]^m\),
+\[
+\Vk(b)
+=
+\left\{
+D\in\Wc:
+\rho_i(D)\le b_i
+\text{ for all }i
+\right\}.
+\]
+Define the feasible-bound domain
+\[
+\boxed{
+\BT
+=
+\left\{
+b\in[0,1]^m:
+\Vk(b)\neq\varnothing
+\right\}.
+}
+\]
+
+\begin{definition}[Sharp claim-risk envelope]
+For \(b\in\BT\), define
+\[
+\boxed{
+s_T^\star(b)
+=
+\sup_{D\in\Vk(b)}
+\riskc(D).
+}
+\]
+For \(b\notin\BT\), the operational result is the distinguished nonnumeric
+state \(\bot\).
+\end{definition}
+
+Mathematically one can impose a numerical convention on an empty supremum.
+Operationally we do not do so: an empty compatible set is treated as an
+inconsistency/specification diagnostic and is never compared with
+\(\delta_c\).  This convention is a software and audit safeguard; it is not
+needed to obtain the frequentist union-bound result below when the declared
+world model is correct.
+
+\subsection{Feasible-domain warrant}
+
+Write
+\[
+r(D)=(\rho_1(D),\ldots,\rho_m(D)).
+\]
+For every \(D\in\Wc\), \(r(D)\in\BT\) because
+\(D\in\Vk(r(D))\).
+
+\begin{definition}[Feasible-domain monotone warrant]
+A function \(h:\BT\to[0,1]\) is a feasible-domain monotone warrant when it
+is coordinatewise nondecreasing on \(\BT\) and
+\[
+\riskc(D)\le h(r(D))
+\qquad
+\text{for every }D\in\Wc.
+\]
+\end{definition}
+
+\begin{proposition}[Sharp envelope is the least feasible-domain warrant]
+\begin{enumerate}[label=(\roman*)]
+\item The feasible domain \(\BT\) is upward closed.  If
+\(b\in\BT\) and \(b\le b'\) coordinatewise, then
+\(b'\in\BT\) and
+\[
+s_T^\star(b)\le s_T^\star(b').
+\]
+\item The function \(s_T^\star:\BT\to[0,1]\) is itself a
+feasible-domain monotone warrant.
+\item For every feasible-domain monotone warrant \(h\) and every
+\(b\in\BT\),
+\[
+\boxed{
+s_T^\star(b)\le h(b).
+}
+\]
+\end{enumerate}
+Hence \(s_T^\star\) is the pointwise least element of this explicitly
+defined feasible-domain warrant class.
+\end{proposition}
+
+\begin{proof}
+For (i), if \(b\le b'\), every world satisfying
+\(\rho_i(D)\le b_i\) for all \(i\) also satisfies the inequalities for
+\(b'\). Thus \(\Vk(b)\subseteq\Vk(b')\); nonemptiness and monotonicity
+of the supremum follow.
+
+For (ii), fix \(D\in\Wc\).  Since \(D\in\Vk(r(D))\),
+\[
+\riskc(D)
+\le
+\sup_{D'\in\Vk(r(D))}\riskc(D')
+=
+s_T^\star(r(D)).
+\]
+Part (i) gives coordinatewise monotonicity on \(\BT\).
+
+For (iii), fix \(b\in\BT\) and \(D\in\Vk(b)\).  Then
+\(r(D)\le b\), so by the warrant property and monotonicity of \(h\),
+\[
+\riskc(D)
+\le
+h(r(D))
+\le
+h(b).
+\]
+Taking the supremum over \(D\in\Vk(b)\) yields
+\(s_T^\star(b)\le h(b)\).
+\end{proof}
+
+\begin{remark}[Role of the proposition]
+This is an elementary normalization result, not a new extremal principle.
+Its purpose is only to state precisely what the sharp compatible-world
+quantity means once the warrant class is defined correctly.
+\end{remark}
+
+\begin{corollary}[Conservative computable warrant]
+Let \(\widehat s_T:\BT\to[0,1]\) satisfy
+\[
+\widehat s_T(b)\ge s_T^\star(b)
+\qquad
+\forall b\in\BT.
+\]
+Then every \(D\in\Vk(b)\) satisfies
+\[
+\riskc(D)\le\widehat s_T(b).
+\]
+Thus a certified upper approximation may replace the exact envelope for
+promotion; an optimizer value with no certified upper-bound guarantee may not.
+\end{corollary}
+
+\subsection{Operational consequence}
+
+If \(\Vk(b)=\varnothing\), the observed bounds are incompatible with the
+declared deployment/world model and the audit returns \(\bot\).  Under a
+correctly specified world \(D\in\Wc\) and simultaneous certificate-validity
+events, this branch cannot occur because \(D\in\Vk(b)\).  Therefore
+feasibility is retained as a misspecification/inconsistency diagnostic and an
+implementation safeguard, not advertised as an additional source of
+frequentist soundness.
+
+\section{Verification Outcomes and Diagnostic Reasons}
+
+The audit returns one of three top-level verification outcomes:
+\[
+\mathrm{PROMOTE},\qquad
+\mathrm{ABSTAIN},\qquad
+\mathrm{UNRESOLVED}.
+\]
+These are verification outcomes, not three actions in a complete
+decision-theoretic model.
+
+Static checks can be discharged before seeing the realized bounds:
+\begin{enumerate}[label=(\arabic*)]
+\item verify deployment-scope coverage;
+\item verify that the predeclared confidence budget
+\(\alpha_\Sigma\le\bar\alpha_c\).
+\end{enumerate}
+After observing \(b_i=B_i(z)\):
+\begin{enumerate}[label=(\arabic*),resume]
+\item check whether \(b\in\BT\); if not, report model/bound inconsistency;
+\item compute \(s_T^\star(b)\) or a certified conservative upper bound;
+\item compare the resulting claim-risk bound with \(\delta_c\).
+\end{enumerate}
+
+\paragraph{Practitioner interpretation.}
+The audit asks what target a certificate controls, on which worlds it is valid,
+and what argument connects that target to the claim actually being made.
+Failure to answer those questions is not repaired by a smaller confidence
+level.
+
+\textsc{Promote} is returned only if every required obligation is discharged.
+\textsc{Abstain} means the problem is well posed but the available bound does
+not justify the claim.  \textsc{Unresolved} means that a prerequisite needed
+to form or interpret the claim bound has not been established.
+
+A compact diagnostic vocabulary is sufficient:
+\begin{itemize}
+\item \texttt{SCOPE\_GAP}: the deployment scope is not covered by every
+certificate and warrant assumption used by the conjunctive rule;
+\item \texttt{MODEL\_OR\_BOUND\_INCONSISTENCY}: the declared model or the
+realized bound constraints leave no compatible deployment world;
+\item \texttt{NO\_WARRANT\_COMPUTED}: the required optimization or proof
+procedure has not established a certified upper bound;
+\item \texttt{DEPENDENCE\_UNKNOWN}: a proposed tighter confidence
+composition requires dependence information that has not been justified.
+\end{itemize}
+These codes are diagnostic API choices rather than scientific novelty.
+An empty compatible set is a specification warning, not a safety result.
+
+\subsection{Decision-theoretic interpretation}
+
+The threshold rule admits a standard robust-decision interpretation once
+actions and losses are specified.  For example, suppose the two available
+actions are \(\mathrm{CLAIM}\) and \(\mathrm{ABSTAIN}\), with
+\(L(\mathrm{CLAIM},D)=\riskc(D)\) and constant abstention loss \(\lambda\).
+A worst-case rule over the compatible world set chooses
+\(\mathrm{CLAIM}\) only when
+\[
+s_T^\star(b)\le \lambda,
+\]
+up to the chosen tie convention.  This connects the audit to classical
+decisions under ambiguity and partial identification
+\citep{GilboaSchmeidler1989,Manski2000}.  We do not identify
+\textsc{Unresolved} with a third decision-theoretic action.
+
+\section{Unsafe-Promotion Control}
+
+Let
+\[
+G_i(D)=\{\rho_i(D)\le B_i(Z)\}
+\]
+be certificate \(i\)'s validity event, and define the conservative
+predeclared budget
+\[
+\alpha_\Sigma
+=
+\min\!\left(1,\sum_{i=1}^{m}\alpha_i\right).
+\]
+All random bounds and the promotion indicator are assumed measurable.  The
+claim, certificate family, scopes, tolerances, and warrant procedure are fixed
+before observing \(Z\).  Adaptive search over claims or warrants requires its
+own selection correction.
+
+\begin{proposition}[Unsafe-promotion bound for a fixed claim]
+Assume each certificate has uniform frequentist validity on its declared world
+class, the static scope condition holds, and promotion occurs only when
+\[
+b\in\BT,\qquad
+\widehat s_T(b)\le\delta_c,\qquad
+\alpha_\Sigma\le\bar\alpha_c,
+\]
+where \(\widehat s_T(b)\ge s_T^\star(b)\).  Then for every unsafe
+deployment world \(D\in\Wc\) with \(\riskc(D)>\delta_c\),
+\[
+\boxed{
+\Pr_D(\mathrm{PROMOTE})
+\le
+\min\!\left(1,\sum_{i=1}^{m}\alpha_i\right).
+}
+\]
+\end{proposition}
+
+\begin{proof}
+On \(\bigcap_i G_i(D)\), the realized bounds satisfy
+\(\rho_i(D)\le b_i\) for all \(i\).  Scope coverage implies that all
+invoked certificate and warrant assumptions apply to \(D\), hence
+\(D\in\Vk(b)\). Therefore
+\[
+\riskc(D)
+\le
+s_T^\star(b)
+\le
+\widehat s_T(b)
+\le
+\delta_c,
+\]
+contradicting \(\riskc(D)>\delta_c\).  Thus unsafe promotion requires at
+least one certificate-validity failure, and the union bound gives the result.
+\end{proof}
+
+The feasibility check is not what creates this probability bound: on the joint
+validity event, the true deployment world itself makes \(b\) feasible.  The
+explicit feasibility branch is retained to expose inconsistency or
+misspecification instead of letting an empty set receive a favorable numeric
+convention.
+
+For \(K\) claims fixed before observing the data, each with certificate
+failure budgets \(\{\alpha_{k,i}\}_i\), a direct family-wise union bound
+gives
+\[
+\Pr(\text{any unsafe promotion})
+\le
+\min\!\left(1,\sum_{k=1}^{K}\sum_i\alpha_{k,i}\right).
+\]
+This can be conservative when claims share statistical events.  No novelty is
+claimed for either union-bound statement.
+
+\begin{proposition}[Counterworld characterization]
+Let \(b\in\BT\).  A compatible unsafe world
+\(D^\star\in\Vk(b)\) satisfying \(\riskc(D^\star)>\delta_c\) exists
+if and only if
+\[
+s_T^\star(b)>\delta_c.
+\]
+\end{proposition}
+
+\begin{proof}
+If such a world exists, the supremum exceeds \(\delta_c\).  Conversely, if
+\(s_T^\star(b)>\delta_c\), choose
+\(\varepsilon=(s_T^\star(b)-\delta_c)/2>0\).  By the defining property of
+the supremum there exists \(D\in\Vk(b)\) with
+\[
+\riskc(D)>s_T^\star(b)-\varepsilon>\delta_c.
+\]
+No maximizer is required.
+\end{proof}
+
+\section{Application to AI Attribution}
+
+AI attribution illustrates the target-mismatch problem particularly clearly.
+A closed-set evaluator can certify a risk such as error among samples already
+known to belong to a fixed family.  A deployment claim may instead concern
+known-set membership, out-of-distribution status, human-versus-AI origin, or a
+stronger provenance proposition.  These are different target functionals.
+
+Consider a finite two-world illustration.  A closed-set certificate has
+target \(\rho_{\mathrm{closed}}\) and realized bound \(b=0.08\).  In two
+candidate worlds,
+\[
+\rho_{\mathrm{closed}}(D_0)
+=
+\rho_{\mathrm{closed}}(D_1)
+=
+0.05.
+\]
+Thus both worlds satisfy the realized certificate inequality.  The downstream
+known-membership risk is instead
+\[
+\rho_{\mathrm{member}}(D_0)=0,
+\qquad
+\rho_{\mathrm{member}}(D_1)=0.35,
+\]
+with claim tolerance \(\delta_c=0.10\).  Both worlds are certificate-compatible,
+but one is unsafe for the semantic claim.  Therefore
+\[
+s_T^\star(0.08)=0.35>\delta_c.
+\]
+The closed-set certificate is not false; it is simply insufficient for the
+different downstream target.
+
+This example is synthetic and is used only to expose the logical structure of
+non-transfer.  It is not reported as an empirical estimate of real-world AI
+attribution performance.  A real promotion would require an additional
+validated evidence channel, transport result, or identification argument that
+actually constrains the downstream risk.
+
+
+\paragraph{Development context, not a certificate instantiation.}
+To connect this formal failure mode to an executed ML workflow, we also ran a
+fixed descriptive pilot on RAID \citep{DuganEtAl2024RAID}.  The pilot contained
+500 records across five source classes and four domains, with lineage-grouped
+training and test partitions.  On the fixed test split, the current CogniPrint
+12-dimensional nearest-centroid representation achieved balanced accuracy
+\(0.542001\), while character 3--5 hashed TF--IDF and word 1--2 hashed TF--IDF
+baselines achieved \(0.590475\) and \(0.601996\), respectively.  These outputs
+are uncalibrated closed-set labels, not confidence certificates, and the pilot
+is development-only rather than a confirmatory Stage B result.  Uniform guessing among five classes has expected balanced accuracy (0.20),
+so the pilot contains closed-set signal, but neither the 12D score nor the
+baseline scores are valid certificates of open-world membership risk.  We
+therefore do not use these numbers as an empirical validation of the formal
+audit.  They are development context showing a concrete case where benchmark
+performance and the desired deployment claim are different objects.
+
+The operational lesson is that numerical confidence and semantic permission
+must be separated.  A small bound on a known-family error rate cannot be
+silently upcast into a claim about known membership or provenance.  When a
+compatible counterworld remains, the appropriate outcome is
+\textsc{Abstain}; when the deployment scope or model is not adequately
+specified, the outcome is \textsc{Unresolved}.
+
+\section{Relation to Prior Work}
+
+\paragraph{Partial identification.}
+The compatible-world construction and sharp envelope belong to a broad
+tradition of identification analysis and inference under incomplete
+identification.  Work by \citet{Manski2000},
+\citet{ImbensManski2004}, \citet{ChernozhukovHongTamer2007}, and
+\citet{Stoye2009} develops identified sets, confidence procedures, and
+decision problems under ambiguity.  We therefore do not claim novelty for
+identified sets, sharp extrema over compatible models, or the distinction
+between structural and sampling uncertainty.
+
+\paragraph{ML risk control.}
+Risk-controlling prediction sets provide finite-sample control of user-chosen
+losses for set-valued predictions \citep{BatesEtAl2021RCPS}.  Learn-then-Test
+casts calibration of one or more finite-sample risk constraints as a multiple
+testing problem \citep{AngelopoulosEtAl2025LTT}, while conformal risk control
+extends conformal calibration to expected monotone losses and studies
+distribution-shift and multiple-risk variants
+\citep{AngelopoulosEtAl2024CRC}.  These are especially close ML prior art:
+they already separate a user-specified risk level from a statistical failure
+probability and can refuse settings that do not pass calibration.  We use such
+procedures as possible upstream certificates; the present audit does not offer
+a competing calibration algorithm.  Its narrower concern is whether the
+\emph{same} certified loss and validity population are the ones required by
+the downstream claim.
+
+\paragraph{Transport across populations.}
+Generalization from a validation population to a different deployment
+population is a transport problem, not something repaired by higher
+confidence.  Formal transportability work makes this point explicit in a
+causal setting \citep{PearlBareinboim2014}.  Our scope-coverage condition is
+therefore an assumption to be justified externally or replaced by a validated
+transport bound; it is not presented as a solution to distribution shift.
+
+\paragraph{Probabilistic program logics.}
+aHL provides compositional reasoning about probabilistic failure by indexing
+program judgments with error probabilities and using union-bound reasoning
+\citep{BartheEtAl2016}.  Eris represents error bounds as first-class
+separation-logic resources and supports richer compositional reasoning
+\citep{AguirreEtAl2024}.  These works rule out any broad novelty claim for
+confidence/error budgets as effects or resources.
+
+\paragraph{High-confidence safe learning and rejection.}
+Seldonian algorithms let users specify one or more behavioral constraints with
+failure probabilities and return a distinguished ``No Solution Found'' outcome
+when a candidate cannot pass the corresponding high-confidence safety tests
+\citep{ThomasEtAl2019Seldonian}.  Selective classification has a still older
+tradition of trading coverage for risk through an explicit reject option
+\citep{ElYanivWiener2010}.  Consequently, neither high-confidence acceptance,
+multiple confidence-constrained obligations, fail-closed refusal, nor
+abstention is claimed here as a new primitive.  Our \textsc{Unresolved} status
+is a verification diagnostic rather than a claim to have invented a new reject
+action.
+
+\paragraph{Probabilistic contracts.}
+Assume/guarantee contract frameworks for stochastic systems already separate
+environmental assumptions from guarantees and support satisfaction,
+refinement, and compositional reasoning \citep{DelahayeCaillaudLegay2011}.
+This is direct prior art against treating assumption/guarantee separation or
+composition itself as a contribution of the present work.
+
+\paragraph{Verification of statistical programs.}
+Belief Hoare Logic formalizes requirements and beliefs associated with
+statistical hypothesis testing and provides a sound program logic
+\citep{KawamotoSatoSuenaga2024}.  StatWhy operationalizes this line by asking
+programmers to annotate statistical requirements and interpretations and then
+checking those specifications with a verification tool
+\citep{KawamotoKobayashiSuenaga2025}.  Accordingly, the present work does not
+claim to invent formal checking of statistical preconditions or
+interpretations.
+
+\paragraph{Assurance arguments.}
+Assurance 2.0 emphasizes explicit claims, evidence, reasoning, defeaters, and
+residual doubts \citep{BloomfieldRushby2020}.  Isabelle/SACM provides a
+machine-checked language for assurance cases that integrates formal and
+informal evidence of heterogeneous provenance \citep{FosterEtAl2021}.  These
+systems are direct prior art against a generic claim of inventing
+machine-checkable evidence-to-claim reasoning.
+
+\paragraph{Proxy evidence, envelopes, and counterworlds.}
+A particularly close 2026 preprint by \citet{Zhu2026} formulates proxy
+validation as a target-relative evidence-fiber problem.  Its full public
+source gives a no-promotion rule for target directions not controlled by the
+declared evidence, sharp target images and exact envelopes, minimal
+audit/refinement repairs, and executable counterworlds.  Its theorem package
+also gives a random interval certificate with \(1-\alpha\) coverage in two
+indistinguishable worlds and obtains a \(1-2\alpha\) joint-coverage conclusion
+by the union bound.  We therefore treat compatible-world semantics,
+target-mismatch no-promotion reasoning, sharp envelopes, audit/refinement,
+counterworld witnesses, and this basic frequentist union-bound reasoning as
+prior art rather than contributions of the present paper.
+
+\paragraph{Position of this paper.}
+The paper should be read as an audit note, not a new theory of statistical
+certification.  Its specific organization asks an ML practitioner to record
+the certified loss, validity population, downstream loss, deployment
+population, risk tolerance, and confidence budget before promotion.  The sharp
+envelope and union-bound propositions only make the consequences of those
+declarations explicit.  The distinctive claim, if any, is practical usefulness
+of this audit organization in preventing semantic over-promotion; historical
+priority is not asserted.
+
+\section{Limitations and Honest Boundaries}
+
+This paper does not claim a new probability theorem, a new theory of partial
+identification, a new risk-control method, or a new type-and-effect system.
+The sharp-envelope proposition is an elementary normalization of an audit
+schema.  Its value, if any, must come from clearer ML practice rather than
+mathematical depth.
+
+The audit is only as defensible as its declared world class.  The load-bearing
+scope condition is a transport assumption.  If future generator families or
+deployment mechanisms are not represented by the certificate validity class,
+the audit must report a scope gap or use a separately justified transport
+bound; it cannot certify that gap away.
+
+Exact computation of \(s_T^\star\) can be difficult outside finite or otherwise
+structured world classes.  The framework permits conservative approximations,
+but it does not provide a generic efficient optimization algorithm.
+
+The union-bound confidence accounting used in the soundness proposition is
+deliberately conservative.  Dependence-aware or shared-event accounting may
+yield tighter results, but is not developed here.
+
+Finally, the AI-attribution construction in this paper is a formal
+counterexample and methodology demonstration.  It should not be interpreted
+as a validated real-world detector, authorship classifier, or forensic
+attribution system.
+
+\section{Broader Impact}
+
+Attribution systems can affect reputation, access, academic integrity
+decisions, moderation, and other high-stakes judgments.  A false provenance
+claim may therefore cause substantial harm even when an upstream statistical
+score is well calibrated for a narrower task.  The framework is intended to
+reduce that risk by forcing explicit target and scope checks and by making
+abstention or unresolved status first-class outcomes.  We recommend that
+certificate-to-claim promotion not be used as a substitute for domain-specific
+evidence, due process, or qualified human review in consequential settings.
+
+\section{Conclusion}
+
+A probability bound is not, by itself, permission to make an arbitrary
+semantic claim.  A statistical certificate licenses only those downstream
+claims whose deployment scope is covered and whose target risk is controlled
+by the evidence actually certified.
+
+The sharp envelope
+\[
+s_T^\star(b)
+=
+\sup_{D\in\Vk(b)}\riskc(D)
+\]
+provides a canonical numerical summary once the compatible-world set is
+nonempty; every monotone warrant is an upper approximation of that object on
+the feasible domain.  Outside that domain the correct result is a diagnostic,
+not a small number.  This separation between certificate validity, semantic
+warrant, and operational permission is the central methodological claim of the
+paper.
+
+\bibliographystyle{tmlr}
+\bibliography{references}
+
+\end{document}

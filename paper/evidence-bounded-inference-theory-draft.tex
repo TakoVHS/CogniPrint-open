@@ -1,0 +1,276 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+
+\title{Evidence-Bounded Inference:\\
+Calibration, Abstention, and the Limits of Claim Admissibility}
+\author{Roman Adriashkin\\Independent Researcher\\CogniPrint Research Initiative}
+\date{Theory draft v0.1 --- November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study a narrow question at the boundary of probabilistic prediction and
+decision-making: when can a confidence score support a bounded claim rather
+than merely a ranking? Under a strong uniform top-label calibration assumption,
+we derive a selective-risk certificate for threshold abstention. We also give
+an open-world impossibility result showing that no fixed non-empty acceptance
+region can uniformly control false-known risk over arbitrary unknown-input
+distributions, and we clarify what marginal conformal validity does and does
+not imply for singleton abstention. This is a theory draft; novelty claims
+remain subject to literature review and independent mathematical critique.
+\end{abstract}
+
+\section{Setup}
+
+Let $\mathcal X$ be an observation space,
+$\mathcal Y=\{1,\dots,K\}$ the known label space, and
+$\mathcal Y^*=\mathcal Y\cup\{\bot\}$.
+A predictor emits $p(x)\in\Delta^{K-1}$ with
+\[
+h(x)=\arg\max_k p_k(x),\qquad c(x)=\max_k p_k(x).
+\]
+
+\begin{definition}[Selective risk]
+For an acceptance rule $g:\mathcal X\to\{0,1\}$ with
+$\Pr(g(X)=1)>0$,
+\[
+R_{\rm sel}(g)=\Pr(h(X)\neq Y\mid g(X)=1).
+\]
+\end{definition}
+
+\begin{definition}[False-known risk]
+When $\Pr(Y=\bot)>0$,
+\[
+R_{\rm FK}(g)=\Pr(g(X)=1\mid Y=\bot).
+\]
+\end{definition}
+
+Let
+\[
+q(x)=\Pr(Y=h(x)\mid X=x).
+\]
+
+\begin{definition}[Uniform top-label calibration defect]
+The predictor has defect at most $\epsilon$ if
+\[
+\operatorname*{ess\,sup}_{x}|c(x)-q(x)|\le\epsilon.
+\]
+\end{definition}
+
+This is substantially stronger than a binned average diagnostic such as ECE.
+
+\section{Selective-risk certificate}
+
+For $\tau\in[0,1]$, let $g_\tau(x)=\mathbf 1\{c(x)\ge\tau\}$.
+
+\begin{theorem}[Threshold selective-risk certificate]
+If the uniform top-label calibration defect is at most $\epsilon$ and
+$\Pr(g_\tau(X)=1)>0$, then
+\[
+R_{\rm sel}(g_\tau)\le 1-\tau+\epsilon.
+\]
+\end{theorem}
+
+\begin{proof}
+On the accepted region, $c(x)\ge\tau$. Hence
+$q(x)\ge c(x)-\epsilon\ge\tau-\epsilon$. Therefore the pointwise conditional
+error probability is at most $1-\tau+\epsilon$. Taking the conditional
+expectation over the accepted region proves the claim.
+\end{proof}
+
+\begin{corollary}[Sufficient threshold for target risk]
+To certify $R_{\rm sel}\le\delta$ using the theorem, it is sufficient that
+\[
+\tau\ge 1-\delta+\epsilon.
+\]
+If the right-hand side exceeds one, this certificate is infeasible; this does
+not prove that the model's actual selective risk must exceed $\delta$.
+\end{corollary}
+
+A corresponding certified correctness lower bound is
+\[
+s_{\rm cert}(\tau,\epsilon)=\max\{0,\tau-\epsilon\}.
+\]
+
+\begin{proposition}[Coverage bound from mean confidence]
+Let $m=\mathbb E[c(X)]$ and $0\le\tau<1$. Then
+\[
+\Pr(c(X)\ge\tau)
+\ge
+\max\left\{0,\frac{m-\tau}{1-\tau}\right\}.
+\]
+\end{proposition}
+
+\begin{proof}
+If $C=\Pr(c(X)\ge\tau)$, then
+$m\le\tau(1-C)+C=\tau+(1-\tau)C$. Rearranging gives the result.
+\end{proof}
+
+
+\section{Finite-sample risk certification as a baseline}
+
+The population calibration result above assumes access to a uniform
+top-label calibration defect. A finite calibration sample does not identify
+that pointwise supremum without additional regularity assumptions. We
+therefore separate the population theorem from an operational finite-sample
+baseline.
+
+Fix a predictor, confidence score, and threshold $\tau$ independently of an
+i.i.d.\ calibration sample. Let
+\[
+N_\tau=\sum_{i=1}^N \mathbf 1\{c(X_i)\ge\tau\}
+\]
+and
+\[
+E_\tau=\sum_{i=1}^N
+\mathbf 1\{c(X_i)\ge\tau\}\mathbf 1\{h(X_i)\neq Y_i\}.
+\]
+Conditional on $N_\tau=n>0$,
+\[
+E_\tau\sim\mathrm{Binomial}(n,R_{\rm sel}(g_\tau)).
+\]
+Hence a one-sided Clopper--Pearson upper confidence limit
+$U_{\rm CP}(E_\tau,N_\tau;\alpha)$ gives
+\[
+\Pr\!\left(
+R_{\rm sel}(g_\tau)
+\le
+U_{\rm CP}(E_\tau,N_\tau;\alpha)
+\right)
+\ge 1-\alpha.
+\]
+
+For a finite threshold grid
+$\mathcal T=\{\tau_1,\dots,\tau_m\}$ fixed before calibration labels are
+inspected, using level $\alpha/m$ for each threshold and applying the union
+bound gives
+\[
+\Pr\!\left(
+\forall j,\;
+R_{\rm sel}(g_{\tau_j})\le U_j
+\right)
+\ge1-\alpha.
+\]
+A threshold may then be selected data-dependently from this fixed grid while
+retaining the simultaneous high-probability statement.
+
+This construction is a statistical baseline rather than a novelty claim.
+Held-out finite-sample risk control is already developed in risk-controlling
+prediction sets, Learn-then-Test, Conformal Risk Control, selective conformal
+risk control, and recent selection-conditioned risk-control work. The
+CogniPrint research question therefore lies above this layer: how risk
+certificates should or should not authorize stronger evidence claims,
+especially in the presence of unknown distributions and provenance claims.
+
+\section{Open-world false-known impossibility}
+
+\begin{theorem}[Arbitrary unknowns defeat any non-empty fixed acceptance region]
+Let $g$ be any fixed acceptance rule with non-empty acceptance set
+$A=\{x:g(x)=1\}$. If the unknown-input distribution may be arbitrary over
+$\mathcal X$, then
+\[
+\sup_Q \Pr_{X\sim Q}(g(X)=1)=1.
+\]
+\end{theorem}
+
+\begin{proof}
+Choose $Q$ supported entirely on $A$.
+\end{proof}
+
+Thus a nontrivial false-known guarantee requires assumptions or evidence about
+the unknown distribution; closed-set confidence alone cannot provide a
+distribution-free open-world guarantee.
+
+\section{Conformal singleton abstention}
+
+Suppose a conformal method returns
+$\Gamma_\alpha(X)\subseteq\mathcal Y$ with marginal validity
+\[
+\Pr(Y\in\Gamma_\alpha(X))\ge1-\alpha.
+\]
+Let $A=\{|\Gamma_\alpha(X)|=1\}$ and $\kappa=\Pr(A)$.
+
+\begin{theorem}[Singleton selective-risk consequence of marginal validity]
+If $\kappa>0$ and the system predicts the unique set element on $A$, then
+\[
+R_{\rm sel}\le \min\left\{1,\frac{\alpha}{\kappa}\right\}.
+\]
+\end{theorem}
+
+\begin{proof}
+A wrong accepted singleton implies
+$Y\notin\Gamma_\alpha(X)$. Hence
+$\Pr(\mathrm{error}\cap A)\le\alpha$. Divide by $\kappa$.
+\end{proof}
+
+Marginal conformal validity does not, by itself, guarantee
+$R_{\rm sel}\le\alpha$, positive singleton coverage, or OOD rejection when the
+unknown label $\bot$ is outside the conformal label space.
+
+\section{Relation to CogniPrint}
+
+CogniPrint M2/M2.1 motivate the theory but do not confirm it prospectively.
+In particular, M2.1 showed that low false-known counts can be generated by
+multi-class ambiguity rather than empty-set unknown rejection. The already
+exposed Stage A records must not be used to tune a replacement method and then
+present the result as confirmatory.
+
+\section{Status and limitations}
+
+This manuscript is a theory draft, not a peer-reviewed result. The uniform
+calibration assumption is strong, finite-sample estimation of the required
+defect is unresolved here, and novelty relative to selective prediction,
+risk-control, calibration, and conformal inference remains to be established.
+
+\begin{thebibliography}{9}
+\bibitem{gneiting2007}
+T. Gneiting and A. Raftery.
+Strictly Proper Scoring Rules, Prediction, and Estimation.
+\emph{JASA}, 2007.
+
+\bibitem{guo2017}
+C. Guo, G. Pleiss, Y. Sun, and K. Weinberger.
+On Calibration of Modern Neural Networks.
+\emph{ICML}, 2017.
+
+\bibitem{geifman2017}
+Y. Geifman and R. El-Yaniv.
+Selective Classification for Deep Neural Networks.
+\emph{NeurIPS}, 2017.
+
+\bibitem{angelopoulos2023}
+A. Angelopoulos and S. Bates.
+Conformal Prediction: A Gentle Introduction.
+\emph{Foundations and Trends in Machine Learning}, 2023.
+
+\bibitem{clopper1934}
+C. J. Clopper and E. S. Pearson.
+The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial.
+\emph{Biometrika}, 1934.
+
+\bibitem{bates2021}
+S. Bates, A. Angelopoulos, L. Lei, J. Malik, and M. I. Jordan.
+Distribution-Free, Risk-Controlling Prediction Sets.
+arXiv:2101.02703, 2021.
+
+\bibitem{crc2024}
+A. N. Angelopoulos, S. Bates, A. Fisch, L. Lei, and T. Schuster.
+Conformal Risk Control.
+\emph{ICLR}, 2024.
+
+\bibitem{lec2026}
+Z. Wang et al.
+LEC: Linear Expectation Constraints for Selection-Conditioned Risk Control in
+Selective Prediction and Routing Systems.
+\emph{ICML}, 2026.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,282 @@
+name: Evidence-Bounded Theory CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/evidence-bounded-theory-ci.yml"
+      - "src/cogniprint/stats/evidence_bounded.py"
+      - "src/cogniprint/stats/claim_promotion.py"
+      - "src/cogniprint/stats/identified_sets.py"
+      - "src/cogniprint/stats/evidence_composition.py"
+      - "src/cogniprint/stats/finite_sample_composition.py"
+      - "src/cogniprint/stats/certificate_scope.py"
+      - "tests/test_evidence_bounded.py"
+      - "tests/test_claim_promotion.py"
+      - "tests/test_identified_sets.py"
+      - "tests/test_evidence_composition.py"
+      - "tests/test_finite_sample_composition.py"
+      - "tests/test_certificate_scope.py"
+      - "tests/test_certificate_scope_regression.py"
+      - "tests/test_known_membership_break_even.py"
+      - "tests/test_known_membership_dev.py"
+      - "tests/test_known_membership_plan_integrity.py"
+      - "tests/test_markdown_math_integrity.py"
+      - "tests/test_theory_manuscript_structure.py"
+      - "scripts/analyze_evidence_bounded_synthetic.py"
+      - "scripts/demonstrate_claim_promotion_nonidentifiability.py"
+      - "scripts/demonstrate_identified_set_admissibility.py"
+      - "scripts/demonstrate_evidence_channel_composition.py"
+      - "scripts/demonstrate_finite_sample_composition.py"
+      - "scripts/demonstrate_certificate_scope_judgment.py"
+      - "scripts/known_membership_break_even.py"
+      - "scripts/run_known_membership_dev.py"
+      - "paper/known-membership-certificates-study-plan-v0.2.md"
+      - "paper/**/*.md"
+      - "docs/**/*.md"
+      - "docs/evidence-bounded-inference-theory-v0.1.md"
+      - "docs/evidence-bounded-finite-sample-baseline-v0.1.md"
+      - "docs/claim-promotion-identifiability-v0.1.md"
+      - "docs/claim-promotion-partial-identification-literature-map.md"
+      - "docs/evidence-channel-sharp-composition-v0.1.md"
+      - "docs/finite-sample-composition-certificate-v0.1.md"
+      - "docs/claim-admissibility-novelty-audit-2026-11-24.md"
+      - "docs/certificate-to-claim-target-typing-candidate.md"
+      - "docs/certificate-scope-judgment-prior-art-v0.1.md"
+      - "docs/evidence-bounded-inference-paper-plan.md"
+      - "paper/evidence-bounded-inference-theory-draft.tex"
+      - "paper/claim-promotion-identifiability-draft.tex"
+      - "paper/evidence-bounded-promotion-main.tex"
+      - "paper/references.bib"
+      - "paper/tmlr.sty"
+      - "paper/tmlr.bst"
+      - "paper/TMLR_STYLE_LICENSE"
+      - "paper/human-verification-checklist.md"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  theory:
+    name: Evidence-Bounded theory / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e . "scikit-learn>=1.4" "numpy>=1.26" "scipy>=1.11"
+
+      - name: Compile theory code
+        run: |
+          python -m py_compile \
+            src/cogniprint/stats/evidence_bounded.py \
+            src/cogniprint/stats/claim_promotion.py \
+            src/cogniprint/stats/identified_sets.py \
+            src/cogniprint/stats/evidence_composition.py \
+            src/cogniprint/stats/finite_sample_composition.py \
+            src/cogniprint/stats/certificate_scope.py \
+            tests/test_evidence_bounded.py \
+            tests/test_claim_promotion.py \
+            tests/test_identified_sets.py \
+            tests/test_evidence_composition.py \
+            tests/test_finite_sample_composition.py \
+            tests/test_certificate_scope.py \
+            tests/test_certificate_scope_regression.py \
+            tests/test_known_membership_break_even.py \
+            tests/test_known_membership_dev.py \
+            tests/test_known_membership_plan_integrity.py \
+            tests/test_markdown_math_integrity.py \
+            tests/test_theory_manuscript_structure.py \
+            scripts/analyze_evidence_bounded_synthetic.py \
+            scripts/demonstrate_claim_promotion_nonidentifiability.py \
+            scripts/demonstrate_identified_set_admissibility.py \
+            scripts/demonstrate_evidence_channel_composition.py \
+            scripts/demonstrate_finite_sample_composition.py \
+            scripts/demonstrate_certificate_scope_judgment.py \
+            scripts/known_membership_break_even.py \
+            scripts/run_known_membership_dev.py
+
+      - name: Run evidence-bounded unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_evidence_bounded.py" \
+            -v
+
+      - name: Run claim-promotion unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_claim_promotion.py" \
+            -v
+
+      - name: Run identified-set unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_identified_sets.py" \
+            -v
+
+      - name: Run evidence-composition unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_evidence_composition.py" \
+            -v
+
+      - name: Run finite-sample composition unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_finite_sample_composition.py" \
+            -v
+
+      - name: Run certificate-scope unit tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_certificate_scope.py" \
+            -v
+
+      - name: Validate theory manuscript structure
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_theory_manuscript_structure.py" \
+            -v
+
+      - name: Run scope-regression property tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_certificate_scope_regression.py" \
+            -v
+
+      - name: Run known-membership break-even tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_break_even.py" \
+            -v
+
+      - name: Run known-membership development E2E
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_dev.py" \
+            -v
+
+      - name: Validate known-membership study-plan integrity
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_plan_integrity.py" \
+            -v
+
+      - name: Validate repository-wide Markdown math integrity
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_markdown_math_integrity.py" \
+            -v
+
+      - name: Run known-membership arithmetic reference
+        run: python scripts/known_membership_break_even.py
+
+      - name: Run baseline synthetic demonstration
+        run: python scripts/analyze_evidence_bounded_synthetic.py
+
+      - name: Run claim-promotion non-transfer demonstration
+        run: |
+          python scripts/demonstrate_claim_promotion_nonidentifiability.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Run identified-set admissibility demonstration
+        run: |
+          python scripts/demonstrate_identified_set_admissibility.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Run sharp composition demonstration
+        run: |
+          python scripts/demonstrate_evidence_channel_composition.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Run finite-sample composition demonstration
+        run: |
+          python scripts/demonstrate_finite_sample_composition.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Run certificate scope judgment demonstration
+        run: |
+          python scripts/demonstrate_certificate_scope_judgment.py \
+            --output-dir "$RUNNER_TEMP/claim-promotion"
+
+      - name: Upload claim-promotion demonstration
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: claim-promotion-identifiability-demo
+          path: ${{ runner.temp }}/claim-promotion
+          retention-days: 14
+          if-no-files-found: error
+
+
+  manuscript:
+    name: TMLR manuscript / LaTeX
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            lmodern
+
+      - name: Compile TMLR manuscript
+        working-directory: paper
+        run: |
+          latexmk \
+            -pdf \
+            -interaction=nonstopmode \
+            -halt-on-error \
+            evidence-bounded-promotion-main.tex
+
+      - name: Reject unresolved citations or references
+        working-directory: paper
+        run: |
+          if grep -E \
+            "LaTeX Warning: (Citation|Reference).*undefined|There were undefined references|There were undefined citations" \
+            evidence-bounded-promotion-main.log; then
+            echo "Unresolved citation/reference detected"
+            exit 1
+          fi
+
+      - name: Upload compiled manuscript
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-bounded-promotion-tmlr-draft
+          path: paper/evidence-bounded-promotion-main.pdf
+          retention-days: 14
+          if-no-files-found: error

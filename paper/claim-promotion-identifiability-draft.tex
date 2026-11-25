@@ -1,0 +1,711 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\title{Claim Promotion Under Incomplete Evidence:\\
+Identifiability Limits Beyond Closed-Set Risk Certificates}
+\author{Roman Adriashkin\\Independent Researcher\\CogniPrint Research Initiative}
+\date{Theory draft v0.1 --- November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Finite-sample selective-risk methods can certify a prediction rule relative to
+a specified target distribution, but such a certificate need not identify a
+different provenance, open-set, or semantic claim. We formalize this gap using
+evidence channels and observational equivalence. If two admissible worlds
+induce the same evidence-channel law while a claim-relevant target functional
+differs, then the target is not identified by that evidence; no evidence-only
+test can distinguish the worlds, even with arbitrarily many i.i.d. samples.
+We give a closed-channel camouflage construction, a finite Blackwell-style
+garbling example, and a claim-poset formulation of admissibility. The results
+are a theory draft: their relationship to existing identification, comparison
+of experiments, and OOD-impossibility literature remains under external
+review, and no novelty claim is made here.
+\end{abstract}
+
+\section{Setup}
+
+Let $\Theta$ be a latent source-state space and let a world $D$ be a
+probability law over $\mathcal X\times\Theta$. An evidence channel is a
+measurable map $e:\mathcal X\to\mathcal Z$. For a channel family $E$, write
+$\mu_D^E$ for its induced observation law.
+
+A claim event is a set $C\subseteq\Theta$. Define the world-level target
+\[
+\eta_C(D)=\Pr_D(\Theta\in C).
+\]
+For a fixed acceptance rule $g$, define when well-posed
+\[
+\eta_{C,g}(D)=\Pr_D(\Theta\in C\mid g(X)=1).
+\]
+
+\begin{definition}[Evidence identifiability]
+A target functional $\eta$ is identified by evidence $E$ over a world class
+$\mathcal W$ if
+\[
+\mu_D^E=\mu_{D'}^E
+\quad\Longrightarrow\quad
+\eta(D)=\eta(D')
+\]
+for all $D,D'\in\mathcal W$.
+\end{definition}
+
+\section{Observational-equivalence impossibility}
+
+\begin{theorem}[Claim non-identifiability from observational equivalence]
+Suppose $D_0,D_1\in\mathcal W$ satisfy
+\[
+\mu_{D_0}^E=\mu_{D_1}^E
+\]
+but $\eta(D_0)\neq\eta(D_1)$. Then $\eta$ is not identified by $E$.
+Moreover, for every $n$, the $n$-sample evidence laws coincide, and under
+equal prior weights no binary test based only on $E$ can distinguish
+$D_0$ from $D_1$ with error below $1/2$.
+\end{theorem}
+
+\begin{proof}
+Equality of the one-observation laws implies equality of the product laws for
+every i.i.d. sample size. Therefore every evidence-measurable statistic has the
+same distribution under the two worlds. The target cannot be a function of
+the evidence law. The total variation distance between the two evidence
+experiments is zero, so the optimal equal-prior binary testing error is
+$(1-\mathrm{TV})/2=1/2$.
+\end{proof}
+
+\section{Closed-channel non-transfer construction}
+
+Let $e_{\rm closed}(X)$ contain only a closed-set predictor output. Let
+$D_0$ be a known-only world and let $g$ depend only on this channel. Construct
+$D_\pi$ by mixing a fraction $\pi$ of unknown observations whose
+$e_{\rm closed}$ law is identical to the known-channel law.
+
+Then
+\[
+\mu_{D_\pi}^{e_{\rm closed}}
+=
+\mu_{D_0}^{e_{\rm closed}}.
+\]
+The unknown fraction among accepted examples is $\pi$. If every accepted
+unknown is an error for the known-family prediction and the known-only
+selective risk is $r_0$, then
+\[
+R_{\rm sel}^{D_\pi}(g)
+=
+\pi+(1-\pi)r_0.
+\]
+
+A finite-sample certificate calibrated for $D_0$ remains a statement about
+$D_0$ under its assumptions. It is not a certificate for $D_\pi$ merely
+because the closed-channel marginal is unchanged.
+
+\section{Claim promotion principle}
+
+If a proposed claim target $\eta_C$ is not identified by the available
+evidence $E$ over the declared world class, then an $E$-measurable risk
+certificate cannot by itself identify $C$.
+
+A valid promotion therefore requires at least one of: (i) a defensible
+restriction of the world class, (ii) an evidence refinement that breaks the
+relevant observational equivalence, or (iii) narrowing the claim to a target
+that is identified.
+
+\section{Identified Sets and Robust Claim Admissibility}
+\label{sec:identified}
+
+Let $\rho_C(D)\in[0,1]$ denote the population error risk attached to claim
+$C$. For an observed evidence law $\mu_{\mathrm{obs}}^E$, define the
+identified risk set
+\[
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E)
+=
+\{\rho_C(D):D\in\mathcal W,\ \mu_D^E=\mu_{\mathrm{obs}}^E\}.
+\]
+
+\begin{definition}[Robust evidence admissibility]
+A claim is robustly admissible at tolerance $\delta$ iff
+\[
+\sup \mathcal R_C(E;\mu_{\mathrm{obs}}^E)\le\delta.
+\]
+\end{definition}
+
+\begin{proposition}[Plug-in non-certification]
+If the identified risk set contains
+$r_{\rm safe}\le\delta<r_{\rm unsafe}$, then a plug-in value
+$\hat r\le\delta$ based only on $E$ does not certify robust admissibility.
+\end{proposition}
+
+\begin{proof}
+The same observed evidence law is compatible with a world whose claim risk
+exceeds $\delta$. Hence the supremum of the identified risk set exceeds the
+tolerance.
+\end{proof}
+
+\begin{theorem}[No-data-at-the-same-channel impossibility]
+\label{thm:no-data}
+Suppose $D_0,D_1\in\mathcal W$ satisfy
+$\mu_{D_0}^{E}=\mu_{D_1}^{E}$ while
+\[
+\rho_C(D_0)\le\delta<\rho_C(D_1).
+\]
+For every $n$ and every decision rule
+$\varphi_n:E^n\to\{\mathrm{CLAIM},\mathrm{ABSTAIN}\}$,
+\[
+\Pr_{D_0}(\varphi_n=\mathrm{CLAIM})
+=
+\Pr_{D_1}(\varphi_n=\mathrm{CLAIM}).
+\]
+Thus if the rule claims with probability at most $\alpha$ in the unsafe world,
+it also claims with probability at most $\alpha$ in the safe observationally
+equivalent world.
+\end{theorem}
+
+\begin{proof}
+Equality of the one-observation evidence laws implies equality of all
+$n$-fold product laws. Every evidence-measurable decision rule therefore has
+the same distribution in the two worlds.
+\end{proof}
+
+\begin{proposition}[Channel-refinement monotonicity]
+Let $E'=(E,F)$ have observed joint law $\nu_{\mathrm{obs}}^{E,F}$, whose
+$E$-marginal is $\mu_{\mathrm{obs}}^E$. Then
+\[
+\mathcal R_C(E';\nu_{\mathrm{obs}}^{E,F})
+\subseteq
+\mathcal R_C(E;\mu_{\mathrm{obs}}^E).
+\]
+\end{proposition}
+
+\begin{proof}
+Every world matching the observed joint law also matches its $E$-marginal.
+The compatible-world set can therefore only shrink under channel refinement.
+\end{proof}
+
+A deterministic derived channel $F=\phi(E)$ need not shrink the identified set
+at all. We call a refinement \emph{claim-relevant} when the inclusion is
+strict for the target claim; this is distinct from statistical independence.
+
+\subsection{Exact camouflage example}
+
+Let $\pi$ be the unknown-source fraction, $a_K$ the acceptance probability for
+known sources, and $a_U$ the acceptance probability for unknown sources. The
+risk of claiming known-set membership among accepted observations is
+\[
+\rho_K(\pi)
+=
+\frac{\pi a_U}{(1-\pi)a_K+\pi a_U}.
+\]
+Under exact camouflage $a_U=a_K>0$, this reduces to $\rho_K(\pi)=\pi$.
+Thus if $\pi\in[\pi_L,\pi_U]$, the sharp identified risk interval is
+$[\pi_L,\pi_U]$.
+
+Table~\ref{tab:identified} is deliberately synthetic: no OOD channel has been
+measured on the exposed RAID Stage A sample.
+
+\begin{table}[h]
+\centering
+\caption{Synthetic identified-risk consequences under declared channel assumptions.}
+\label{tab:identified}
+\begin{tabular}{lllll}
+\toprule
+Evidence & $\pi$ range & $(a_K,a_U)$ & Identified risk & $\delta=0.1$ \\
+\midrule
+Closed channel, camouflage & $[0,0.5]$ & $(0.50,0.50)$ & $[0,0.50]$ & Not admissible \\
+Closed + illustrative refinement & $[0,0.5]$ & $(0.95,0.05)$ & $[0,0.05]$ & Admissible \\
+Closed + redundant transform & $[0,0.5]$ & $(0.50,0.50)$ & $[0,0.50]$ & Not admissible \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The second row is an illustrative assumption, not a measured CogniPrint OOD
+result. A model-specific empirical table is deferred until prospectively
+designed evidence can measure the additional channel.
+
+\subsection{Decision-theoretic interpretation}
+
+The robust admissibility criterion is related to decisions under ambiguity,
+but it should not be called \emph{maximin optimality} without specifying the
+loss of abstention. If claim loss is $\rho_C(D)$ and abstention has fixed loss
+$\lambda$, then the worst-case comparison chooses CLAIM only when
+$\sup\mathcal R_C\le\lambda$ (up to tie convention). Different abstention
+costs or utilities produce different decision rules.
+
+\section{Claim poset}
+
+Claims are ordered by logical implication:
+\[
+C\preceq C'
+\quad\Longleftrightarrow\quad
+C'\subseteq C,
+\]
+so $C'$ is stronger. For example, exact known-family membership is stronger
+than known-set membership. Known-set and unknown-set membership are
+incompatible, not consecutive levels.
+
+If error tolerances are monotone with logical strength, any certified stronger
+claim induces a certified weaker claim. Thus admissible claims form a down-set
+of the claim poset. Calling the set a lattice ideal requires additional
+closure conditions.
+
+\section{Blackwell connection}
+
+The full observation experiment Blackwell-dominates any deterministic
+compression of it because the latter is a garbling. This connection must be
+used relative to a specified experiment family.
+
+For a finite example, let $X=\{a,b,c,d\}$. Under known state $K$, put mass
+$1/2$ on $a,b$; under unknown state $U$, put mass $1/2$ on $c,d$. Define a
+compressed channel by
+\[
+e(a)=e(c)=z_1,\qquad e(b)=e(d)=z_2.
+\]
+The compressed laws under $K$ and $U$ are identical, whereas the full supports
+are disjoint. Full $X$ identifies $K$ versus $U$ perfectly; the compressed
+channel contains no information for the equal-prior binary decision problem.
+
+This example shows that closed-channel compression \emph{can} destroy
+claim-relevant information. It does not prove that every real closed-set score
+is insufficient for every open-set task.
+
+\section{Relation to prior work}
+
+The underlying ideas of observational equivalence, identification, Blackwell
+comparison, and unrestricted OOD impossibility have substantial prior
+literature. Likewise, finite-sample selective-risk control is established in
+RCPS, Learn-then-Test, Conformal Risk Control, LEC, and related work.
+
+Accordingly, the remaining novelty question is narrower: whether a formal
+certificate-to-claim target-mismatch interface, with machine-checkable
+non-promotion witnesses and typed composition across heterogeneous statistical
+certificates, yields a useful new object for AI provenance and safety. This
+remains unestablished.
+
+\section{Certificate Scope Judgment (Candidate Interface)}
+\label{sec:csj}
+
+We treat a statistical certificate as carrying an explicit target and scope,
+rather than as an untyped confidence score. A certificate procedure has type
+\[
+\tau(\kappa)
+=
+(E,\mathcal W_\kappa^A,\rho_\kappa,\alpha_\kappa),
+\]
+and emits a data-dependent upper bound $B_\kappa(Z)$. Its frequentist
+validity means
+\[
+\inf_{D\in\mathcal W_\kappa^A}
+\Pr_D\{\rho_\kappa(D)\le B_\kappa(Z)\}
+\ge1-\alpha_\kappa.
+\]
+A downstream claim has type
+\[
+\tau(c)=(C,\mathcal W_c,\rho_c,\delta_c).
+\]
+
+Direct static compatibility requires
+$\mathcal W_c\subseteq\mathcal W_\kappa^A$ and
+$\rho_c=\rho_\kappa$ throughout $\mathcal W_c$. The realized inequality
+$B_\kappa(z)\le\delta_c$ is a runtime discharge condition, not part of the
+static type.
+
+\begin{proposition}[Direct typed-promotion soundness]
+Assume direct static compatibility. If promotion occurs only when
+$B_\kappa(Z)\le\delta_c$, then for every
+$D\in\mathcal W_c$ with $\rho_c(D)>\delta_c$,
+\[
+\Pr_D(\mathrm{PROMOTE})\le\alpha_\kappa.
+\]
+\end{proposition}
+
+\begin{proof}
+On the certificate-validity event,
+$\rho_c(D)=\rho_\kappa(D)\le B_\kappa(Z)$. In an unsafe world
+$\rho_c(D)>\delta_c$, this event cannot coexist with
+$B_\kappa(Z)\le\delta_c$. Hence unsafe promotion implies certificate
+failure, whose probability is at most $\alpha_\kappa$.
+\end{proof}
+
+For a realized certificate bound $b$, define
+\[
+\mathcal V_{\kappa,c}(b)
+=
+\{D\in\mathcal W_c\cap\mathcal W_\kappa^A:
+\rho_\kappa(D)\le b\}.
+\]
+
+\begin{proposition}[Non-promotion witness characterization]
+Assume $\mathcal V_{\kappa,c}(b)$ is nonempty. A world
+$D^\star\in\mathcal V_{\kappa,c}(b)$ with
+$\rho_c(D^\star)>\delta_c$ exists iff
+\[
+\sup_{D\in\mathcal V_{\kappa,c}(b)}\rho_c(D)>\delta_c.
+\]
+\end{proposition}
+
+\begin{proof}
+The forward direction is immediate. For the converse, if every compatible
+world had risk at most $\delta_c$, the supremum could not exceed
+$\delta_c$.
+\end{proof}
+
+This proposition is existential rather than algorithmically constructive.
+Finite world classes can be searched directly; convex or otherwise
+parameterized classes require a valid optimization/separation procedure.
+
+\begin{proposition}[Same-target confidence-budget composition]
+Suppose two certificates are valid on a common world class for the same
+functional $\rho$, with bounds $B_1,B_2$ and failure budgets
+$\alpha_1,\alpha_2$. Then
+\[
+\Pr_D\{\rho(D)\le\min(B_1(Z),B_2(Z))\}
+\ge1-(\alpha_1+\alpha_2)
+\]
+for every world in the common scope.
+\end{proposition}
+
+\begin{proof}
+On the intersection of the two validity events, both bounds hold and hence so
+does their minimum. The union bound controls the complement.
+\end{proof}
+
+There is no generic additional $n^{-1/2}$ improvement and no guarantee of
+strict tightening. Stronger fusion requires extra statistical structure.
+
+For heterogeneous targets, a bare target-name implication is insufficient.
+A promotion must carry an explicit \emph{quantitative warrant}
+$T=(\mathcal W_T,g_T)$, where $g_T:[0,1]^m\to[0,1]$ is coordinatewise
+nondecreasing and
+\[
+\rho_c(D)
+\le
+g_T\!\left(\rho_1(D),\ldots,\rho_m(D)\right)
+\]
+throughout the warrant scope.  The claim scope must be contained in the
+warrant scope and in every certificate-valid world class.  For realized
+bounds $b_i$, promotion requires
+\[
+g_T(b_1,\ldots,b_m)\le\delta_c.
+\]
+On the intersection of the certificate-validity events, monotonicity then
+implies $\rho_c(D)\le\delta_c$.  Hence an unsafe promotion requires at
+least one certificate-validity failure and has probability at most
+$\sum_i\alpha_i$ by the union bound.  No independence assumption is needed.
+
+\subsection{Difference from assurance and statistical-program verification}
+
+Assurance 2.0, SACM, and machine-checked assurance languages already distinguish
+claims, evidence, assumptions, inferential links, and defeaters; Belief Hoare
+Logic and StatWhy already formalize requirements and interpretations of
+statistical procedures and verify their correct use. Approximate Hoare Logic
+also already indexes formal judgements by probabilistic failure budgets and
+composes them via union bounds, while later systems such as Eris provide richer
+first-class error accounting. We therefore do not claim novelty for
+evidence-to-claim warrants, statistical preconditions, machine-checked argument
+structure, or additive confidence/error budgeting.
+
+A further high-risk collision is the 2026 preprint \emph{Proxy Evidence
+Certificates and World-Model Validation: Evidence Fibers, Sharp Envelopes, and
+Counterworld Realization}. Its public record describes certification over
+worlds compatible with proxy evidence, sharp target images of evidence fibers,
+and executable counterworlds for residual uncertainty. We treat that work as
+prior art for novelty purposes, while not treating a preprint as peer-reviewed
+validation.
+
+The narrower object investigated here is a certificate-scope judgement in
+which a realized frequentist certificate carries an explicit risk functional,
+validation/deployment world class, evidence scope, and confidence budget, while
+a downstream semantic claim carries its own target risk and tolerance.
+Promotion across mismatched targets is blocked unless a separate quantitative
+identification or transport warrant is supplied. At this stage this is best
+described as an \emph{effect-style indexed judgement}, not yet as a new
+type-and-effect system. Whether this specific combination is distinct remains
+under external review.
+
+\section{Conditional-Kernel Representation of Evidence Composition}
+\label{sec:composition}
+
+The monotonicity statement
+\[
+\mathcal R_C(E,F)\subseteq\mathcal R_C(E)
+\]
+does not explain when the inclusion is strict. The relevant object is the
+conditional law of the added channel given the existing evidence.
+
+Assume standard Borel evidence spaces. Let
+\[
+\mathcal W_E
+=
+\{D\in\mathcal W:\mu_D^E=\mu_{\rm obs}^E\}.
+\]
+Disintegrate the observed joint law as
+\[
+\nu_{\rm obs}^{E,F}(de,df)
+=
+\mu_{\rm obs}^E(de)K_{\rm obs}(df\mid e).
+\]
+For each $D\in\mathcal W_E$, write
+\[
+\mu_D^{E,F}(de,df)
+=
+\mu_{\rm obs}^E(de)K_D(df\mid e).
+\]
+
+\begin{proposition}[Conditional-kernel representation]
+The product-channel compatible worlds are exactly
+\[
+\mathcal W_{E,F}
+=
+\{D\in\mathcal W_E:
+K_D(\cdot\mid e)=K_{\rm obs}(\cdot\mid e)
+\quad \mu_{\rm obs}^E\text{-a.s.}\}.
+\]
+Therefore
+\[
+\mathcal R_C(E,F)
+=
+\{\rho_C(D):
+D\in\mathcal W_E,K_D=K_{\rm obs}\ \mu_{\rm obs}^E\text{-a.s.}\}.
+\]
+\end{proposition}
+
+\begin{proof}
+Inside $\mathcal W_E$, all worlds already share the same $E$-marginal.
+Two joint laws with that common marginal are equal iff their regular
+conditional laws of $F$ given $E$ agree almost surely with respect to that
+marginal. Taking the image of the resulting compatible-world set under
+$\rho_C$ gives the stated identified risk set.
+\end{proof}
+
+For a tolerance $\delta$, define
+\[
+\mathcal U_\delta(E)
+=
+\{D\in\mathcal W_E:\rho_C(D)>\delta\}.
+\]
+
+\begin{corollary}[Robust admissibility under composition]
+The product channel makes claim $C$ robustly admissible iff
+\[
+\mathcal U_\delta(E)
+\cap
+\{D:K_D=K_{\rm obs}\ \mu_{\rm obs}^{E}\text{-a.s.}\}
+=
+\varnothing.
+\]
+Thus every unsafe world remaining after the coarse channel must be rejected
+by the observed conditional behavior of the added channel.
+\end{corollary}
+
+This corollary is a set-containment restatement of robust feasibility over the
+compatible-world set. We use it operationally, but do not claim it as a new
+general theorem.
+
+\begin{proposition}[Complete conditional redundancy]
+Suppose there is a single Markov kernel $K$ such that
+$K_D=K$ almost surely for every $D\in\mathcal W_E$, and the observed kernel
+is also $K$. Then
+\[
+\mathcal W_{E,F}=\mathcal W_E
+\quad\text{and}\quad
+\mathcal R_C(E,F)=\mathcal R_C(E).
+\]
+\end{proposition}
+
+A deterministic derived channel $F=\phi(E)$ is a special case: its conditional
+law is the world-invariant point mass $\delta_{\phi(e)}$. Renaming or
+deterministically transforming existing evidence therefore cannot create
+identification gain.
+
+We call $F$ \emph{claim-relevant at the observed law} when
+\[
+\mathcal R_C(E,F)\subsetneq\mathcal R_C(E),
+\]
+and $\delta$-\emph{separating} when the coarse set is inadmissible but the
+product set satisfies the tolerance. Statistical independence is neither
+required nor sufficient for either property.
+
+\subsection{Why separate marginals are insufficient}
+
+In general,
+\[
+\mathcal R_C(E,F)
+\subseteq
+\mathcal R_C(E)\cap\mathcal R_C(F),
+\]
+and the inclusion may be strict. Matching the two marginals separately does
+not impose the observed dependence structure between channels. The joint law
+can therefore exclude worlds compatible with each marginal in isolation.
+
+This is one point of contact with sharp-bound and data-fusion problems in
+partial identification, where targets depending on a joint distribution may
+remain unidentified from marginal information alone.
+
+\section{Finite-Sample Product-Gate Certificate}
+\label{sec:finite-composition}
+
+The population composition criterion assumes the relevant evidence laws are
+known. For a practically useful but deliberately narrower finite-sample
+problem, fix a product gate $A=A(E,F)$ before inspecting validation labels.
+
+Let
+\[
+a_K=\Pr(A=1\mid K),
+\qquad
+a_U=\Pr(A=1\mid U),
+\]
+for the declared known and unknown components, and suppose deployment unknown
+prevalence satisfies
+\[
+\pi\le\pi_U.
+\]
+The risk of falsely claiming known-set membership among accepted observations is
+\[
+\rho(\pi,a_K,a_U)
+=
+\frac{\pi a_U}
+{(1-\pi)a_K+\pi a_U}.
+\]
+
+Assume independent or otherwise valid i.i.d. validation samples from the
+declared known and unknown components:
+\[
+X_K\sim\mathrm{Binomial}(n_K,a_K),
+\qquad
+X_U\sim\mathrm{Binomial}(n_U,a_U).
+\]
+The essential assumption is transportability of these component acceptance
+rates to the declared deployment world class.
+
+Let $L_K$ be a one-sided Clopper--Pearson lower confidence bound for $a_K$ at
+tail level $\alpha/2$, and let $U_U$ be the corresponding upper bound for
+$a_U$.
+
+\begin{proposition}[Exact fixed-gate finite-sample certificate]
+With probability at least $1-\alpha$,
+\[
+\boxed{
+\rho
+\le
+B_{1-\alpha}
+=
+\frac{\pi_U U_U}
+{(1-\pi_U)L_K+\pi_U U_U}
+}
+\]
+whenever the denominator is positive.
+\end{proposition}
+
+\begin{proof}
+By the one-sided exact binomial guarantees and the union bound,
+$a_K\ge L_K$ and $a_U\le U_U$ jointly with probability at least
+$1-\alpha$. The function $\rho(\pi,a_K,a_U)$ is increasing in
+$\pi$ and $a_U$ and decreasing in $a_K$, so its maximum over
+$\pi\le\pi_U$, $a_K\ge L_K$, and $a_U\le U_U$ is attained at
+$(\pi_U,L_K,U_U)$.
+\end{proof}
+
+For a predeclared finite family of $m$ product gates, assigning each of the
+$2m$ one-sided component bounds level $\alpha/(2m)$ yields simultaneous
+coverage at least $1-\alpha$ by Bonferroni. Gate selection may then be
+performed within that frozen family without invalidating the simultaneous
+confidence event.
+
+\subsection{Sampling versus structural uncertainty}
+
+Increasing $n_K$ and $n_U$ contracts the Clopper--Pearson contribution, but it
+does not learn the deployment prevalence restriction $\pi\le\pi_U$.
+Consequently the certificate converges toward a structural floor rather than
+toward zero in general.
+
+If $\pi_U=1$, robust known-membership certification is vacuous for any gate
+that can accept unknown observations. Likewise, validation against one
+unknown reference distribution does not certify arbitrary unseen unknown
+distributions unless the world class contains a defensible transportability or
+envelope assumption.
+
+\subsection{Why we do not estimate the conditional kernel here}
+
+For a fixed product gate, the claim risk depends only on aggregate acceptance
+rates $a_K$ and $a_U$. Estimating the marginal law of $E$ and the conditional
+kernel $K(F\mid E)$ separately adds nuisance estimation without improving this
+specific certificate.
+
+A binned conditional-kernel analysis becomes relevant when gates are adapted
+across evidence bins or when the kernel itself is the scientific target. That
+is a separate finite-sample problem and is not claimed solved here.
+
+\section{Partial-identification context}
+
+Identified sets and decisions under incomplete identification are classical.
+Manski's work separates population identification from finite-sample
+statistical uncertainty; Imbens--Manski, Romano--Shaikh, and Stoye develop
+inference for partially identified parameters. Gilboa--Schmeidler provide a
+classical maxmin model for ambiguity.
+
+We do not claim novelty for identified sets themselves. The candidate
+contribution is the claim-admissibility layer over heterogeneous evidence
+channels and explicit non-promotion rules for AI provenance claims.
+
+\section{Conclusion}
+
+\[
+\boxed{
+\text{A valid risk certificate for one target does not identify a different
+claim without assumptions or evidence that identify that claim.}
+}
+\]
+
+\begin{thebibliography}{9}
+
+\bibitem{manski1990}
+C. F. Manski.
+Nonparametric Bounds on Treatment Effects.
+\emph{American Economic Review}, 80(2):319--323, 1990.
+
+\bibitem{manski2000}
+C. F. Manski.
+Identification Problems and Decisions under Ambiguity.
+\emph{Journal of Econometrics}, 95(2):415--442, 2000.
+
+\bibitem{imbensmanski2004}
+G. W. Imbens and C. F. Manski.
+Confidence Intervals for Partially Identified Parameters.
+\emph{Econometrica}, 72(6):1845--1857, 2004.
+
+\bibitem{romanoshaikh2008}
+J. P. Romano and A. M. Shaikh.
+Inference for Identifiable Parameters in Partially Identified Econometric Models.
+\emph{Journal of Statistical Planning and Inference}, 138(9):2786--2807, 2008.
+
+\bibitem{stoye2009}
+J. Stoye.
+More on Confidence Intervals for Partially Identified Parameters.
+\emph{Econometrica}, 77(4):1299--1315, 2009.
+
+\bibitem{gilboaschmeidler1989}
+I. Gilboa and D. Schmeidler.
+Maxmin Expected Utility with Non-Unique Prior.
+\emph{Journal of Mathematical Economics}, 18(2):141--153, 1989.
+
+\bibitem{cht2007}
+V. Chernozhukov, H. Hong, and E. Tamer.
+Estimation and Confidence Regions for Parameter Sets in Econometric Models.
+\emph{Econometrica}, 75(5):1243--1284, 2007.
+
+\bibitem{kaidosantos2014}
+H. Kaido and A. Santos.
+Asymptotically Efficient Estimation of Models Defined by Convex Moment
+Inequalities.
+\emph{Econometrica}, 82(1):387--413, 2014.
+
+\end{thebibliography}
+
+\end{document}
