@@ -1,7 +1,8 @@
-"""Deterministic privacy-preserving hashed n-gram baselines for RAID Stage A.
+"""Deterministic raw-text-non-persisting hashed n-gram baselines for RAID Stage A.
 
-The feature vocabulary and source text never leave memory. Only aggregate model
-settings and classification metrics are intended for persistence.
+The pipeline does not persist source text or a recoverable vocabulary. Feature
+hashing is used for fixed-dimensional computation and is not claimed to provide
+cryptographic privacy.
 """
 from __future__ import annotations
 
