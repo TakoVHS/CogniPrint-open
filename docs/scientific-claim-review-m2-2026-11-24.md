@@ -59,8 +59,9 @@ Persisted result SHA-256:
 
 `1fb39616725c90470e5dbc35ff7f4211190448e9bb1505c256d5febeba275dc3`
 
-Independent external repeat `45371006757` produced a byte-identical persisted
-result.
+Separate runner-isolated CI rerun `45371006757` produced a byte-identical
+persisted result. This demonstrates deterministic re-execution, not independent
+scientific replication.
 
 Aggregate point estimates:
 
@@ -72,6 +73,12 @@ Aggregate point estimates:
 
 All predeclared per-fold 95% lineage-group bootstrap intervals for
 12D-vs-baseline NLL/Brier differences include zero.
+
+Uniform four-class probabilities have NLL (log 4 approx 1.386294) and
+multiclass Brier score (0.75) under the implemented convention. The reported
+M2 proper scores are therefore only modestly better than an uninformative
+probability vector, particularly for 12D. The four leave-one-family-out folds
+reuse the same Stage A corpus and are not independent replications.
 
 ### M2.1
 
@@ -208,7 +215,8 @@ M2.1 does support the narrower diagnostic statement that `T=0.05` was an
 active lower-bound restriction for the tested n-gram cosine score scale.
 
 A future sealed protocol must preregister the score-to-probability mapping and
-temperature domain before evaluation.
+temperature domain before evaluation. Numeric choices for that future protocol
+must not be selected from the already exposed M2/M2.1 evaluation outcomes.
 
 ---
 
@@ -225,8 +233,12 @@ Near-zero false-known singleton behavior came almost entirely from
 
 Safe wording:
 
-> The alpha-0.05 conformal layer was highly conservative and usually abstained
-> through multi-class ambiguity.
+> Under the executed alpha-0.05 design, the conformal layer produced no
+> empty-set unknown rejection and usually abstained through multi-class
+> ambiguity.
+
+This is an observed design outcome, not a theorem that empty sets are
+mathematically impossible for every dataset with the same nominal alpha.
 
 Not allowed:
 
