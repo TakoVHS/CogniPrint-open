@@ -58,6 +58,23 @@ class IdentifiedSetTheoryTests(unittest.TestCase):
         self.assertIsNotNone(critical)
         self.assertAlmostEqual(critical or 0.0, 0.6785714285714286)
 
+
+    def test_critical_unknown_fraction_is_nonnumeric_when_only_unknowns_can_be_accepted(self) -> None:
+        critical = critical_unknown_fraction(
+            delta=0.10,
+            known_accept_rate=0.0,
+            unknown_accept_rate=0.50,
+        )
+        self.assertIsNone(critical)
+
+    def test_critical_unknown_fraction_is_one_at_unit_tolerance(self) -> None:
+        critical = critical_unknown_fraction(
+            delta=1.0,
+            known_accept_rate=0.0,
+            unknown_accept_rate=0.50,
+        )
+        self.assertEqual(critical, 1.0)
+
     def test_redundant_channel_does_not_shrink_interval(self) -> None:
         coarse = RiskInterval(0.0, 0.5)
         redundant = RiskInterval(0.0, 0.5)
