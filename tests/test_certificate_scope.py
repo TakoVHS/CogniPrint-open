@@ -5,6 +5,7 @@ import unittest
 from cogniprint.stats.certificate_scope import (
     FiniteCertificate,
     FiniteClaim,
+    certificate_compatible_worlds,
     compose_same_target,
     composed_confidence_budget,
     direct_static_compatible,
@@ -57,10 +58,63 @@ class CertificateScopeJudgmentTests(unittest.TestCase):
         )
         self.assertFalse(direct_static_compatible(certificate, claim))
         self.assertEqual(find_nonpromotion_witness(certificate, claim), "dpi")
-        self.assertAlmostEqual(
-            worst_claim_risk_under_certificate(certificate, claim) or 0.0,
-            0.35,
+        worst = worst_claim_risk_under_certificate(certificate, claim)
+        self.assertIsNotNone(worst)
+        assert worst is not None
+        self.assertAlmostEqual(worst, 0.35)
+
+
+    def test_single_certificate_scope_gap_fails_closed(self) -> None:
+        certificate = FiniteCertificate(
+            "partial-single",
+            "source-risk",
+            frozenset({"covered"}),
+            {"covered": 0.02},
+            0.05,
+            0.02,
         )
+        claim = FiniteClaim(
+            "deployment",
+            "claim-risk",
+            frozenset({"covered", "uncovered"}),
+            {"covered": 0.00, "uncovered": 0.90},
+            0.10,
+        )
+
+        for operation in (
+            lambda: certificate_compatible_worlds(certificate, claim),
+            lambda: find_nonpromotion_witness(certificate, claim),
+            lambda: worst_claim_risk_under_certificate(certificate, claim),
+        ):
+            with self.assertRaisesRegex(ValueError, "does not cover claim worlds"):
+                operation()
+
+    def test_single_certificate_and_heterogeneous_paths_agree_when_covered(self) -> None:
+        certificate = FiniteCertificate(
+            "covered",
+            "source-risk",
+            frozenset({"w1", "w2"}),
+            {"w1": 0.02, "w2": 0.03},
+            0.05,
+            0.02,
+        )
+        claim = FiniteClaim(
+            "deployment",
+            "claim-risk",
+            frozenset({"w1", "w2"}),
+            {"w1": 0.04, "w2": 0.40},
+            0.10,
+        )
+
+        self.assertEqual(
+            certificate_compatible_worlds(certificate, claim),
+            heterogeneous_compatible_worlds((certificate,), claim),
+        )
+        single_worst = worst_claim_risk_under_certificate(certificate, claim)
+        heterogeneous_worst = sharp_finite_claim_bound_under_certificates(
+            (certificate,), claim
+        )
+        self.assertEqual(single_worst, heterogeneous_worst)
 
     def test_same_target_composition_uses_min_bound_and_alpha_sum(self) -> None:
         risks = {"w": 0.07}
@@ -155,11 +209,10 @@ class CertificateScopeJudgmentTests(unittest.TestCase):
             {"w1": 0.04, "w2": 0.09, "w3": 0.80},
             0.10,
         )
-        self.assertAlmostEqual(
-            sharp_finite_claim_bound_under_certificates((first, second), claim)
-            or 0.0,
-            0.09,
-        )
+        sharp = sharp_finite_claim_bound_under_certificates((first, second), claim)
+        self.assertIsNotNone(sharp)
+        assert sharp is not None
+        self.assertAlmostEqual(sharp, 0.09)
         self.assertIsNone(
             find_heterogeneous_composition_witness((first, second), claim)
         )
