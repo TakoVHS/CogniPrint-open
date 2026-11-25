@@ -1,6 +1,16 @@
 # Known-Membership Certificates for Open-Set AI-Text Attribution — Study Plan v0.2
 
-Status: **CANDIDATE REDESIGN / PRE-REGISTRATION DRAFT / NO CONFIRMATORY DATA ACCESSED**
+Status: **CANDIDATE REDESIGN / DEVELOPMENT VIABILITY SCREEN NEGATIVE / REDESIGN REQUIRED / NO CONFIRMATORY DATA ACCESSED**
+
+Development update (25 November 2026): the first real RAID Stage-A screen with
+word 1--2 TF-IDF + multinomial logistic regression did **not** produce
+meaningful certificate lift over the accept-all reference at useful certified
+known coverage. See
+`paper/known-membership-raid-dev-result-v0.1.md`.
+
+This blocks freezing the current confirmatory design. The result may motivate a
+scientific redesign after human review, but it must not trigger iterative
+threshold/calibrator/model fishing on the exposed RAID outcome.
 
 Date: 25 November 2026
 
@@ -445,6 +455,9 @@ sufficient methodological or empirical significance.
 ## 15. Hard gates
 
 Before any confirmatory dataset is accessed:
+
+- the negative RAID development viability screen has a predeclared scientific
+  disposition after substantive human review;
 
 - substantive independent human methodological review: `1/1`;
 - all review points dispositioned;
