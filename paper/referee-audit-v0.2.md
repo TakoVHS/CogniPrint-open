@@ -1,3 +1,6 @@
+> **SUPERSEDED — 25 November 2026.** Preserved for audit history. Use
+> `paper/referee-audit-v0.3.md` after the adversarial-review corrections.
+
 # TMLR Referee Audit v0.2 — Evidence-Bounded Promotion
 
 Status: **REVIEWER-FACING PASS 2 / CORE FROZEN / APPLICATION-FIRST FRAMING**
