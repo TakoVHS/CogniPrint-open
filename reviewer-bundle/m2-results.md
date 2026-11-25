@@ -11,7 +11,7 @@ This page summarises the first real pinned RAID M2 development result for indepe
 
 ## Evidence identity
 
-Primary external run:
+Primary isolated CI evidence run:
 
 - workflow: `RAID M2 External Pinned Evidence`;
 - run id: `45370233451`;
@@ -33,7 +33,7 @@ Historical Stage A identity gates:
   `e0efa8ddf06861e0fbfd2ccb76313e9451986592b5d007a7cb71d30503fd9948`;
 - selected records: `500`.
 
-A separate external repeat, run `45371006757` (#4), produced a byte-identical persisted `m2-results.json`:
+A separate runner-isolated CI rerun, `45371006757` (#4), produced a byte-identical persisted `m2-results.json`. This is deterministic re-execution evidence, not independent scientific replication:
 
 `1fb39616725c90470e5dbc35ff7f4211190448e9bb1505c256d5febeba275dc3`
 
@@ -49,7 +49,14 @@ Lower is better for NLL, Brier, AURC and false-known rate.
 
 The current 12D representation does not lead the tested representations on the aggregate point estimates. This is a negative/mixed result.
 
-All predeclared per-fold 95% lineage-group bootstrap intervals for 12D-vs-baseline NLL and Brier differences include zero. The aggregate ordering must not be converted into a pooled significance claim without a separately specified cross-fold estimand.
+For scale reference, the M2 probability metrics are computed over four known
+classes. Uniform four-class probabilities have NLL
+(log 4 approx 1.386294) and multiclass Brier score (0.75) under the
+implemented summed-squared-error convention. The observed NLL/Brier values are
+therefore only modestly separated from an uninformative probability vector,
+especially for 12D. This comparison is descriptive, not a significance test.
+
+All predeclared per-fold 95% lineage-group bootstrap intervals for 12D-vs-baseline NLL and Brier differences include zero. The aggregate ordering must not be converted into a pooled significance claim without a separately specified cross-fold estimand. The folds reuse the same Stage A corpus and are not independent replicates; the intervals are also low-power at the available per-fold evaluation size.
 
 ## Temperature finding
 
@@ -84,7 +91,7 @@ Mean conformal false-known rates were near zero, but known singleton rates were 
 - char singleton rate: approximately `2.8%`;
 - word singleton rate: approximately `6.1%`.
 
-The correct interpretation is a highly conservative prediction-set regime, not strong practical OOD detection.
+The correct interpretation is a highly ambiguous prediction-set regime, not demonstrated OOD detection. M2.1 observed zero empty-set rejections; we do not elevate that empirical fact into a general impossibility theorem.
 
 ## Reviewer questions
 
@@ -140,4 +147,4 @@ Evidence:
 - diagnostic archive SHA-256:
   `b9e8aaccb0816761d19de2aaa1d2329c5a29328fa4541037ab1b59936f79559b`.
 
-M2.1 may inform future sealed-study design. It must not be treated as confirmatory evidence or used to overwrite M2 #1.
+M2.1 may motivate hypotheses for future work, but no numeric Stage B parameter (temperature range, threshold, coverage target, or conformal setting) may be chosen from M2/M2.1 evaluation outcomes. It must not be treated as confirmatory evidence or used to overwrite M2 #1.
