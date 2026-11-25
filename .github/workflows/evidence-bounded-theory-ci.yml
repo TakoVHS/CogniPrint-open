@@ -16,6 +16,9 @@ on:
       - "tests/test_evidence_composition.py"
       - "tests/test_finite_sample_composition.py"
       - "tests/test_certificate_scope.py"
+      - "tests/test_certificate_scope_regression.py"
+      - "tests/test_known_membership_break_even.py"
+      - "tests/test_known_membership_plan_integrity.py"
       - "tests/test_theory_manuscript_structure.py"
       - "scripts/analyze_evidence_bounded_synthetic.py"
       - "scripts/demonstrate_claim_promotion_nonidentifiability.py"
@@ -23,6 +26,8 @@ on:
       - "scripts/demonstrate_evidence_channel_composition.py"
       - "scripts/demonstrate_finite_sample_composition.py"
       - "scripts/demonstrate_certificate_scope_judgment.py"
+      - "scripts/known_membership_break_even.py"
+      - "paper/known-membership-certificates-study-plan-v0.2.md"
       - "docs/evidence-bounded-inference-theory-v0.1.md"
       - "docs/evidence-bounded-finite-sample-baseline-v0.1.md"
       - "docs/claim-promotion-identifiability-v0.1.md"
@@ -85,13 +90,17 @@ jobs:
             tests/test_evidence_composition.py \
             tests/test_finite_sample_composition.py \
             tests/test_certificate_scope.py \
+            tests/test_certificate_scope_regression.py \
+            tests/test_known_membership_break_even.py \
+            tests/test_known_membership_plan_integrity.py \
             tests/test_theory_manuscript_structure.py \
             scripts/analyze_evidence_bounded_synthetic.py \
             scripts/demonstrate_claim_promotion_nonidentifiability.py \
             scripts/demonstrate_identified_set_admissibility.py \
             scripts/demonstrate_evidence_channel_composition.py \
             scripts/demonstrate_finite_sample_composition.py \
-            scripts/demonstrate_certificate_scope_judgment.py
+            scripts/demonstrate_certificate_scope_judgment.py \
+            scripts/known_membership_break_even.py
 
       - name: Run evidence-bounded unit tests
         run: |
@@ -141,6 +150,30 @@ jobs:
             -s tests \
             -p "test_theory_manuscript_structure.py" \
             -v
+
+      - name: Run scope-regression property tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_certificate_scope_regression.py" \
+            -v
+
+      - name: Run known-membership break-even tests
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_break_even.py" \
+            -v
+
+      - name: Validate known-membership study-plan integrity
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_plan_integrity.py" \
+            -v
+
+      - name: Run known-membership arithmetic reference
+        run: python scripts/known_membership_break_even.py
 
       - name: Run baseline synthetic demonstration
         run: python scripts/analyze_evidence_bounded_synthetic.py
