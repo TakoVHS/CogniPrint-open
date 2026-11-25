@@ -113,7 +113,12 @@ def critical_unknown_fraction(
     if a_unknown == 0.0:
         return 1.0
     if a_known == 0.0:
-        return 0.0 if delta < 1.0 else 1.0
+        # If unknowns can be accepted but knowns cannot, accepted mass is zero
+        # at pi=0 and the conditional risk is undefined there. For any pi>0
+        # the conditional unknown risk is exactly one. Hence no admissible
+        # mixture exists for delta<1; returning 0.0 would falsely present an
+        # undefined boundary as a feasible operating point.
+        return None if delta < 1.0 else 1.0
 
     numerator = delta * a_known
     denominator = a_unknown * (1.0 - delta) + delta * a_known
