@@ -2,6 +2,13 @@
 
 Status: **HOLD / SUBMISSION-READY STRUCTURE ONLY / STAGE B NOT AUTHORISED**
 
+AI red-team disposition (25 November 2026): the current 12D-centered Challenge
+001 design is **not scientifically justified for execution in its present
+form**. This does not satisfy the human-review gate and does not itself make an
+irreversible abandon decision. It adds a stricter hold: any future Stage B must
+first pass substantive human review and a prospective redesign decision that
+does not tune parameters to exposed M2/M2.1 outcomes.
+
 Purpose: define the exact operational package required to create an independently timestamped preregistration and a genuinely sealed Stage B evaluation without selecting data after results are visible, without exposing ground truth to the prediction process, and without expanding current public claims.
 
 This document does **not** freeze Challenge 001, submit a registration, create Stage B data, reveal any source-family labels, or authorize predictions.
