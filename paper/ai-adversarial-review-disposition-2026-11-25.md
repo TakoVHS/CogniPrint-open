@@ -47,8 +47,8 @@ single-certificate/heterogeneous-path agreement.
 **Disposition:** `ACCEPT`.
 
 Fixed by defining a feasible-domain warrant
-(h:\mathcal B_T\to[0,1]), proving (r(D)\in\mathcal B_T), proving
-(s_T^\star) is itself a warrant, and only then proving pointwise minimality.
+$h:\mathcal B_T\to[0,1]$, proving $r(D)\in\mathcal B_T$, proving
+$s_T^\star$ is itself a warrant, and only then proving pointwise minimality.
 The old v0.1 note is marked superseded.
 
 ### 6. Feasibility gate overstated as safety mechanism
@@ -63,7 +63,7 @@ implementation safeguard.
 **Disposition:** `ACCEPT`.
 
 After static coverage is established, the numerical compatible-world set is now
-defined directly over (mathcal W_c). Warrant/certificate scopes remain in
+defined directly over $\mathcal W_c$. Warrant/certificate scopes remain in
 the static coverage hypothesis rather than being carried redundantly through
 the envelope.
 
@@ -85,7 +85,7 @@ risk-control algorithm.
 **Disposition:** `ACCEPT`.
 
 Reviewer-facing evidence now reports the four-class uniform references:
-NLL (log 4\approx1.386294), Brier (0.75), and states that observed M2
+NLL $\log 4\approx1.386294$, Brier $0.75$, and states that observed M2
 probability scores are only modestly better than an uninformative vector,
 especially for 12D.
 
@@ -96,7 +96,7 @@ The empirical conclusion is accepted: the executed design produced zero
 empty-set OOD rejections and mostly multi-label ambiguity. The stronger claim
 of mathematical impossibility is not established by the review's argument;
 misclassification does not imply every true-class calibration probability is
-below (0.25). Project wording therefore remains empirical and
+below $0.25$. Project wording therefore remains empirical and
 design-specific, not a universal theorem.
 
 ### 12. M2.1 can contaminate future design
@@ -140,8 +140,8 @@ that prevents the researcher from accessing labels before prediction freeze.
 **Disposition:** `ACCEPT`.
 
 When known acceptance is zero, unknown acceptance is positive, and
-(delta<1), the accepted-population conditional risk is undefined at
-(pi=0) and one for every (pi>0). The function now returns `None`
+$\delta<1$, the accepted-population conditional risk is undefined at
+$\pi=0$ and one for every $\pi>0$. The function now returns `None`
 rather than the misleading numeric boundary `0.0`; regression tests cover it.
 
 ## Stage B disposition
