@@ -74,8 +74,8 @@ Aggregate point estimates:
 All predeclared per-fold 95% lineage-group bootstrap intervals for
 12D-vs-baseline NLL/Brier differences include zero.
 
-Uniform four-class probabilities have NLL (log 4 approx 1.386294) and
-multiclass Brier score (0.75) under the implemented convention. The reported
+Uniform four-class probabilities have NLL $\log 4 \approx 1.386294$ and
+multiclass Brier score $0.75$ under the implemented convention. The reported
 M2 proper scores are therefore only modestly better than an uninformative
 probability vector, particularly for 12D. The four leave-one-family-out folds
 reuse the same Stage A corpus and are not independent replications.
@@ -109,8 +109,9 @@ M2.1 established that:
 
 Reason:
 
-M1, M2 and M2.1 have persisted evidence records. M2 was reproduced in a
-separate external workflow with byte-identical `m2-results.json`.
+M1, M2 and M2.1 have persisted evidence records. M2 was re-executed in a separate runner-isolated workflow with
+byte-identical `m2-results.json`; this is determinism evidence, not independent
+scientific replication.
 
 Safe wording:
 
