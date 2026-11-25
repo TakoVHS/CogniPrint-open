@@ -11,11 +11,34 @@ CogniPrint is an MIT-licensed research framework for constructing compact statis
 - Challenge 001 Stage B: `NOT_AUTHORISED_TO_START`
 - Hosted-runner execution: `PASS / ACTIVE`
 - External methodological reviews: `0/1`
+- AI adversarial review: `COMPLETED / DOES_NOT_COUNT_TOWARD_0/1`
 - Release line: `v0.1.2`
 - DOI: pending direct public Zenodo verification
 - Repository: https://github.com/TakoVHS/CogniPrint-open
 
 The current public release supports reproducible **measurement and evidence structuring**, not validated source attribution.
+
+## AI adversarial review — 25 November 2026
+
+An AI red-team review of PR #84 at historical head
+`14f029f9842f7d13d08f00550200488ca5a1de57` identified a real
+single-certificate scope-intersection defect, an underspecified least-warrant
+comparison class, missing pre-specification assumptions, missing ML-native
+risk-control prior art, and several wording/interpretation issues.
+
+The correctness defects have been repaired on the active Draft PR branch. The
+review does **not** satisfy the independent-human-review gate, which remains
+`0/1`.
+
+Scientific significance is still unresolved. The current theory manuscript is
+now explicitly framed as an ML audit note rather than a new statistical theory.
+
+Current Challenge 001 disposition:
+
+`HOLD / NOT_AUTHORISED_TO_START / REDESIGN_REQUIRED_BEFORE_ANY_FUTURE_AUTHORIZATION`
+
+No numeric Stage B parameter may be selected from exposed M2/M2.1 evaluation
+outcomes.
 
 ## Hosted-runner status
 
