@@ -1,3 +1,9 @@
+> **SUPERSEDED — 25 November 2026.** This development note is preserved for
+> audit history. Its "least warrant" statement did not define the comparison
+> class tightly enough for the sharp envelope itself to be a member. Use
+> `docs/feasible-domain-claim-envelope-v0.2.md` and the current manuscript
+> instead.
+
 # Canonical Least Warrant — Formalization v0.1
 
 Status: **MATHEMATICAL CORE / NOVELTY NOT CLAIMED / FAIL-CLOSED OPERATIONAL SEMANTICS**
