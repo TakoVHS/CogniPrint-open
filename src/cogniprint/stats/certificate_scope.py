@@ -110,42 +110,35 @@ def certificate_compatible_worlds(
 ) -> frozenset[str]:
     """Claim worlds satisfying the realized certificate inequality.
 
-    Full claim-scope coverage is required. Silently intersecting certificate
-    and claim scopes can drop an uncovered unsafe deployment world and create a
-    spuriously favorable downstream risk bound.
+    Fails closed on a scope gap. The single-certificate API delegates to the
+    same coverage-checked implementation used by heterogeneous composition so
+    the two paths cannot silently drift apart.
     """
 
-    _require_claim_scope_coverage((certificate,), claim)
-    return frozenset(
-        world
-        for world in claim.scope
-        if float(certificate.risk_by_world[world]) <= certificate.bound
-    )
-
+    return heterogeneous_compatible_worlds((certificate,), claim)
 
 def find_nonpromotion_witness(
     certificate: FiniteCertificate,
     claim: FiniteClaim,
 ) -> str | None:
-    """Return one compatible world where the downstream claim is unsafe."""
+    """Return one compatible world where the downstream claim is unsafe.
 
-    for world in sorted(certificate_compatible_worlds(certificate, claim)):
-        if float(claim.risk_by_world[world]) > claim.delta:
-            return world
-    return None
+    Fails closed on a scope gap through the heterogeneous implementation.
+    """
 
+    return find_heterogeneous_composition_witness((certificate,), claim)
 
 def worst_claim_risk_under_certificate(
     certificate: FiniteCertificate,
     claim: FiniteClaim,
 ) -> float | None:
-    """Finite-world supremum used by the witness characterization."""
+    """Finite-world supremum used by the witness characterization.
 
-    worlds = certificate_compatible_worlds(certificate, claim)
-    if not worlds:
-        return None
-    return max(float(claim.risk_by_world[world]) for world in worlds)
+    Returns None when no compatible world remains and fails closed on a scope
+    gap through the heterogeneous implementation.
+    """
 
+    return sharp_finite_claim_bound_under_certificates((certificate,), claim)
 
 def compose_same_target(
     first: FiniteCertificate,
