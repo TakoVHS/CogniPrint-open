@@ -5,11 +5,6 @@ name: RAID Known-Membership Development (Stage A only)
 # confirmatory evidence or used to tune a future confirmatory protocol.
 
 on:
-  pull_request:
-    paths:
-      - ".github/workflows/raid-known-membership-dev.yml"
-      - "scripts/run_known_membership_dev.py"
-      - "tests/test_known_membership_dev.py"
   workflow_dispatch:
     inputs:
       per_family:
