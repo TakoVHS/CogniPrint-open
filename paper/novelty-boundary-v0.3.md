@@ -1,3 +1,6 @@
+> **SUPERSEDED — 25 November 2026.** Preserved for audit history. Use
+> `paper/novelty-boundary-v0.4.md` after the adversarial-review corrections.
+
 # Novelty Boundary v0.3 — Evidence-Bounded Promotion
 
 Status: **CONSERVATIVE / APPLICATION-FIRST / NO PRIORITY CLAIM**
