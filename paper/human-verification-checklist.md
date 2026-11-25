@@ -1,4 +1,4 @@
-# Human Verification and Oral-Defense Checklist
+# Human Verification Checklist
 
 Status: **REQUIRED BEFORE TMLR SUBMISSION**
 
@@ -52,20 +52,28 @@ whenever \(b\in\mathcal B_T\).
 The author must be able to explain why feasibility of \(b\) implies feasibility
 of \(b'\).
 
-### B2. Canonical least warrant
+### B2. Feasible-domain sharp-envelope minimality
 
-For any coordinatewise nondecreasing warrant \(g\) satisfying
+Define a feasible-domain warrant
 \[
-\rho_c(D)\le g(\rho_1(D),\ldots,\rho_m(D)),
+h:\mathcal B_T\to[0,1]
 \]
-prove
+that is coordinatewise nondecreasing and satisfies
 \[
-s_T^\star(b)\le g(b)
+\rho_c(D)\le h(\rho_1(D),\ldots,\rho_m(D))
 \]
-for all \(b\in\mathcal B_T\).
+for every deployment world.
 
-The author should be able to explain why this makes \(s_T^\star\) canonical
-without claiming that sharp envelopes are historically novel.
+Prove first that the risk vector
+\((\rho_1(D),\ldots,\rho_m(D))\) lies in \(\mathcal B_T\), then prove
+that \(s_T^\star\) is itself such a warrant, and only then prove
+\[
+s_T^\star(b)\le h(b).
+\]
+
+The author must explain why the older full-domain comparison statement was
+underspecified and why the corrected result is elementary rather than a
+novelty claim.
 
 ### B3. Conservative approximation
 
@@ -107,9 +115,7 @@ s_T^\star(b)>\delta_c.
 The author should be able to give a concrete example for each of:
 
 - SCOPE_GAP;
-- INCONSISTENT_ASSUMPTIONS;
-- INCONSISTENT_BOUNDS;
-- EMPTY_IDENTIFIED_SET;
+- MODEL_OR_BOUND_INCONSISTENCY;
 - NO_WARRANT_COMPUTED;
 - DEPENDENCE_UNKNOWN.
 
@@ -151,6 +157,10 @@ Required works to understand before submission:
 - Manski (2000);
 - Imbens and Manski (2004);
 - Stoye (2009);
+- Bates et al. (2021), RCPS;
+- Angelopoulos et al. (2025), Learn-then-Test;
+- Angelopoulos et al. (2024), Conformal Risk Control;
+- Pearl and Bareinboim (2014), transportability;
 - Barthe et al. (2016), aHL;
 - Aguirre et al. (2024), Eris;
 - Kawamoto, Sato, and Suenaga (2024), BHL;
@@ -165,6 +175,7 @@ Before submission, the author should be comfortable explicitly rejecting these
 overclaims:
 
 - “CogniPrint introduces a new type theory.”
+- “The sharp envelope theorem is a new risk-control result.”
 - “The paper introduces a new probability theorem.”
 - “The paper invents partial identification.”
 - “A small closed-set error rate proves semantic provenance.”
