@@ -18,6 +18,7 @@ on:
       - "tests/test_certificate_scope.py"
       - "tests/test_certificate_scope_regression.py"
       - "tests/test_known_membership_break_even.py"
+      - "tests/test_known_membership_dev.py"
       - "tests/test_known_membership_plan_integrity.py"
       - "tests/test_theory_manuscript_structure.py"
       - "scripts/analyze_evidence_bounded_synthetic.py"
@@ -27,6 +28,7 @@ on:
       - "scripts/demonstrate_finite_sample_composition.py"
       - "scripts/demonstrate_certificate_scope_judgment.py"
       - "scripts/known_membership_break_even.py"
+      - "scripts/run_known_membership_dev.py"
       - "paper/known-membership-certificates-study-plan-v0.2.md"
       - "docs/evidence-bounded-inference-theory-v0.1.md"
       - "docs/evidence-bounded-finite-sample-baseline-v0.1.md"
@@ -73,7 +75,7 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -e .
+          python -m pip install -e . "scikit-learn>=1.4" "numpy>=1.26" "scipy>=1.11"
 
       - name: Compile theory code
         run: |
@@ -92,6 +94,7 @@ jobs:
             tests/test_certificate_scope.py \
             tests/test_certificate_scope_regression.py \
             tests/test_known_membership_break_even.py \
+            tests/test_known_membership_dev.py \
             tests/test_known_membership_plan_integrity.py \
             tests/test_theory_manuscript_structure.py \
             scripts/analyze_evidence_bounded_synthetic.py \
@@ -100,7 +103,8 @@ jobs:
             scripts/demonstrate_evidence_channel_composition.py \
             scripts/demonstrate_finite_sample_composition.py \
             scripts/demonstrate_certificate_scope_judgment.py \
-            scripts/known_membership_break_even.py
+            scripts/known_membership_break_even.py \
+            scripts/run_known_membership_dev.py
 
       - name: Run evidence-bounded unit tests
         run: |
@@ -163,6 +167,13 @@ jobs:
           python -m unittest discover \
             -s tests \
             -p "test_known_membership_break_even.py" \
+            -v
+
+      - name: Run known-membership development E2E
+        run: |
+          python -m unittest discover \
+            -s tests \
+            -p "test_known_membership_dev.py" \
             -v
 
       - name: Validate known-membership study-plan integrity
