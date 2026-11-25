@@ -1,3 +1,13 @@
+> **LEGACY FORMAT WARNING — 25 November 2026.**
+> This historical novelty-audit file contains Markdown/LaTeX escape corruption
+> introduced during an earlier tool-to-tool transfer. Its prose conclusions are
+> preserved for audit history, but damaged formulas must not be cited or reused
+> as canonical mathematics. Current mathematical statements live in
+> `docs/feasible-domain-claim-envelope-v0.2.md` and the current manuscript.
+> This file is the only temporary exception in the repository-wide Markdown
+> math integrity guard; the exception should be removed only after a
+> source-grounded manual restoration.
+
 # Novelty Audit — Claim Admissibility, Partial Identification, and Evidence Composition
 
 Date: 2026-11-24  
