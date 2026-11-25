@@ -73,19 +73,19 @@ The mandatory accept-all reference was included.
 
 Primary tolerance:
 
-[
-\delta=0.10.
-]
+$
+\delta = 0.10.
+$
 
 Development prevalence grid:
 
-[
-\pi_U\in\{0.10,0.20,0.30,0.50\}.
-]
+$
+\pi_U \in \{0.10, 0.20, 0.30, 0.50\}.
+$
 
 ## Result
 
-| Held-out family | Known test accuracy | NLL / uniform | lift at (L_K\ge0.5) | unconstrained best lift |
+| Held-out family | Known test accuracy | NLL / uniform | lift at $L_K \ge 0.5$ | unconstrained best lift |
 | --- | ---: | ---: | ---: | ---: |
 | ChatGPT | 0.728 | 0.904 / 1.792 | 0.866 | 0.866 |
 | GPT-4 | 0.707 | 0.944 / 1.792 | 0.861 | 0.861 |
@@ -94,11 +94,15 @@ Development prevalence grid:
 | Mistral-Chat | 0.802 | 0.806 / 1.792 | 1.004 | 1.154 |
 | MPT-Chat | 0.787 | 0.828 / 1.792 | 1.000 | 1.310 |
 
-At the fixed useful-coverage screen (L_K\ge0.5), no held-out family achieved
+At the fixed useful-coverage screen $L_K \ge 0.5$, no held-out family achieved
 meaningful lift over the accept-all reference.
 
-For four families, lift was below one: the confidence gate made the
-known-membership certificate worse than simply using prevalence alone.
+For four families, the **certified** lift was below one. This should not be
+read as evidence that the point-estimate gate is intrinsically harmful.
+The main reason is the finite-sample confidence margin: the lower
+Clopper--Pearson bound on known acceptance and upper bound on unknown
+acceptance make a nearly neutral gate look slightly worse than the exact
+accept-all reference.
 
 For Mistral-Chat and MPT-Chat, useful-coverage lift was effectively one.
 
@@ -106,23 +110,41 @@ The apparently larger unconstrained MPT/Mistral values occur only at low
 certified known acceptance:
 
 - Mistral-Chat: best unconstrained lift (1.154) at
-  (L_K\approx0.091);
+  $L_K \approx 0.091$;
 - MPT-Chat: best unconstrained lift (1.310) at
-  (L_K\approx0.080).
+  $L_K \approx 0.080$.
 
 These are not useful deployment operating points and are retained only to show
 why unconstrained maximum lift is a misleading viability metric.
 
+## Point acceptance rates at the representative threshold
+
+At $\tau=0.3$, the point acceptance rates from the saved Stage-A artifact are:
+
+| Held-out family | min known-family point acceptance | held-out-family point acceptance | $L_K$ | $U_U$ |
+| --- | ---: | ---: | ---: | ---: |
+| ChatGPT | 0.810 | 0.862 | 0.765 | 0.897 |
+| GPT-4 | 0.766 | 0.807 | 0.718 | 0.847 |
+| Cohere-Chat | 0.815 | 0.833 | 0.770 | 0.871 |
+| Llama-Chat | 0.818 | 0.816 | 0.774 | 0.855 |
+| Mistral-Chat | 0.839 | 0.748 | 0.796 | 0.793 |
+| MPT-Chat | 0.845 | 0.758 | 0.803 | 0.802 |
+
+These point rates show why the certificate is nearly neutral for most
+held-out families: the unknown-family acceptance rate is close to the weakest
+known-family acceptance rate. The confidence bounds then widen that already
+small separation.
+
 ## Representative threshold behavior
 
-At (	au=0.3):
+At $\tau = 0.3$:
 
-- ChatGPT: (L_K=0.765, U_U=0.897, \pi^\star=0.0866);
-- GPT-4: (L_K=0.718, U_U=0.847, \pi^\star=0.0861);
-- Cohere-Chat: (L_K=0.770, U_U=0.871, \pi^\star=0.0894);
-- Llama-Chat: (L_K=0.774, U_U=0.855, \pi^\star=0.0913);
-- Mistral-Chat: (L_K=0.796, U_U=0.793, \pi^\star=0.1004);
-- MPT-Chat: (L_K=0.803, U_U=0.802, \pi^\star=0.1000).
+- ChatGPT: $L_K=0.765$, $U_U=0.897$, $\pi^\star=0.0866$;
+- GPT-4: $L_K=0.718$, $U_U=0.847$, $\pi^\star=0.0861$;
+- Cohere-Chat: $L_K=0.770$, $U_U=0.871$, $\pi^\star=0.0894$;
+- Llama-Chat: $L_K=0.774$, $U_U=0.855$, $\pi^\star=0.0913$;
+- Mistral-Chat: $L_K=0.796$, $U_U=0.793$, $\pi^\star=0.1004$;
+- MPT-Chat: $L_K=0.803$, $U_U=0.802$, $\pi^\star=0.1000$.
 
 Thus the main problem is not weak closed-set discrimination. Known-family test
 accuracy is roughly 0.71--0.80 and NLL is far below the six-class uniform
@@ -132,14 +154,14 @@ useful known-vs-unknown separation.
 
 ## Decisions on the development prevalence grid
 
-At (pi_U=0.20,0.30,0.50), every held-out family returned
+At $\pi_U \in \{0.20,0.30,0.50\}$, every held-out family returned
 `ABSTAIN`.
 
-At (pi_U=0.10=\delta), accepting everything is already trivially
+At $\pi_U=0.10=\delta$, accepting everything is already trivially
 certified. Four families therefore returned `PROMOTE_TRIVIAL`.
 
 Mistral-Chat and MPT-Chat produced a formally nontrivial `PROMOTE` at
-(	au=0.3), but their lift over accept-all was only approximately
+$\tau = 0.3$, but their lift over accept-all was only approximately
 1.004 and 1.000 respectively. These should be interpreted as essentially
 trivial improvements, not detector evidence of practical value.
 
